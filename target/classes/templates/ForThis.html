@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<title>全球战略布局</title>
+<link href="/css/common.css" rel="stylesheet" />
+</head>
+<body>
+	<div id="showWorld" class="data-show">
+		<div class="show-title">
+			<img style="position: absolute; right: 10px; top: 5%; height: 60px;"
+				alt="logo" src="/image/logo.png" /> <img
+				src="/v1/image/datashow/title5.png" />
+
+		</div>
+		<div class="show-content">
+			<div class="content" id="worldMap"></div>
+		</div>
+	</div>
+	<script src="/v1/js/jquery-1.6.2.min.js"></script>
+	<script src="/v1/js/echarts/build/dist/echarts.js"></script>
+	<script type="text/javascript">
+		require.config({
+			paths : {
+				echarts : '/v1/js/echarts/build/dist'
+			}
+		});
+		require([ 'echarts', 'echarts/chart/map' ], function(ec) {
+
+			var myChart = ec.init(document.getElementById('worldMap'));
+			option = {
+				map : {
+					mapLocation : {
+						x : "center",
+						y : "center"
+					}
+				},
+				calculable : false,
+				tooltip : {
+					trigger : 'item',
+					formatter : function(params) {
+						var value = (params.value + '').split('.');
+						value = value[0].replace(
+								/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
+								+ '.' + value[1];
+						return params.seriesName;
+					}
+				},
+				legend : {
+					orient : 'vertical',
+					x : 'left',
+					y : 400,
+					itemGap : 30,
+					textStyle : {
+						color : 'auto',
+						fontSize : 20,
+						fontFamily : "Microsoft YaHei"
+					},
+					data : [ '中国', '中国香港', '马来西亚', '蒙古', '墨西哥', '越南' ]
+				},
+				//dataRange: {
+				//    show: false,
+				//    min: 0,
+				//    max: 5,
+				//    text: ['High', 'Low'],
+				//    realtime: false,
+				//    calculable: false,
+				//    //color: ['red', 'yellow', '#B3E09D']
+				//},
+				series : [ {
+					name : '中国香港',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#87CEFA"
+							}
+						},
+						emphasis : {
+							label : {
+								show : false
+							}
+						}
+					},
+					data : []
+				}, {
+					name : '中国',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#FF4400"
+							},
+							label : {
+								show : true,
+								formatter : "中国",
+								textStyle : {
+									color : "#fff",
+									fontFamily : '微软雅黑'
+								}
+							}
+						},
+						emphasis : {
+							label : {
+								show : false
+							}
+						}
+					},
+					data : [ {
+						name : 'China',
+						value : 5
+					} ],
+					markPoint : {
+						symbol : 'image://../v1/image/datashow/qizi.png',
+						symbolSize : 40,
+						effect : {
+							show : true,
+							type : "bounce"
+						},
+						data : [ {
+							name : '中国',
+							geoCoord : [ 104.195397, 35.86166 ]
+						} ]
+					}
+				}, {
+					name : '马来西亚',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#3274EF"
+							},
+							label : {
+								show : true,
+								formatter : "马来西亚",
+								textStyle : {
+									color : "#fff",
+									fontFamily : '微软雅黑'
+								}
+							}
+						},
+						emphasis : {
+							label : {
+								show : false
+							}
+						}
+					},
+					data : [ {
+						name : 'Malaysia',
+						value : 4
+					} ],
+					markPoint : {
+						symbol : 'image://../v1/image/datashow/qizi.png',
+						symbolSize : 40,
+						effect : {
+							show : true,
+							type : "bounce"
+						},
+						data : [ {
+							name : 'Malaysia',
+							geoCoord : [ 101.975766, 4.210484 ]
+						} ]
+					}
+				}, {
+					name : '蒙古',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#ED891A"
+							},
+							label : {
+								show : true,
+								formatter : "蒙古",
+								textStyle : {
+									color : "#fff",
+									fontFamily : '微软雅黑'
+								}
+							}
+						},
+						emphasis : {
+							label : {
+								show : true
+							}
+						}
+					},
+					data : [ {
+						name : 'Mongolia',
+						value : 3
+					} ],
+					markPoint : {
+						symbol : 'image://../v1/image/datashow/qizi.png',
+						symbolSize : 40,
+						effect : {
+							show : true,
+							type : "bounce"
+						},
+						data : [ {
+							name : 'Mongolia',
+							geoCoord : [ 103.846656, 46.862496 ]
+						} ]
+					}
+				}, {
+					name : '墨西哥',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#00A370"
+							},
+							label : {
+								show : true,
+								formatter : "墨西哥",
+								textStyle : {
+									color : "#fff",
+									fontFamily : '微软雅黑'
+								}
+							}
+						},
+						emphasis : {
+							label : {
+								show : true
+							}
+						}
+					},
+					data : [ {
+						name : 'Mexico',
+						value : 2
+					} ],
+					markPoint : {
+						symbol : 'image://../v1/image/datashow/qizi.png',
+						symbolSize : 40,
+						effect : {
+							show : true,
+							type : "bounce"
+						},
+						data : [ {
+							name : 'Mexico',
+							geoCoord : [ -102.552784, 23.634501 ]
+						} ]
+					}
+				}, {
+					name : '越南',
+					type : 'map',
+					mapType : 'world',
+					roam : false,
+					mapLocation : {
+						y : 60
+					},
+					itemStyle : {
+						normal : {
+							areaStyle : {
+								color : "#EFD502"
+							},
+							label : {
+								show : true,
+								formatter : "越南",
+								textStyle : {
+									color : "#fff",
+									fontFamily : '微软雅黑'
+								}
+							}
+						},
+						emphasis : {
+							label : {
+								show : true
+							}
+						}
+					},
+					data : [ {
+						name : 'Vietnam',
+						value : 1
+					} ],
+					markPoint : {
+						symbol : 'image://../v1/image/datashow/qizi.png',
+						symbolSize : 40,
+						effect : {
+							show : true,
+							type : "bounce"
+						},
+						data : [ {
+							name : 'Vietnam',
+							geoCoord : [ 108.277199, 14.058324 ]
+						} ]
+					}
+				} ]
+			};
+
+			myChart.setOption(option);
+
+			myChart.component.legend.setColor("中国", "#FF4400");
+			myChart.component.legend.setColor("中国香港", "#FF4400");
+			myChart.component.legend.setColor("马来西亚", "#3274EF");
+			myChart.component.legend.setColor("蒙古", "#ED891A");
+			myChart.component.legend.setColor("墨西哥", "#00A370");
+			myChart.component.legend.setColor("越南", "#EFD502");
+			myChart.resize();
+
+			window.onresize = function() {
+				myChart.resize();
+			};
+		});
+	</script>
+</body>
+</html>

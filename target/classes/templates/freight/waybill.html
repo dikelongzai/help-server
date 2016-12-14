@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width" />
+<title>运单流向</title>
+<link href="/v1/css/reset.css" rel="stylesheet" />
+<link href="/v1/css/datashow/base.css" rel="stylesheet" />
+<link href="/v1/css/common.css" rel="stylesheet" />
+<link href="/v1/css/public/animate.css" rel="stylesheet" />
+</head>
+<body>
+	<div id="showLines" class="data-show">
+		<div class="show-title">
+			<img alt="标题" src="/image/title5.png" /> <img
+				style="position: absolute; right: 10px; top: 5%; height: 60px;"
+				alt="logo" src="/v1/image/datashow/logo.png" />
+		</div>
+		<div class="show-content">
+			<div class="show-part1">
+				<div class="content" id="main" style="width: 100%; height: 100%"></div>
+			</div>
+			<div class="show-part-right">
+				<div class="show-part2">
+					<div class="content">
+						<div class="show-title2">
+							<span>最近1天流向排名</span>
+						</div>
+						<div class="top10 clearfix">
+							<div class="item color1 first">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color2 first">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color3">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color4">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color1">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color2">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color3">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+
+								</div>
+							</div>
+							<div class="item color4">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color1">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+							<div class="item color2">
+								<div class="content animated">
+									<p class="item-title high-color">北京-上海</p>
+									<p class="text-right">
+										<span class="high-color item-times">322</span>单
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+	<script src="/v1/js/jquery-1.6.2.min.js"></script>
+	<script src="/js/echarts.js"></script>
+	<script src="/v2/js/china.js"></script>
+
+	<script src="/v1/js/waybill.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			document.onmousedown = function(event) {
+				window.location.href = "/lines/transportLines"
+				// 				window.history.go(-1);
+				// 				history.pushState({title:"p1"}, "page 2", "/freight/waybill");
+				// 				history.replaceState(({
+				// 					title : "p1"
+				// 				}, "page 2", "/lines/transportLines");
+			};
+		});
+	</script>
+</body>
+</html>
