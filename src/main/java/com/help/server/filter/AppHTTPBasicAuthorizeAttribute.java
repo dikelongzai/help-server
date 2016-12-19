@@ -2,10 +2,9 @@ package com.help.server.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.help.server.util.Base64Util;
-import com.help.server.util.MD5Util;
 import com.help.server.util.ResultStatusCode;
+import com.help.server.util.StringUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +57,7 @@ public class AppHTTPBasicAuthorizeAttribute implements Filter {
             {
                 JSONObject json= JSON.parseObject(Base64Util.decode(param));
                 long st=json.getLong("st");
-                String authorCode= MD5Util.encode(st+mdkey);
+                String authorCode= StringUtil.getMD5(st+mdkey);
                 String sign=json.getString("sign");
                 if(authorCode.equals(sign)){
                     return ResultStatusCode.OK;
