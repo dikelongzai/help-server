@@ -1,12 +1,10 @@
 package com.help.server.util;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,8 +13,9 @@ import java.util.Map;
  */
 public class ServletUtil {
     private Logger log = Logger.getLogger(ServletUtil.class);
+
     public static JSONObject getAppRequestParameters(HttpServletRequest request,
-                                                  String[] unexpectParams) {
+                                                     String[] unexpectParams) {
         JSONObject res = new JSONObject();
         try {
             Map m = request.getParameterMap();
@@ -37,21 +36,12 @@ public class ServletUtil {
         }
         return res;
     }
-    public static JSONObject getAppRequestParameters(HttpServletRequest request){
+
+    public static JSONObject getAppRequestParameters(HttpServletRequest request) {
         JSONObject res = new JSONObject();
-        try {
-            Map m = request.getParameterMap();
-            Iterator iterator = m.keySet().iterator();
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
-                String[] val = (String[]) m.get(key);
-                if ((val != null) && (val.length == 1))
-                    res.put(key, val[0]);
-                else
-                    res.put(key, val);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String param = request.getParameter("p");
+        if (param != null) {
+            res = JSON.parseObject(Base64Util.decode(param));
         }
         return res;
     }
