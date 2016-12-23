@@ -31,16 +31,6 @@ public class Application {
 
 	@RequestMapping("/")
 	public String index() {
-		return "index";
-	}
-
-	@RequestMapping("pages/{html}")
-	public String urlsshow(@PathVariable String html) {
-		return html;
-	}
-
-	@RequestMapping("/pages/{page}/{html}")
-	public String index(@PathVariable String page, @PathVariable String html) {
-		return page + "/" + html;
+		return "main";
 	}
 }
