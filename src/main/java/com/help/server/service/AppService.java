@@ -1,23 +1,16 @@
 package com.help.server.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.help.server.domain.FrieghtMapper;
-import com.help.server.util.CommonUtil;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author houlongbin
  *
  */
 @Service
-public class FreightService {
+public class AppService {
 
-	private Logger log = Logger.getLogger(FreightService.class);
+	private Logger log = Logger.getLogger(AppService.class);
 	
 //	@Autowired
 //	private FrieghtMapper frieghtMapper;

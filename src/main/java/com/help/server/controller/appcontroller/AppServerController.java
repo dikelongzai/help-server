@@ -1,12 +1,8 @@
-package com.help.server.controller;
+package com.help.server.controller.appcontroller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.FrieghtMapper;
-import com.help.server.domain.tables.Da_show_waybill_province;
-import com.help.server.service.FreightService;
-import com.help.server.util.CommonUtil;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import com.help.server.service.AppService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 客户分布
@@ -24,32 +20,27 @@ import java.util.List;
  *
  */
 @Controller
-@RequestMapping("freight")
-public class FreightCustomerController {
-    private static final Log log = LogFactory.getLog(FreightCustomerController.class);
+@RequestMapping("appserver")
+public class AppServerController{
+    private static final Log log = LogFactory.getLog(AppServerController.class);
     @Autowired
-    private FreightService freightService;
+    private AppService appService;
     @Autowired
     private FrieghtMapper frieghtMapper;
-    @RequestMapping("/")
-    public String index() {
-        return "freight/customer";
-    }
-    @RequestMapping("customer")
-    public String customer() {
-        return "freight/customer";
-    }
-    @RequestMapping("10001")
+
+    @RequestMapping(value = "10001", method = RequestMethod.GET)
     /**
      * 运单流向
      */
     @ResponseBody
-    public JSONObject getWayBill() {
-        /**
-         * 组装百度echars数据
-         */
-        List<Da_show_waybill_province> list=frieghtMapper.findTopNBill();
-        return CommonUtil.getEcharsAllDataJson(list,frieghtMapper.findFromHost(),frieghtMapper.findToHost());
+    public JSONObject getuserInfo(@RequestParam(value="p") String inputStr, HttpServletRequest request) {
+
+        String inputInt =request.getParameter("p");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.getJSONObject(inputInt);
+        return  jsonObject;
+       // List<Da_show_waybill_province> list=frieghtMapper.findTopNBill();
+        //return CommonUtil.getEcharsAllDataJson(list,frieghtMapper.findFromHost(),frieghtMapper.findToHost());
     }
 //    @RequestMapping("waybillhour")
 //    /**
