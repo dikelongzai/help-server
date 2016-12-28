@@ -1,5 +1,6 @@
 package com.help.server;
 
+import com.help.server.filter.AdminAuthorize;
 import com.help.server.filter.AppHTTPBasicAuthorizeAttribute;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -19,10 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-@Controller
 @ComponentScan
 @EnableAutoConfiguration
 public class Application {
+	/**
+	 * 前段过滤器
+	 * @return
+	 */
 	@Bean
 	public FilterRegistrationBean  filterRegistrationBean() {
 		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -30,6 +34,21 @@ public class Application {
 		registrationBean.setFilter(httpBasicFilter);
 		List<String> urlPatterns = new ArrayList<String>();
 		urlPatterns.add("/appserver/*");
+		registrationBean.setUrlPatterns(urlPatterns);
+		return registrationBean;
+	}
+
+	/**
+	 * 对后台操作进行拦截
+	 * @return
+	 */
+	@Bean
+	public FilterRegistrationBean  filteradminRegistrationBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		AdminAuthorize httpBasicFilter = new AdminAuthorize();
+		registrationBean.setFilter(httpBasicFilter);
+		List<String> urlPatterns = new ArrayList<String>();
+		urlPatterns.add("/admin/*");
 		registrationBean.setUrlPatterns(urlPatterns);
 		return registrationBean;
 	}

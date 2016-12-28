@@ -89,17 +89,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>com.alibaba</groupId> -->
-		<!-- <artifactId>druid</artifactId> -->
-		<!-- <version>1.0.13</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.aspectj</groupId> -->
-		<!-- <artifactId>aspectjrt</artifactId> -->
-		<!-- <version>1.6.9</version> -->
-		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>

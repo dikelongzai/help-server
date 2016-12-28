@@ -2,6 +2,8 @@ package com.help.server.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.help.server.model.User;
+import com.help.server.security.UnloginException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,5 +46,19 @@ public class ServletUtil {
             res = JSON.parseObject(Base64Util.decode(param));
         }
         return res;
+    }
+
+    public static User checkLogin(HttpServletRequest request) throws UnloginException {
+        User user = getUser(request);
+        if ((user == null) ) {
+            StringBuffer sb = request.getRequestURL();
+            throw new UnloginException("用户尚未登录，或者是登录已过期。 ", sb != null ? sb.toString() : "");
+        }
+        return user;
+    }
+    public static User getUser(HttpServletRequest request)
+    {
+        User u = (User)request.getSession().getAttribute("KEY_USER_BIND_SESSION");
+        return u;
     }
 }
