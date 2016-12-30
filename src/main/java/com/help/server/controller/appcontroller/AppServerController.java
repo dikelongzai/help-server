@@ -1,8 +1,14 @@
 package com.help.server.controller.appcontroller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.help.server.domain.AppServerMapper;
 import com.help.server.domain.FrieghtMapper;
+import com.help.server.domain.requestbean.GetUserInfoReq;
+import com.help.server.domain.responsebean.GetUserInfoResp;
+import com.help.server.domain.tables.User_Member;
 import com.help.server.service.AppService;
+import com.help.server.util.Base64Util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +32,7 @@ public class AppServerController{
     @Autowired
     private AppService appService;
     @Autowired
-    private FrieghtMapper frieghtMapper;
+    private AppServerMapper appServerMapper;
 
     @RequestMapping(value = "10001", method = RequestMethod.GET)
     /**
@@ -34,8 +40,13 @@ public class AppServerController{
      */
     @ResponseBody
     public JSONObject getuserInfo(@RequestParam(value="p") String inputStr, HttpServletRequest request) {
-
         String inputInt =request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserInfoReq getUserInfoReq = JSON.parseObject(msgBody, GetUserInfoReq.class);
+        long userId = Long.parseLong(getUserInfoReq.getUid());
+        User_Member user_member = appServerMapper.getUserInfo(userId);
+
+        GetUserInfoResp getUserInfoResp= new GetUserInfoResp();
         JSONObject jsonObject = new JSONObject();
         jsonObject.getJSONObject(inputInt);
         return  jsonObject;
