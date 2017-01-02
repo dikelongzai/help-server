@@ -1,14 +1,11 @@
 
 package com.help.server.domain;
 
-import com.help.server.domain.tables.Da_Show_Corp_City;
-import com.help.server.domain.tables.Da_show_waybill_province;
 import com.help.server.domain.tables.User_Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
 /**
  * Created by houxianyong on 2016/12/28.
  */
@@ -26,13 +23,14 @@ public interface AppServerMapper {
      * 获取用户钱包 10002
      * @return
      */
-    @Select("select count(1)  from user_admin where admin_name = #{username} AND admin_pwd = #{pwd} limit 1 ")
-    public int  getUserWallet(@Param("username") String username, @Param("pwd") String pwd);
+    @Select("select user_id  from user_member where user_phone = #{username}")
+    public long  getUserIDByaccount(@Param("username") String username);
 
     /**
      * 用户登录密码校验 1003
      * @return
      */
-    @Select("select count(1)  from user_admin where admin_name = #{username} AND admin_pwd = #{pwd} limit 1 ")
+    @Select("select count(1)  from user_member where user_phone = #{username} AND user_login_pwd = #{pwd} limit 1 ")
     public int  checkUser(@Param("username") String username, @Param("pwd") String pwd);
 }
+

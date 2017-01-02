@@ -1,12 +1,18 @@
-
 package com.help.server.domain.responsebean;
 
-public class GetUserInfoResp {
-    public UserMberInfo getData() {
+/**
+ * Created by hou on 2016/12/31.
+ */
+public class RegisterInfoResp {
+    private  RegisterInfo data;
+    private String code;
+    private String msg;
+
+    public RegisterInfo getData() {
         return data;
     }
 
-    public void setData(UserMberInfo data) {
+    public void setData(RegisterInfo data) {
         this.data = data;
     }
 
@@ -25,9 +31,4 @@ public class GetUserInfoResp {
     public void setMsg(String msg) {
         this.msg = msg;
     }
-
-    private  String code;
-    private  String msg;
-    private  UserMberInfo data;
-
 }

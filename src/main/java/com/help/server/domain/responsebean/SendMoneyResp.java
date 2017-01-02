@@ -1,14 +1,11 @@
-
 package com.help.server.domain.responsebean;
 
-public class GetUserInfoResp {
-    public UserMberInfo getData() {
-        return data;
-    }
-
-    public void setData(UserMberInfo data) {
-        this.data = data;
-    }
+/**
+ * Created by hou on 2017/1/2.10015
+ */
+public class SendMoneyResp {
+    private  String code;
+    private  String msg;
 
     public String getCode() {
         return code;
@@ -26,8 +23,14 @@ public class GetUserInfoResp {
         this.msg = msg;
     }
 
-    private  String code;
-    private  String msg;
-    private  UserMberInfo data;
+    public SendMoneyInfo getData() {
+        return data;
+    }
+
+    public void setData(SendMoneyInfo data) {
+        this.data = data;
+    }
+
+    private  SendMoneyInfo data;
 
 }

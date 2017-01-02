@@ -48,11 +48,11 @@ public class User_Member {
         this.is_freeze = is_freeze;
     }
 
-    public Integer getUser_head_url() {
+    public String getUser_head_url() {
         return user_head_url;
     }
 
-    public void setUser_head_url(Integer user_head_url) {
+    public void setUser_head_url(String user_head_url) {
         this.user_head_url = user_head_url;
     }
 
@@ -147,7 +147,7 @@ public class User_Member {
     //是否冻结
     private Integer is_freeze;
     //用户头像
-    private Integer user_head_url;
+    private String user_head_url;
     //用户银行名称和开开户行
     private String user_bank_name;
     //银行账号

@@ -1,15 +1,9 @@
-
 package com.help.server.domain.responsebean;
 
-public class GetUserInfoResp {
-    public UserMberInfo getData() {
-        return data;
-    }
-
-    public void setData(UserMberInfo data) {
-        this.data = data;
-    }
-
+/**
+ * Created by hou on 2016/12/31.
+ */
+public class CommResp {
     public String getCode() {
         return code;
     }
@@ -26,8 +20,6 @@ public class GetUserInfoResp {
         this.msg = msg;
     }
 
-    private  String code;
-    private  String msg;
-    private  UserMberInfo data;
-
+    private String code;
+    private String msg;
 }

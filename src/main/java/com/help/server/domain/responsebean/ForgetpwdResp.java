@@ -1,14 +1,12 @@
-
 package com.help.server.domain.responsebean;
 
-public class GetUserInfoResp {
-    public UserMberInfo getData() {
-        return data;
-    }
+/**
+ * Created by hou on 2017/1/1.10012
+ */
+public class ForgetpwdResp {
 
-    public void setData(UserMberInfo data) {
-        this.data = data;
-    }
+    private String code;
+    private String msg;
 
     public String getCode() {
         return code;
@@ -26,8 +24,14 @@ public class GetUserInfoResp {
         this.msg = msg;
     }
 
-    private  String code;
-    private  String msg;
-    private  UserMberInfo data;
+    public ForgetpwdInfo getData() {
+        return data;
+    }
+
+    public void setData(ForgetpwdInfo data) {
+        this.data = data;
+    }
+
+    private ForgetpwdInfo data;
 
 }

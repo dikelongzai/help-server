@@ -3,13 +3,13 @@ package com.help.server.domain.responsebean;
 
 public class UserMberInfo {
 
-    private  String uid;
-    private  String name;
-    private  String account;
-    private  int account_type;
-    private  String image_url;
-    private  String title;
-    private  int status;
+    private  String uid = "";
+    private  String name = "";
+    private  String account = "";
+    private  int account_type =0;
+    private  String image_url ="";
+    private  String title = "";
+    private  int status=0;
 
     public String getUid() {
         return uid;
