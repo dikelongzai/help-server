@@ -59,7 +59,27 @@ public class News {
     private Timestamp last_update;
     private String state;
     private long new_id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
     private String new_title;
+
+    public String getEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(String empty) {
+        this.empty = empty;
+    }
+
+    private String empty;
     private String new_content;
 
 }

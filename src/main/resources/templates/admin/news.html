@@ -57,7 +57,7 @@ $(document).ready(function(){
     <div class="tools">
 
         <ul class="toolbar">
-            <li class="click"><span><img src="/images/t01.png"/></span>添加</li>
+            <li  ><a th:href="@{/admin/newsedit}"><span><img src="/images/t01.png"/></span>添加</a></li>
         </ul>
 
 
@@ -87,13 +87,13 @@ $(document).ready(function(){
             </td>
         </tr>
         <tr th:each="newbean:${news}">
-            <td th:text="${newbean.new_id}">1</td>
+            <td th:text="${newbean.id}">1</td>
           <td th:text="${newbean.new_title}"></td>
             <td th:text="${newbean.new_content}">
             </td>
             <td th:text="${newbean.create_date}">
             </td>
-            <td><a href="#" class="tablelink">修改</a> <a  onclick="delNews([[${newbean.new_id}]])" class="tablelink">删除</a></td>
+            <td><a th:href="@{'/admin/newsedit/'+ ${newbean.id}}" class="tablelink">修改</a> <a  th:href="@{'/admin/newsDelete/'+ ${newbean.id}}" class="tablelink">删除</a></td>
         </tr>
 
         </tbody>

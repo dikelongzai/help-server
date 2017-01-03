@@ -18,12 +18,12 @@
 </div>
 
 <div class="formbody">
-    <form action="/admin/edit_news" method="post" th:action="@{/admin/news/edit_news}" th:object="${News}">
+    <form action="/admin/edit_news" method="post" th:action="@{/admin/news/updateNews}" th:object="${News}">
 
         <div class="formtitle"><span>公告信息</span></div>
         <ul class="forminfo">
-            <li><label>公告标题</label><input name="new_title" type="text" class="dfinput"/><i>标题不能超过30个字符</i></li>
-            <li><label>公告内容</label><input name="new_content" type="text" class="dfinput"/><i>公告内容</i></li>
+            <li><label>公告标题</label><input name="id"  th:value="${news.id}" type="hidden" class="dfinput"/><input name="new_title" th:value="${news.new_title}" type="text" class="dfinput"/><i>标题不能超过30个字符</i></li>
+            <li><label>公告内容</label><input name="new_content" th:value="${news.new_content}" type="text" class="dfinput"/><i>公告内容</i></li>
             <li><label>&nbsp;</label><input  type="submit" class="btn" value="确认保存"/></li>
         </ul>
     </form>
