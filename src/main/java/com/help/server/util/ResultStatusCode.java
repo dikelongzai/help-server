@@ -1,5 +1,6 @@
 package com.help.server.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -12,6 +13,16 @@ public class ResultStatusCode {
     public static ResultStatusCode SERVICE_ERROR= new ResultStatusCode("C0003","服务器执行异常");
     private String code;
     private String message;
+
+    public JSON getReturnData() {
+        return returnData;
+    }
+
+    public void setReturnData(JSON returnData) {
+        this.returnData = returnData;
+    }
+
+    private JSON returnData;
     private ResultStatusCode(String code, String message) {
         this.code = code;
         this.message = message;
@@ -53,6 +64,7 @@ public class ResultStatusCode {
         JSONObject json=new JSONObject();
         json.put("code",code);
         json.put("msg",message);
+        json.put("data",returnData);
         return json;
     }
 }

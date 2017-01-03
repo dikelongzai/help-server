@@ -2,7 +2,6 @@ package com.help.server.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.help.server.domain.FrieghtMapper;
 import com.help.server.domain.UserMapper;
 import com.help.server.model.User;
 import com.help.server.security.UnloginException;

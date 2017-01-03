@@ -8,11 +8,6 @@ import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
 public class UserController {
-//    @Autowired
-//    private UserService userService;
-//
-//    @Autowired
-//    private SecurityService securityService;
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login() {
         return "login";
