@@ -40,15 +40,15 @@ public class SendActivationcodeReq {
         this.taccount = taccount;
     }
 
-    public String getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
     private  String faccount;
     private  String taccount;
-    private  String count;
+    private  int count;
 }

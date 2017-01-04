@@ -1,6 +1,7 @@
 
 package com.help.server.domain;
 
+import com.help.server.domain.tables.Activate_Code;
 import com.help.server.domain.tables.User_Member;
 import com.help.server.domain.tables.User_MemberInfo;
 import com.help.server.domain.tables.Validate_Code;
@@ -63,7 +64,42 @@ public interface AppServerMapper {
     @Update("update validate_code set validate_code =  #{code} where user_phone = #{userphone} AND validate_type = #{validatetype} ")
     public int updateValCode(@Param("code") String code,@Param("userphone") String userphone,@Param("validatetype") int validatetype);
 
-}
+    //查询该手机号是否存在验证码
+    @Select("select count(1)  from validate_code where user_phone = #{userphone} AND validate_type = #{validatetype} AND validate_code = #{code}")
+    public int  getValCodeCountByCode(@Param("userphone") String userphone,@Param("validatetype") int validatetype,@Param("code") String code);
 
+    // 查询用户还有多少激活码
+    @Select("select usable_code_num  from user_member where user_id = #{uid} ")
+    public int  getUserCodeNum(@Param("uid") long uid);
+
+    // 查询更新用户的激活码--添加
+    @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_id = #{uid} ")
+    public int  updateUserCodeNum_add(@Param("uid") int codenum,@Param("uid") long uid);
+
+    // 查询更新用户的激活码--减少
+    @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_id = #{uid} ")
+    public int  updateUserCodeNum_dec(@Param("codenum") int codenum,@Param("uid") long uid);
+
+    // 生成验证码
+    @Insert("insert into activate_code(create_date,last_update,state,from_uid,to_uid,code_num,is_from_admin) values(#{create_date}, #{last_update}" +
+            ",#{state},#{from_uid},#{to_uid},#{code_num},#{is_from_admin})")
+    public  int insertValCode(Activate_Code activate_code);
+
+    // 查询更新用户的激活码--减少
+    @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")
+    public int  updateValUser(@Param("to_phone") String to_phone);
+
+    // 查询用户是否存在
+    @Select("select count(1)  from user_member where user_phone = #{userphone} AND user_referee_phone =  #{user_referee_phone}")
+    public int  getUserExit(@Param("userphone") String userphone,@Param("user_referee_phone") String user_referee_phone);
+
+    // 验证码校验
+    @Select("select count(1)  from validate_code where user_phone = #{userphone} AND validate_type =  #{validate_type} AND validate_code =  #{validate_code} AND validate_type =  #{validate_type}")
+    public int  forgetValiCode(@Param("userphone") String userphone,@Param("user_referee_phone") String user_referee_phone,@Param("validate_code") String validate_code,@Param("validate_type") int validate_type);
+
+    // 修改用户密码
+    @Update("update user_member set user_login_pwd = #{user_login_pwd}  where user_phone = #{to_phone} ")
+    public int  updateUserPWd(@Param("user_login_pwd") String user_login_pwd,@Param("to_phone") String to_phone);
+}
 
 
