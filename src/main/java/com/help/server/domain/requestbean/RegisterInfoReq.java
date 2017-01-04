@@ -5,12 +5,13 @@ package com.help.server.domain.requestbean;
  */
 public class RegisterInfoReq {
 
-      private  String sign;
-      private  long st;
-      private  String tel;
-      private  String ver_code;
-      private  String stname;
-      private  String invite;
+    private  String sign;
+    private  long st;
+    private  String tel;
+    private  String ver_code;
+    private  String tname;
+    private  String invite;
+    private  String pwd;
 
     public String getSign() {
         return sign;
@@ -44,19 +45,26 @@ public class RegisterInfoReq {
         this.ver_code = ver_code;
     }
 
-    public String getStname() {
-        return stname;
-    }
-
-    public void setStname(String stname) {
-        this.stname = stname;
-    }
-
     public String getInvite() {
         return invite;
     }
 
     public void setInvite(String invite) {
         this.invite = invite;
+    }
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public String getTname() {
+        return tname;
+    }
+
+    public void setTname(String tname) {
+        this.tname = tname;
     }
 }
