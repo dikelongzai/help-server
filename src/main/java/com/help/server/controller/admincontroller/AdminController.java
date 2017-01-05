@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.NewsMapper;
+import com.help.server.domain.RotateMapper;
 import com.help.server.domain.tables.News;
+import com.help.server.domain.tables.Rotate;
 import com.help.server.model.User;
 import com.help.server.util.ResultStatusCode;
 import com.help.server.util.ServletUtil;
@@ -30,8 +32,11 @@ import java.util.Map;
 @RequestMapping("admin")
 public class AdminController {
     private static final Log log = LogFactory.getLog(AdminController.class);
+    /*  =============================公共部分begin==================================**/
     @Autowired
-    private NewsMapper adminMapper;
+    private NewsMapper newsMapper;
+    @Autowired
+    private RotateMapper rotateMapper;
     @RequestMapping("/")
     public String indexmain() {
         return "admin/main";
@@ -77,7 +82,8 @@ public class AdminController {
         }
         return rs.toJson();
     }
-
+    /*  =============================公共部分end==================================**/
+    /*  =============================新闻公告begion==================================**/
     /**
      * 新闻列表
      * @param map
@@ -86,13 +92,20 @@ public class AdminController {
      */
     @RequestMapping("/news")
     public String news(Map<String, Object> map, HttpServletRequest request) {
-        List<News> list=adminMapper.findAllNews();
+        List<News> list=newsMapper.findAllNews();
 
         log.info("admin/news get All news="+ JSON.toJSONString(list));
         map.put("news",list);
         return "admin/news";
     }
-
+    /**
+     * 修改新闻
+     * @return
+     */
+    @RequestMapping(value = "/newsedit", method = RequestMethod.GET)
+    public String newsedit() {
+        return "admin/news_edit";
+    }
     /**
      * 添加新闻
      * @param news
@@ -101,11 +114,10 @@ public class AdminController {
      */
     @RequestMapping(value="/news/edit_news", method = RequestMethod.POST)
     public String createNews(@ModelAttribute News news,BindingResult result) {
-        adminMapper.addNews(news.getNew_title(),news.getNew_content());
+        newsMapper.addNews(news.getNew_title(),news.getNew_content());
         log.info("success add news title="+news.getNew_title()+";content="+news.getNew_content());
         return "redirect:/admin/news";
     }
-
     /**
      * 修改新闻
      * @param news
@@ -114,7 +126,7 @@ public class AdminController {
      */
     @RequestMapping(value="/news/updateNews", method = RequestMethod.POST)
     public String updateNews(@ModelAttribute News news,BindingResult result) {
-        adminMapper.updateNew(news.getId(),news.getNew_title(),news.getNew_content());
+        newsMapper.updateNew(news.getId(),news.getNew_title(),news.getNew_content());
         log.info("success update news title="+news.getNew_title()+";content="+news.getNew_content()+";id="+news.getId());
         return "redirect:/admin/news";
     }
@@ -125,7 +137,7 @@ public class AdminController {
      */
     @GetMapping(value = "/newsDelete/{id}")
     public String deleteNews(@PathVariable("id") long id){
-        adminMapper.deleteNew(id);
+        newsMapper.deleteNew(id);
         log.info("success deleteNew id="+id);
         return "redirect:/admin/news";
     }
@@ -136,19 +148,28 @@ public class AdminController {
      */
     @GetMapping(value = "/newsedit/{id}")
     public String newseditId(@PathVariable("id") long id,Map<String, Object> map){
-        News news=adminMapper.findNewsById(id);
+        News news=newsMapper.findNewsById(id);
         log.info("/newsedit/{id}="+ JSON.toJSONString(news));
         map.put("news",news);
         return "/admin/newsUpdate";
     }
+
+    /*  =============================新闻公告end==================================**/
+    /*  =============================系统轮播图==================================**/
     /**
-     * 修改新闻
+     * 系统轮播图列表
+     * @param map
+     * @param request
      * @return
      */
-    @RequestMapping(value = "/newsedit", method = RequestMethod.GET)
-    public String newsedit() {
-        return "admin/news_edit";
+    @RequestMapping("/rotate")
+    public String rotate(Map<String, Object> map, HttpServletRequest request) {
+        List<Rotate> list=rotateMapper.findAllNews();
+        log.info("admin/rotate get All rotate="+ JSON.toJSONString(list));
+        map.put("news",list);
+        return "admin/rotate";
     }
+
 
 
 

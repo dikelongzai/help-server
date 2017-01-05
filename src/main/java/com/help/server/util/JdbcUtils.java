@@ -23,13 +23,13 @@ import java.util.Properties;
 public class JdbcUtils {
 
     //数据库用户名
-    private static final String USERNAME = "schema_t";
+    private static final String USERNAME = "helps";
     //数据库密码
-    private static final String PASSWORD = "1q2w3e4r5t@";
+    private static final String PASSWORD = "1q2w3e4r5t!@helps";
     //驱动信息
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     //数据库地址
-    private static final String URL = "jdbc:mysql://192.168.8.50:3306/schema_t?&generateSimpleParameterMetadata=true&&characterEncoding=UTF-8&autoReconnect=true";
+    private static final String URL = "jdbc:mysql://103.66.217.73:3306/helps?&generateSimpleParameterMetadata=true&&characterEncoding=UTF-8&autoReconnect=true";
     private Connection connection;
     private PreparedStatement pstmt;
     private ResultSet resultSet;
