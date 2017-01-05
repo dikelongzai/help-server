@@ -1,11 +1,10 @@
 
 package com.help.server.domain;
 
-import com.help.server.domain.tables.Activate_Code;
-import com.help.server.domain.tables.User_Member;
-import com.help.server.domain.tables.User_MemberInfo;
-import com.help.server.domain.tables.Validate_Code;
+import com.help.server.domain.tables.*;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * Created by houxianyong on 2016/12/28.
@@ -100,6 +99,36 @@ public interface AppServerMapper {
     // 修改用户密码
     @Update("update user_member set user_login_pwd = #{user_login_pwd}  where user_phone = #{to_phone} ")
     public int  updateUserPWd(@Param("user_login_pwd") String user_login_pwd,@Param("to_phone") String to_phone);
+
+    /**
+     * 获取订单信息 100023 orders
+     * @return user_name,is_activate,user_phone
+     */
+    @Select("select create_date,last_date,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND recharge_uid = #{rechargeuid} ")
+    public List<Orders> getOrderInfo(@Param("ordertype") int ordertype, @Param("rechargeuid") Long rechargeuid);
+
+    /**
+     * 获取用户名称 100023 orders
+     * @return user_name,is_activate,user_phone
+     */
+    @Select("select user_name  from user_member where user_phone = #{userphone}")
+    public String  getUserName(@Param("userphone") String userphone);
+
+    // 提供或接受帮助 10014
+    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type)" +
+            " values(#{create_date}, #{last_update},#{state},#{help_id},#{help_order},#{help_type}" +
+            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type})")
+    public  int OfferHelp(Offer_Help offerHelp);
+
+    /**
+     * 获取订单信息 100016 orders
+     * @return user_name,is_activate,user_phone
+     */
+    @Select("select create_date,last_date,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_num = #{ordernum} ")
+    public Orders getOrderInfoDetails(@Param("ordernum") String ordernum);
+
 }
 
 

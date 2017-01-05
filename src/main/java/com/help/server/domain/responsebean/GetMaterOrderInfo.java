@@ -113,11 +113,11 @@ public class GetMaterOrderInfo {
         this.voucher_url = voucher_url;
     }
 
-    public String getOrder_type() {
+    public int getOrder_type() {
         return order_type;
     }
 
-    public void setOrder_type(String order_type) {
+    public void setOrder_type(int order_type) {
         this.order_type = order_type;
     }
 
@@ -131,5 +131,5 @@ public class GetMaterOrderInfo {
     private  String match_st;
     private  String confirm_st;
     private  String voucher_url;
-    private  String  order_type;
+    private  int  order_type;
 }
