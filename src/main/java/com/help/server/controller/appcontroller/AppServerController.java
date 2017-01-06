@@ -331,7 +331,7 @@ public class AppServerController {
             activate_code.setFrom_uid(fromuid);
             activate_code.setTo_uid(touid);
             activate_code.setIs_from_admin(0);
-            appServerMapper.insertValCode(activate_code);
+            appServerMapper.insertActivateCode(activate_code);
             commResp.setCode(retCode);
             commResp.setMsg(retMsg);
 
@@ -611,6 +611,85 @@ public class AppServerController {
             sendMoneyResp.setData(sendMoneyInfo);
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(sendMoneyResp);
+        return jsonObject;
+    }
+    @RequestMapping(value = "10016", method = RequestMethod.GET)
+    /**
+     * 确认收款、确认未收到款
+     */
+    @ResponseBody
+    public JSONObject ConfirmMoneyInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        ConfirmMoneyReq confirmMoneyReq = JSON.parseObject(msgBody, ConfirmMoneyReq.class);
+        int complaintstatus =confirmMoneyReq.getType();
+        String ordernum = confirmMoneyReq.getOrder_num();
+        appServerMapper.updateOrderStatus(complaintstatus,ordernum);
+        CommResp commResp = new CommResp();
+        commResp.setCode(retCode);
+        commResp.setMsg(retMsg);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10017", method = RequestMethod.GET)
+    /**
+     * 获取公告信息
+     */
+    @ResponseBody
+    public JSONObject GetNews(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        NewsReq newsReq = JSON.parseObject(msgBody, NewsReq.class);
+        NewsResp newsResp = new NewsResp();
+
+        int type = newsReq.getType();
+        int nCountNew =  appServerMapper.getNewsCount(type);
+        News news = null;
+        if(nCountNew>0){
+            news = appServerMapper.getNews(type);
+            newsResp.setCode(retCode);
+            newsResp.setMsg(retMsg);
+            NewsInfo data = new NewsInfo();
+            data.setContent(news.getNew_content());
+            newsResp.setData(data);
+        }else{
+            newsResp.setCode("C0011");
+            newsResp.setMsg("没有系统公告！");
+        }
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(newsResp);
+        return jsonObject;
+
+    }
+
+    @RequestMapping(value = "10018", method = RequestMethod.GET)
+    /**
+     * 获取轮播信息
+     */
+    @ResponseBody
+    public JSONObject GetTurnChartInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        NewsReq newsReq = JSON.parseObject(msgBody, NewsReq.class);
+        TurnChartResp chartResp = new TurnChartResp();
+        ArrayList<TurnChartInfo> data = new ArrayList<TurnChartInfo>();
+        List<Rotate_News> rotate_newsList =  appServerMapper.getRotateNews();
+        Rotate_News rotate_news = null;
+        for (int i =0;i<rotate_newsList.size();i++){
+            rotate_news = rotate_newsList.get(i);
+            TurnChartInfo turnChartInfo = new TurnChartInfo();
+            turnChartInfo.setHelf(rotate_news.getHelf_url());
+            turnChartInfo.setImage_url(rotate_news.getRotate_url());
+            data.add(turnChartInfo);
+        }
+        chartResp.setData(data);
+        chartResp.setCode(retCode);
+        chartResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(chartResp);
         return jsonObject;
     }
 }

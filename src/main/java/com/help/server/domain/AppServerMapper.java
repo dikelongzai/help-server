@@ -82,7 +82,7 @@ public interface AppServerMapper {
     // 生成验证码
     @Insert("insert into activate_code(create_date,last_update,state,from_uid,to_uid,code_num,is_from_admin) values(#{create_date}, #{last_update}" +
             ",#{state},#{from_uid},#{to_uid},#{code_num},#{is_from_admin})")
-    public  int insertValCode(Activate_Code activate_code);
+    public  int insertActivateCode(Activate_Code activate_code);
 
     // 查询更新用户的激活码--减少
     @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")
@@ -128,6 +128,22 @@ public interface AppServerMapper {
     @Select("select create_date,last_date,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
             ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_num = #{ordernum} ")
     public Orders getOrderInfoDetails(@Param("ordernum") String ordernum);
+
+    // 更新订单状态
+    @Update("update orders set complaint_status = #{complaintstatus}  where order_num = #{ordernum} ")
+    public int  updateOrderStatus(@Param("complaintstatus") int complaintstatus,@Param("ordernum") String ordernum);
+
+    // 获取新闻信息
+    @Select("select * from news  where type = #{type} AND state = 'N' order by create_date asc LIMIT 1")
+    public News  getNews(@Param("type") int type);
+
+    // 获取新闻信息数量Count
+    @Select("select count(1) from news  where type = #{type} AND state = 'N'")
+    public int  getNewsCount(@Param("type") int type);
+
+    // 获取轮播图
+    @Select("select create_date,last_update,state,rotate_id,rotate_url,helf_url from rotate_news  where state = 'N' order by create_date asc")
+    public List<Rotate_News>  getRotateNews();
 
 }
 

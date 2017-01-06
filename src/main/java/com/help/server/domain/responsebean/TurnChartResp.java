@@ -1,5 +1,7 @@
 package com.help.server.domain.responsebean;
 
+import java.util.ArrayList;
+
 /**
  * Created by hou on 2017/1/5. 10018
  */
@@ -23,14 +25,15 @@ public class TurnChartResp {
         this.msg = msg;
     }
 
-    public TurnChartInfo getData() {
+    public ArrayList<TurnChartInfo> getData() {
         return data;
     }
 
-    public void setData(TurnChartInfo data) {
+    public void setData(ArrayList<TurnChartInfo> data) {
         this.data = data;
     }
 
     private  String msg;
-    private  TurnChartInfo data;
+
+    private ArrayList<TurnChartInfo> data;
 }
