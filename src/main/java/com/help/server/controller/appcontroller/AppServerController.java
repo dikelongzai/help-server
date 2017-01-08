@@ -676,6 +676,7 @@ public class AppServerController {
         NewsReq newsReq = JSON.parseObject(msgBody, NewsReq.class);
         TurnChartResp chartResp = new TurnChartResp();
         ArrayList<TurnChartInfo> data = new ArrayList<TurnChartInfo>();
+
         List<Rotate_News> rotate_newsList =  appServerMapper.getRotateNews();
         Rotate_News rotate_news = null;
         for (int i =0;i<rotate_newsList.size();i++){
@@ -692,4 +693,93 @@ public class AppServerController {
         JSONObject jsonObject = (JSONObject) JSON.toJSON(chartResp);
         return jsonObject;
     }
-}
+
+    @RequestMapping(value = "10019", method = RequestMethod.GET)
+    /**
+     * 获取留言信息
+     */
+    @ResponseBody
+    public JSONObject getLeavingMsgInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        LeavingMsgReq leavingMsgReq = JSON.parseObject(msgBody, LeavingMsgReq.class);
+        LeavingMsgResp leavingMsgResp = new LeavingMsgResp();
+
+        ArrayList<LeavingMsgInfo> leavingMsgInfoArrayList = new ArrayList<LeavingMsgInfo>();
+        long uid = leavingMsgReq.getUid();
+        int ncount = appServerMapper.getLeavingMsgCount(uid);
+        if(ncount>0){
+             List<Leaving_Msg> leavingMsgList = appServerMapper.getLeavingMsg(uid);
+             for (int i =0;i<leavingMsgList.size();i++){
+                 Leaving_Msg leaving_msg = leavingMsgList.get(i);
+
+                 LeavingMsgInfo leavingMsgInfo = new LeavingMsgInfo();
+                 leavingMsgInfo.setContent(leaving_msg.getMsg_content());
+                 leavingMsgInfo.setMessage_st(DateUtil.dateLongToString(leaving_msg.getMsg_date()));
+                 int is_reply = leaving_msg.getIs_reply();
+                 leavingMsgInfo.setStatus(is_reply);
+                 if(is_reply ==2){
+                     leavingMsgInfo.setReply_content(leaving_msg.getReply_content());
+                     leavingMsgInfo.setReply_st(DateUtil.dateLongToString(leaving_msg.getReply_date()));
+                 }
+
+                 leavingMsgInfoArrayList.add(leavingMsgInfo);
+
+             }
+            leavingMsgResp.setCode(retCode);
+            leavingMsgResp.setMsg(retMsg);
+            leavingMsgResp.setData(leavingMsgInfoArrayList);
+
+        }else{
+            leavingMsgResp.setMsg("没有留言！");
+            leavingMsgResp.setCode("C0012");
+        }
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(leavingMsgResp);
+        return jsonObject;
+
+    }
+
+    @RequestMapping(value = "10020", method = RequestMethod.GET)
+    /**
+     * 获取留言信息
+     */
+    @ResponseBody
+    public JSONObject InsertLeavingMsg(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        SendLeavingMsgReq leavingMsgReq = JSON.parseObject(msgBody, SendLeavingMsgReq.class);
+
+        long ncurrent = System.currentTimeMillis();
+
+        Leaving_Msg leaving_msg = new Leaving_Msg();
+
+        leaving_msg.setCreate_date(ncurrent);
+        leaving_msg.setLast_update(ncurrent);
+        leaving_msg.setMsg_date(ncurrent);
+        leaving_msg.setIs_reply(1);
+        leaving_msg.setMsg_content(leavingMsgReq.getContent());
+        leaving_msg.setUser_id(leavingMsgReq.getUid());
+        leaving_msg.setState('N');
+
+        long leaving_id = 0;
+        String leaving_name = "leaving_id";
+        appServerMapper.id_generator(leaving_name);
+        leaving_id = appServerMapper.get_id_generator(leaving_name);
+        leaving_msg.setLeaving_id(leaving_id);
+
+        appServerMapper.InsertLeavingMsg(leaving_msg);
+
+        CommResp commResp = new CommResp();
+        commResp.setCode(retCode);
+        commResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return jsonObject;
+    }
+
+
+
+    }
