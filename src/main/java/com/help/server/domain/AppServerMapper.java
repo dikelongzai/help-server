@@ -72,17 +72,17 @@ public interface AppServerMapper {
     public int  getUserCodeNum(@Param("uid") long uid);
 
     // 查询更新用户的激活码--添加
-    @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_id = #{uid} ")
-    public int  updateUserCodeNum_add(@Param("uid") int codenum,@Param("uid") long uid);
+    @Update("update user_member set usable_code_num = usable_code_num + #{codenum} where user_id = #{uid} ")
+    public int  updateUserCodeNum_add(@Param("codenum") int codenum,@Param("uid") long uid);
 
     // 查询更新用户的激活码--减少
     @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_id = #{uid} ")
     public int  updateUserCodeNum_dec(@Param("codenum") int codenum,@Param("uid") long uid);
 
     // 生成验证码
-    @Insert("insert into activate_code(create_date,last_update,state,from_uid,to_uid,code_num,is_from_admin) values(#{create_date}, #{last_update}" +
-            ",#{state},#{from_uid},#{to_uid},#{code_num},#{is_from_admin})")
-    public  int insertActivateCode(Activate_Code activate_code);
+    @Insert("insert into Validate_Code(user_phone,user_imei,validate_type,validate_code,create_date,last_update,state,validate_id) values(#{user_phone},#{user_imei}" +
+            ",#{validate_type},#{validate_code},#{create_date},#{last_update},#{state},#{validate_id})")
+    public  int insertValCode(Validate_Code validate_code);
 
     // 查询更新用户的激活码--减少
     @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")

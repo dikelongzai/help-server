@@ -319,8 +319,8 @@ public class AppServerController {
         int nCount = appServerMapper.getUserCount(username);
 
         if (usable_code_num >= codeCount) { //可以分配
-            appServerMapper.updateUserCodeNum_add(codeCount, fromuid);
-            appServerMapper.updateUserCodeNum_dec(codeCount, touid);
+            appServerMapper.updateUserCodeNum_dec(codeCount, fromuid);
+            appServerMapper.updateUserCodeNum_add(codeCount, touid);
             //交易激活码校验记录
             long ncurTimer = System.currentTimeMillis();
             Activate_Code activate_code = new Activate_Code();
