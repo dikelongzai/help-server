@@ -722,6 +722,9 @@ public class AppServerController {
                  if(is_reply ==2){
                      leavingMsgInfo.setReply_content(leaving_msg.getReply_content());
                      leavingMsgInfo.setReply_st(DateUtil.dateLongToString(leaving_msg.getReply_date()));
+                 }else{
+                     leavingMsgInfo.setReply_content("");
+                     leavingMsgInfo.setReply_st("");
                  }
 
                  leavingMsgInfoArrayList.add(leavingMsgInfo);

@@ -52,7 +52,7 @@ public interface AppServerMapper {
 
     // 生成验证码
     @Insert("insert into Validate_Code(user_phone,user_imei,validate_type,validate_code,,create_date,last_update,state,validate_id) values(#{user_phone}, #{user_imei}" +
-            ",#{validate_type},#{validate_code},#{create_date},#{last_update},#{create_date},#{validate_id})")
+            ",#{validate_type},#{validate_code},#{create_date},#{last_update},#{state},#{validate_id})")
     public  int insertValCode(Validate_Code validate_code);
 
     //查询该手机号是否存在验证码
@@ -79,10 +79,9 @@ public interface AppServerMapper {
     @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_id = #{uid} ")
     public int  updateUserCodeNum_dec(@Param("codenum") int codenum,@Param("uid") long uid);
 
-    // 生成验证码
-    @Insert("insert into Validate_Code(user_phone,user_imei,validate_type,validate_code,create_date,last_update,state,validate_id) values(#{user_phone},#{user_imei}" +
-            ",#{validate_type},#{validate_code},#{create_date},#{last_update},#{state},#{validate_id})")
-    public  int insertValCode(Validate_Code validate_code);
+    @Insert("insert into activate_code(create_date,last_update,state,from_uid,to_uid,code_num,is_from_admin) values(#{create_date}, #{last_update}" +
+            ",#{state},#{from_uid},#{to_uid},#{code_num},#{is_from_admin})")
+    public  int insertActivateCode(Activate_Code activate_code);
 
     // 查询更新用户的激活码--减少
     @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")

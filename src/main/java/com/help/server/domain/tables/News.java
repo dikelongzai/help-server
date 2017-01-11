@@ -7,19 +7,19 @@ import java.sql.Timestamp;
  * .
  */
 public class News {
-    public Timestamp getLast_update() {
+    public long getLast_update() {
         return last_update;
     }
 
-    public void setLast_update(Timestamp last_update) {
+    public void setLast_update(long last_update) {
         this.last_update = last_update;
     }
 
-    public Timestamp getCreate_date() {
+    public long getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(Timestamp create_date) {
+    public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }
 
@@ -55,13 +55,21 @@ public class News {
         this.new_content = new_content;
     }
 
-    private Timestamp create_date;
-    private Timestamp last_update;
+    private long create_date;
+    private long last_update;
     private String state;
     private long new_id;
 
     public long getId() {
         return id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public void setId(long id) {
@@ -81,5 +89,6 @@ public class News {
 
     private String empty;
     private String new_content;
+    private int type;
 
 }
