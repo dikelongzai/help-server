@@ -27,6 +27,22 @@ public class ByStatusGetOrderReq {
         return account;
     }
 
+    public String getOs_type() {
+        return os_type;
+    }
+
+    public void setOs_type(String os_type) {
+        this.os_type = os_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public void setAccount(String account) {
         this.account = account;
     }
@@ -50,4 +66,6 @@ public class ByStatusGetOrderReq {
     private  String account;
     private  long uid;
     private  int order_type;
+    private  String os_type;
+    private  String version;
 }

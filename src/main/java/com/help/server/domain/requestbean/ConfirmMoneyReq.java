@@ -6,6 +6,24 @@ package com.help.server.domain.requestbean;
 public class ConfirmMoneyReq {
     private String sign;
     private String st;
+    private  String os_type;
+    private  String version;
+
+    public String getOs_type() {
+        return os_type;
+    }
+
+    public void setOs_type(String os_type) {
+        this.os_type = os_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getSign() {
         return sign;

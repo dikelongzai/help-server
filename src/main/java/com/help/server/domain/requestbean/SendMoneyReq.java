@@ -5,6 +5,23 @@ package com.help.server.domain.requestbean;
  */
 public class SendMoneyReq {
     private  String sign;
+
+    public String getOs_type() {
+        return os_type;
+    }
+
+    public void setOs_type(String os_type) {
+        this.os_type = os_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     private long st;
     private  String account;
 
@@ -50,5 +67,7 @@ public class SendMoneyReq {
 
     private long uid;
     private String order_num;
+    private  String os_type;
+    private  String version;
 
 }

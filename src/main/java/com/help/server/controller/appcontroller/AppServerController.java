@@ -43,7 +43,7 @@ public class AppServerController {
     @Autowired
     private AppServerMapper appServerMapper;
 
-    @RequestMapping(value = "10001", method = RequestMethod.GET)
+    @RequestMapping(value = "10001")
 
     /**
      * 获取用户信息
@@ -82,7 +82,7 @@ public class AppServerController {
 
     }
 
-    @RequestMapping(value = "10002", method = RequestMethod.GET)
+    @RequestMapping(value = "10002")
     /**
      * 获取用户钱包
      */
@@ -115,7 +115,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10003", method = RequestMethod.GET)
+    @RequestMapping(value = "10003")
     /**
      * 获取用户登录
      */
@@ -159,7 +159,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10004", method = RequestMethod.GET)
+    @RequestMapping(value = "10004")
     /**
      * 获取用户登录
      */
@@ -224,7 +224,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10005", method = RequestMethod.GET)
+    @RequestMapping(value = "10005")
     /**
      * 发送验证码
      */
@@ -270,7 +270,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10006", method = RequestMethod.GET)
+    @RequestMapping(value = "10006")
     /**
      * 验证验证码协议
      */
@@ -297,7 +297,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10007", method = RequestMethod.GET)
+    @RequestMapping(value = "10007")
     /**
      * 验证验证码协议
      */
@@ -344,7 +344,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10008", method = RequestMethod.GET)
+    @RequestMapping(value = "10008")
     /**
      * 验证验证码协议
      */
@@ -359,7 +359,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10009", method = RequestMethod.GET)
+    @RequestMapping(value = "10009")
     /**
      * 验证验证码协议
      */
@@ -384,7 +384,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10012", method = RequestMethod.GET)
+    @RequestMapping(value = "10012")
     /**
      * 忘记密码
      */
@@ -439,7 +439,7 @@ public class AppServerController {
         return jsonObject;
 
     }
-    @RequestMapping(value = "10023", method = RequestMethod.GET)
+    @RequestMapping(value = "10023")
     /**
      * 已匹配成功订单
      */
@@ -487,7 +487,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10013", method = RequestMethod.GET)
+    @RequestMapping(value = "10013")
     /**
      * 已匹配成功订单
      */
@@ -532,7 +532,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10014", method = RequestMethod.GET)
+    @RequestMapping(value = "10014")
     /**
      * 接受和提供帮助订单
      */
@@ -575,7 +575,7 @@ public class AppServerController {
         JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
         return jsonObject;
     }
-    @RequestMapping(value = "10015", method = RequestMethod.GET)
+    @RequestMapping(value = "10015")
     /**
      * 获取订单详情
      */
@@ -613,7 +613,7 @@ public class AppServerController {
         JSONObject jsonObject = (JSONObject) JSON.toJSON(sendMoneyResp);
         return jsonObject;
     }
-    @RequestMapping(value = "10016", method = RequestMethod.GET)
+    @RequestMapping(value = "10016")
     /**
      * 确认收款、确认未收到款
      */
@@ -633,7 +633,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10017", method = RequestMethod.GET)
+    @RequestMapping(value = "10017")
     /**
      * 获取公告信息
      */
@@ -664,7 +664,7 @@ public class AppServerController {
 
     }
 
-    @RequestMapping(value = "10018", method = RequestMethod.GET)
+    @RequestMapping(value = "10018")
     /**
      * 获取轮播信息
      */
@@ -694,7 +694,7 @@ public class AppServerController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "10019", method = RequestMethod.GET)
+    @RequestMapping(value = "10019")
     /**
      * 获取留言信息
      */
@@ -744,7 +744,7 @@ public class AppServerController {
 
     }
 
-    @RequestMapping(value = "10020", method = RequestMethod.GET)
+    @RequestMapping(value = "10020")
     /**
      * 获取留言信息
      */
