@@ -6,13 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.AppServerMapper;
 import com.help.server.domain.requestbean.*;
 import com.help.server.domain.responsebean.*;
-import com.help.server.domain.tables.Activate_Code;
-import com.help.server.domain.tables.User_Member;
-import com.help.server.domain.tables.User_MemberInfo;
-import com.help.server.domain.tables.Validate_Code;
+import com.help.server.domain.tables.*;
 import com.help.server.service.AppService;
 import com.help.server.util.Base64Util;
 import com.help.server.util.CommonUtil;
+import com.help.server.util.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -24,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 客户分布
@@ -319,8 +319,8 @@ public class AppServerController {
         int nCount = appServerMapper.getUserCount(username);
 
         if (usable_code_num >= codeCount) { //可以分配
-            appServerMapper.updateUserCodeNum_add(codeCount, fromuid);
-            appServerMapper.updateUserCodeNum_dec(codeCount, touid);
+            appServerMapper.updateUserCodeNum_dec(codeCount, fromuid);
+            appServerMapper.updateUserCodeNum_add(codeCount, touid);
             //交易激活码校验记录
             long ncurTimer = System.currentTimeMillis();
             Activate_Code activate_code = new Activate_Code();
@@ -331,7 +331,7 @@ public class AppServerController {
             activate_code.setFrom_uid(fromuid);
             activate_code.setTo_uid(touid);
             activate_code.setIs_from_admin(0);
-            appServerMapper.insertValCode(activate_code);
+            appServerMapper.insertActivateCode(activate_code);
             commResp.setCode(retCode);
             commResp.setMsg(retMsg);
 
@@ -439,4 +439,350 @@ public class AppServerController {
         return jsonObject;
 
     }
-}
+    @RequestMapping(value = "10023", method = RequestMethod.GET)
+    /**
+     * 已匹配成功订单
+     */
+    @ResponseBody
+    public JSONObject GetMaterOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetMateOrderReq getMateOrderReq = JSON.parseObject(msgBody, GetMateOrderReq.class);
+        GetMateOrderResp getMateOrderResp = new GetMateOrderResp();
+
+        getMateOrderResp.setCode(retCode);
+        getMateOrderResp.setMsg(retMsg);
+        int ordertype = getMateOrderReq.getOrder_type();
+        long rechargeuid = getMateOrderReq.getUid();
+        List<Orders> orderList = appServerMapper.getOrderInfo(ordertype,rechargeuid);
+        ArrayList<GetMaterOrderInfo> getMaterOrderList = new  ArrayList<GetMaterOrderInfo>();
+
+        for(int i =0;i<orderList.size();i++){
+
+            GetMaterOrderInfo getMaterOrderInfo = new GetMaterOrderInfo();
+            Orders order = orderList.get(i);
+            getMaterOrderInfo.setTo_type(2);
+            getMaterOrderInfo.setFrom_money(order.getMoney_num());
+            getMaterOrderInfo.setTo_money(order.getMoney_num());
+            getMaterOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
+            getMaterOrderInfo.setFrom_order_num(order.getRecharge_order());
+            getMaterOrderInfo.setFrom_st(DateUtil.dateLongToString(order.getFrom_date()));
+            String userphone =order.getRecharge_phone();
+            String name = appServerMapper.getUserName(userphone);
+            getMaterOrderInfo.setFrom_tname(name);
+            getMaterOrderInfo.setMatch_st(DateUtil.dateLongToString(order.getMatch_date()));
+            getMaterOrderInfo.setTo_order_num(order.getWithdrawals_order());
+            userphone = order.getWithdrawals_phone();
+            name = appServerMapper.getUserName(userphone);
+            getMaterOrderInfo.setTo_tname(name);
+            getMaterOrderInfo.setVoucher_url(order.getRemittance_url());
+            getMaterOrderInfo.setTo_st(DateUtil.dateLongToString(order.getTo_date()));
+            getMaterOrderInfo.setFrom_type(1);
+            getMaterOrderInfo.setOrder_type(order.getOrder_type());
+            getMaterOrderList.add(getMaterOrderInfo);
+        }
+        getMateOrderResp.setData(getMaterOrderList);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getMateOrderResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10013", method = RequestMethod.GET)
+    /**
+     * 已匹配成功订单
+     */
+    @ResponseBody
+    public JSONObject GetOrderByStatus(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        ByStatusGetOrderReq byStatusGetOrderReq = JSON.parseObject(msgBody, ByStatusGetOrderReq.class);
+        ByStatusGetOrderResp byStatusGetOrderResp = new ByStatusGetOrderResp();
+
+        byStatusGetOrderResp.setCode(retCode);
+        byStatusGetOrderResp.setMsg(retMsg);
+        int ordertype = byStatusGetOrderReq.getOrder_type();
+        long rechargeuid = byStatusGetOrderReq.getUid();
+        List<Orders> orderList = appServerMapper.getOrderInfo(ordertype,rechargeuid);
+        ArrayList<ByStatusGetOrderInfo> getMaterOrderList = new  ArrayList<ByStatusGetOrderInfo>();
+
+        for(int i =0;i<orderList.size();i++){
+
+            ByStatusGetOrderInfo byStatusGetOrderInfo = new ByStatusGetOrderInfo();
+            Orders order = orderList.get(i);
+            byStatusGetOrderInfo.setTo_type(2);
+            byStatusGetOrderInfo.setFrom_money(order.getMoney_num());
+            byStatusGetOrderInfo.setTo_money(order.getMoney_num());
+            byStatusGetOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
+            byStatusGetOrderInfo.setFrom_order_num(order.getRecharge_order());
+            byStatusGetOrderInfo.setFrom_st(DateUtil.dateLongToString(order.getFrom_date()));
+            String userphone =order.getRecharge_phone();
+            String name = appServerMapper.getUserName(userphone);
+            byStatusGetOrderInfo.setFrom_tname(name);
+            byStatusGetOrderInfo.setMatch_st(DateUtil.dateLongToString(order.getMatch_date()));
+            byStatusGetOrderInfo.setTo_order_num(order.getWithdrawals_order());
+            userphone = order.getWithdrawals_phone();
+            name = appServerMapper.getUserName(userphone);
+            byStatusGetOrderInfo.setTo_st(DateUtil.dateLongToString(order.getTo_date()));
+            byStatusGetOrderInfo.setFrom_type(1);
+            getMaterOrderList.add(byStatusGetOrderInfo);
+        }
+        byStatusGetOrderResp.setData(getMaterOrderList);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(byStatusGetOrderResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10014", method = RequestMethod.GET)
+    /**
+     * 接受和提供帮助订单
+     */
+    @ResponseBody
+    public JSONObject AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
+        HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
+        long ncurTimer = System.currentTimeMillis();
+
+        Offer_Help offer_helps = new Offer_Help();
+        offer_helps.setCreate_date(ncurTimer);
+        offer_helps.setLast_update(ncurTimer);
+
+        long help_id = 0;
+        String idname = "help_id";
+        appServerMapper.id_generator(idname);
+        help_id = appServerMapper.get_id_generator(idname);
+        offer_helps.setHelp_id(help_id);
+        String ordernum = CommonUtil.genRandomOrder(help_id+"");
+        offer_helps.setHelp_order(ordernum);
+        offer_helps.setMoney_num(helpsOrderReq.getMoney());
+        offer_helps.setHelp_status(0);
+        offer_helps.setPayment_type("0,1,2");
+        offer_helps.setUser_id(helpsOrderReq.getUid());
+        offer_helps.setUser_phone(helpsOrderReq.getAccount());
+        offer_helps.setWallet_type(helpsOrderReq.getWallet_type());
+        offer_helps.setState('N');
+        offer_helps.setStatus_confirmation(0);
+        offer_helps.setHelp_type(helpsOrderReq.getHelp_type());
+        appServerMapper.OfferHelp(offer_helps);
+        helpsOrderResp.setMsg(retMsg);
+        helpsOrderResp.setCode(retCode);
+        HelpsOrderRespInfo helpsOrderRespInfo = new HelpsOrderRespInfo();
+        helpsOrderRespInfo.setOrder_num(ordernum);
+        helpsOrderResp.setData(helpsOrderRespInfo);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+        return jsonObject;
+    }
+    @RequestMapping(value = "10015", method = RequestMethod.GET)
+    /**
+     * 获取订单详情
+     */
+    @ResponseBody
+    public JSONObject GetOrderInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        SendMoneyReq sendMoneyReq = JSON.parseObject(msgBody, SendMoneyReq.class);
+        String ordernum = sendMoneyReq.getOrder_num();
+        SendMoneyResp sendMoneyResp = new SendMoneyResp();
+        SendMoneyInfo sendMoneyInfo = new SendMoneyInfo();
+        //获取订单详情
+        Orders order = appServerMapper.getOrderInfoDetails(ordernum);
+        if(order!= null){
+            sendMoneyResp.setMsg(retMsg);
+            sendMoneyResp.setCode(retCode);
+
+            sendMoneyInfo.setOrder_num(order.getOrder_num());
+            sendMoneyInfo.setPayment_st(DateUtil.dateLongToString(order.getPayment_date()));
+            sendMoneyInfo.setFrom_account(order.getRecharge_phone());
+            String userphone =order.getRecharge_phone();
+            String name = appServerMapper.getUserName(userphone);
+            sendMoneyInfo.setFrom_tnamw(name);
+            sendMoneyInfo.setMoney(order.getMoney_num());
+            sendMoneyInfo.setType(order.getOrder_type());
+            sendMoneyInfo.setPayment_url(order.getRemittance_url());
+            sendMoneyResp.setData(sendMoneyInfo);
+
+        }else{
+            sendMoneyResp.setCode("C0010");
+            sendMoneyResp.setMsg("订单不存在！");
+            sendMoneyResp.setData(sendMoneyInfo);
+        }
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(sendMoneyResp);
+        return jsonObject;
+    }
+    @RequestMapping(value = "10016", method = RequestMethod.GET)
+    /**
+     * 确认收款、确认未收到款
+     */
+    @ResponseBody
+    public JSONObject ConfirmMoneyInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        ConfirmMoneyReq confirmMoneyReq = JSON.parseObject(msgBody, ConfirmMoneyReq.class);
+        int complaintstatus =confirmMoneyReq.getType();
+        String ordernum = confirmMoneyReq.getOrder_num();
+        appServerMapper.updateOrderStatus(complaintstatus,ordernum);
+        CommResp commResp = new CommResp();
+        commResp.setCode(retCode);
+        commResp.setMsg(retMsg);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10017", method = RequestMethod.GET)
+    /**
+     * 获取公告信息
+     */
+    @ResponseBody
+    public JSONObject GetNews(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        NewsReq newsReq = JSON.parseObject(msgBody, NewsReq.class);
+        NewsResp newsResp = new NewsResp();
+
+        int type = newsReq.getType();
+        int nCountNew =  appServerMapper.getNewsCount(type);
+        News news = null;
+        if(nCountNew>0){
+            news = appServerMapper.getNews(type);
+            newsResp.setCode(retCode);
+            newsResp.setMsg(retMsg);
+            NewsInfo data = new NewsInfo();
+            data.setContent(news.getNew_content());
+            newsResp.setData(data);
+        }else{
+            newsResp.setCode("C0011");
+            newsResp.setMsg("没有系统公告！");
+        }
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(newsResp);
+        return jsonObject;
+
+    }
+
+    @RequestMapping(value = "10018", method = RequestMethod.GET)
+    /**
+     * 获取轮播信息
+     */
+    @ResponseBody
+    public JSONObject GetTurnChartInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        NewsReq newsReq = JSON.parseObject(msgBody, NewsReq.class);
+        TurnChartResp chartResp = new TurnChartResp();
+        ArrayList<TurnChartInfo> data = new ArrayList<TurnChartInfo>();
+
+        List<Rotate_News> rotate_newsList =  appServerMapper.getRotateNews();
+        Rotate_News rotate_news = null;
+        for (int i =0;i<rotate_newsList.size();i++){
+            rotate_news = rotate_newsList.get(i);
+            TurnChartInfo turnChartInfo = new TurnChartInfo();
+            turnChartInfo.setHelf(rotate_news.getHelf_url());
+            turnChartInfo.setImage_url(rotate_news.getRotate_url());
+            data.add(turnChartInfo);
+        }
+        chartResp.setData(data);
+        chartResp.setCode(retCode);
+        chartResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(chartResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10019", method = RequestMethod.GET)
+    /**
+     * 获取留言信息
+     */
+    @ResponseBody
+    public JSONObject getLeavingMsgInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        LeavingMsgReq leavingMsgReq = JSON.parseObject(msgBody, LeavingMsgReq.class);
+        LeavingMsgResp leavingMsgResp = new LeavingMsgResp();
+
+        ArrayList<LeavingMsgInfo> leavingMsgInfoArrayList = new ArrayList<LeavingMsgInfo>();
+        long uid = leavingMsgReq.getUid();
+        int ncount = appServerMapper.getLeavingMsgCount(uid);
+        if(ncount>0){
+             List<Leaving_Msg> leavingMsgList = appServerMapper.getLeavingMsg(uid);
+             for (int i =0;i<leavingMsgList.size();i++){
+                 Leaving_Msg leaving_msg = leavingMsgList.get(i);
+
+                 LeavingMsgInfo leavingMsgInfo = new LeavingMsgInfo();
+                 leavingMsgInfo.setContent(leaving_msg.getMsg_content());
+                 leavingMsgInfo.setMessage_st(DateUtil.dateLongToString(leaving_msg.getMsg_date()));
+                 int is_reply = leaving_msg.getIs_reply();
+                 leavingMsgInfo.setStatus(is_reply);
+                 if(is_reply ==2){
+                     leavingMsgInfo.setReply_content(leaving_msg.getReply_content());
+                     leavingMsgInfo.setReply_st(DateUtil.dateLongToString(leaving_msg.getReply_date()));
+                 }else{
+                     leavingMsgInfo.setReply_content("");
+                     leavingMsgInfo.setReply_st("");
+                 }
+
+                 leavingMsgInfoArrayList.add(leavingMsgInfo);
+
+             }
+            leavingMsgResp.setCode(retCode);
+            leavingMsgResp.setMsg(retMsg);
+            leavingMsgResp.setData(leavingMsgInfoArrayList);
+
+        }else{
+            leavingMsgResp.setMsg("没有留言！");
+            leavingMsgResp.setCode("C0012");
+        }
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(leavingMsgResp);
+        return jsonObject;
+
+    }
+
+    @RequestMapping(value = "10020", method = RequestMethod.GET)
+    /**
+     * 获取留言信息
+     */
+    @ResponseBody
+    public JSONObject InsertLeavingMsg(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        SendLeavingMsgReq leavingMsgReq = JSON.parseObject(msgBody, SendLeavingMsgReq.class);
+
+        long ncurrent = System.currentTimeMillis();
+
+        Leaving_Msg leaving_msg = new Leaving_Msg();
+
+        leaving_msg.setCreate_date(ncurrent);
+        leaving_msg.setLast_update(ncurrent);
+        leaving_msg.setMsg_date(ncurrent);
+        leaving_msg.setIs_reply(1);
+        leaving_msg.setMsg_content(leavingMsgReq.getContent());
+        leaving_msg.setUser_id(leavingMsgReq.getUid());
+        leaving_msg.setState('N');
+
+        long leaving_id = 0;
+        String leaving_name = "leaving_id";
+        appServerMapper.id_generator(leaving_name);
+        leaving_id = appServerMapper.get_id_generator(leaving_name);
+        leaving_msg.setLeaving_id(leaving_id);
+
+        appServerMapper.InsertLeavingMsg(leaving_msg);
+
+        CommResp commResp = new CommResp();
+        commResp.setCode(retCode);
+        commResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return jsonObject;
+    }
+
+
+
+    }

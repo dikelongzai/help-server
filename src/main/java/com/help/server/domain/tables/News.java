@@ -64,6 +64,14 @@ public class News {
         return id;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -81,5 +89,6 @@ public class News {
 
     private String empty;
     private String new_content;
+    private int type;
 
 }
