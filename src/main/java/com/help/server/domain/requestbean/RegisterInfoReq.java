@@ -10,8 +10,27 @@ public class RegisterInfoReq {
     private  String tel;
     private  String ver_code;
     private  String tname;
+
+    public String getOs_type() {
+        return os_type;
+    }
+
+    public void setOs_type(String os_type) {
+        this.os_type = os_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     private  String invite;
     private  String pwd;
+    private  String os_type;
+    private  String version;
 
     public String getSign() {
         return sign;

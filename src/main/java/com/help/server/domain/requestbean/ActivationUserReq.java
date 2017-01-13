@@ -4,9 +4,30 @@ package com.help.server.domain.requestbean;
  * Created by hou on 2017/1/1. 10009
  */
 public class ActivationUserReq {
+
     private  String sign;
     private  String st;
     private  String faccount;
+
+    public String getOs_type() {
+        return os_type;
+    }
+
+    public void setOs_type(String os_type) {
+        this.os_type = os_type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    private  String os_type;
+    private  String version;
+
 
     public String getSign() {
         return sign;
