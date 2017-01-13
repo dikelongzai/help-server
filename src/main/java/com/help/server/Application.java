@@ -1,15 +1,20 @@
 package com.help.server;
 
+import com.help.server.configurations.FileUploadConfiguration;
 import com.help.server.filter.AdminAuthorize;
 import com.help.server.filter.AppHTTPBasicAuthorizeAttribute;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +27,10 @@ import java.util.List;
 @SpringBootApplication
 @ComponentScan
 @EnableAutoConfiguration
-public class Application {
+@Configuration
+public class Application  {
+	@Autowired
+	FileUploadConfiguration fileUploaderConfiguration;
 	/**
 	 * 前段过滤器
 	 * @return
@@ -51,6 +59,11 @@ public class Application {
 		urlPatterns.add("/admin/*");
 		registrationBean.setUrlPatterns(urlPatterns);
 		return registrationBean;
+	}
+	@Bean
+	@ConfigurationProperties("fileUpload")
+	public FileUploadConfiguration uploaderConfiguration() {
+		return new FileUploadConfiguration();
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
