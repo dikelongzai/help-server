@@ -51,7 +51,7 @@ public interface AppServerMapper {
     public  long get_id_generator(@Param("idname") String idname);
 
     // 生成验证码
-    @Insert("insert into Validate_Code(user_phone,user_imei,validate_type,validate_code,,create_date,last_update,state,validate_id) values(#{user_phone}, #{user_imei}" +
+    @Insert("insert into Validate_Code(user_phone,user_imei,validate_type,validate_code,create_date,last_update,state,validate_id) values(#{user_phone}, #{user_imei}" +
             ",#{validate_type},#{validate_code},#{create_date},#{last_update},#{state},#{validate_id})")
     public  int insertValCode(Validate_Code validate_code);
 
