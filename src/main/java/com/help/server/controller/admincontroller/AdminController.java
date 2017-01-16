@@ -3,8 +3,10 @@ package com.help.server.controller.admincontroller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.AppServerMapper;
+import com.help.server.domain.LeaveMsgMapper;
 import com.help.server.domain.NewsMapper;
 import com.help.server.domain.RotateMapper;
+import com.help.server.domain.tables.Leaving_Msg;
 import com.help.server.domain.tables.News;
 import com.help.server.domain.tables.Rotate;
 import com.help.server.model.User;
@@ -40,11 +42,12 @@ public class AdminController {
     private FileUploadService fileUploadService;
     @Autowired
     private AppService appService;
-
     @Autowired
     private AdminService aadminService;
     @Autowired
     private AppServerMapper appServerMapper;
+    @Autowired
+    private LeaveMsgMapper leaveMsgMapper;
     @RequestMapping("/")
     public String indexmain() {
         return "admin/main";
@@ -225,6 +228,14 @@ public class AdminController {
     public String leave(Map<String, Object> map, HttpServletRequest request) {
         return "admin/leave";
     }
+    /**
+     * 回复留言
+     * @return
+     */
+    @RequestMapping(value = "/leave_edit", method = RequestMethod.GET)
+    public String leaveedit() {
+        return "admin/leave_edit";
+    }
 
     /**
      * ajax获取留言信息及分页信息
@@ -241,9 +252,46 @@ public class AdminController {
         log.info(resultJson.toJSONString());
         return resultJson;
     }
+    /**
+     * 异步删除留言信息
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delLeaveMessage", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject DelLeaveMessage(HttpServletRequest request) throws Exception {
+        JSONObject param=ServletUtil.getAppRequestParameters(request, null);
+        log.info("param="+param.toJSONString());
+        leaveMsgMapper.deleteNew( Long.valueOf(param.getString("leaveId")));
+        return ResultStatusCode.OK.toJson();
+    }
+    /**
+     * 根据id获取新闻并跳转至修改页
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/editLeave/{id}")
+    public String editLeave(@PathVariable("id") long id,Map<String, Object> map){
+        Leaving_Msg news=leaveMsgMapper.findNewsById(id);
+        log.info("/editLeave/{id}="+ JSON.toJSONString(news));
+        map.put("news",news);
+        return "/admin/leave_edit";
+    }
+    /**
+     * 修改新闻
+     * @param news
+     * @param result
+     * @return
+     */
+    @RequestMapping(value="/updateLeave", method = RequestMethod.POST)
+    public String updateLeave(@ModelAttribute Leaving_Msg news,BindingResult result) {
+        leaveMsgMapper.updateNew(news.getId(),news.getReply_content());
+        log.info("success update news getReply_content="+news.getReply_content()+";id="+news.getId());
+        return "redirect:/admin/leave";
+    }
 
-
-     /*  =============================系统留言end==================================**/
+    /*  =============================系统留言end==================================**/
 
 
 

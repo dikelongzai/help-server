@@ -8,6 +8,16 @@ public class Leaving_Msg {
 
     private  long create_date;
 
+    public String getEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(String empty) {
+        this.empty = empty;
+    }
+
+    private String empty;
+
     public Leaving_Msg() {
     }
 

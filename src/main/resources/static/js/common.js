@@ -18,6 +18,38 @@ var common ={
 
 		return year + "-" + month + "-" + day;
 	},
+	 getDateStrSec:function (date) {
+		 var mydate = new Date();
+		 if (date != "" && date != null && date != undefined) {
+			 mydate = new Date(date);
+		 }
+		 return mydate.toLocaleString().substr(0,17);
+
+	},
+	/**
+	 * 时间戳转换日期
+	 * @param <int> unixTime    待时间戳(秒)
+	 * @param <bool> isFull    返回完整时间(Y-m-d 或者 Y-m-d H:i:s)
+	 * @param <int>  timeZone   时区
+	 */
+	UnixToDate: function(unixTime, isFull, timeZone) {
+		if (typeof (timeZone) == 'number')
+		{
+			unixTime = parseInt(unixTime) + parseInt(timeZone) * 60 * 60;
+		}
+		var time = new Date(unixTime);
+		var ymdhis = "";
+		ymdhis += time.getUTCFullYear() + "-";
+		ymdhis += (time.getUTCMonth()+1) + "-";
+		ymdhis += time.getUTCDate();
+		if (isFull === true)
+		{
+			ymdhis += " " + time.getUTCHours() + ":";
+			ymdhis += time.getUTCMinutes() + ":";
+			ymdhis += time.getUTCSeconds();
+		}
+		return ymdhis;
+	},
 
 	getDateByStr:function(str){
 		var date;

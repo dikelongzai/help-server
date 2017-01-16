@@ -103,12 +103,13 @@ var leave ={
 	  }else{
 	    html+="<td>未回复</td>";
 	  }
+		html+="<td>"+leaveInfo.reply_content+"</td>";
       //留言时间
-	   html+="<td>"+common.getDateStr(leaveInfo.create_date)+"</td>";
+	   html+="<td>"+common.UnixToDate(leaveInfo.create_date,true)+"</td>";
 	   	  if(leaveInfo.is_reply==1){
-	   	    html+=" <td><a href='#' class='tablelink'>回复</a><a href='#' class='tablelink'> 删除</a></td>";
+	   	    html+=" <td><a href='javascript:leave.delLeave("+leaveInfo.id+")' class='tablelink'> 删除</a></td>";
 	   	  }else{
-	   	    html+=" <td><a href='#' class='tablelink'>查看</a> <a href='#' class='tablelink'> 删除</a></td>";
+	   	    html+=" <td><a a href='/admin/editLeave/"+leaveInfo.id+"' class=\"tablelink\">回复</a> <a href='javascript:leave.delLeave("+leaveInfo.id+")' class='tablelink'> 删除</a></td>";
 	   	  }
       html+="</tr>"
       return html;
@@ -116,6 +117,19 @@ var leave ={
 	changePage:function(pageClick){
        this.cpage=pageClick;
        this.getIncAndAct();
+	},
+	delLeave:function (leaveId) {
+		var url = "/admin/delLeaveMessage";
+		var params={
+			leaveId:leaveId
+		};
+		$.myPostJSON(url, params, function(data){
+			if(data&&data.msg=='OK'){
+				location.reload();
+			}
+
+		}, false);
+
 	},
 };
 
