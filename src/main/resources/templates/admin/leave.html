@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/select.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+    <script type="text/javascript" src="/editor/kindeditor.js"></script>
+    <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/leave.js"></script>
+    <script type="text/javascript">
+$(document).ready(function(e) {
+    $(".select3").uedSelect({
+		width : 152
+	});
+});
+
+    </script>
+</head>
+
+<body class="sarchbody">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">用户管理</a></li>
+        <li><a href="#">留言管理</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+
+
+    <div id="usual1" class="usual">
+        <ul class="seachform1">
+            <li><label>留言时间</label><input name="st" id="st" type="text" class="scinput1"  onClick="WdatePicker()"/></li>
+            <li><label>一</label><input name="et" id="et" type="text" class="scinput1"  onClick="WdatePicker()"/></li>
+            <li><label>是否回复</label>
+                <div class="vocation">
+                    <select class="select3">
+                        <option value="-1">全部</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </li>
+
+        </ul>
+        <ul class="seachform1">
+            <li class="sarchbtn"><label>&nbsp;</label><input id="searchBt" type="button" class="scbtn" value="查询"/> </li>
+        </ul>
+        <div class="formtitle"><span>留言列表</span></div>
+        <table class="tablelist">
+            <thead>
+            <tr>
+                <th>标题</th>
+                <th>是否回复</th>
+                <th>发布时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="pagin">
+            <div class="message">共<i class="blue">1256</i>条记录，当前显示第&nbsp;<i class="blue">2&nbsp;</i>页</div>
+            <ul class="paginList">
+                <li class="paginItem"><a href="javascript:;"><span class="pagepre"></span></a></li>
+                <li class="paginItem"><a href="javascript:;">1</a></li>
+                <li class="paginItem current"><a href="javascript:;">2</a></li>
+                <li class="paginItem"><a href="javascript:;">3</a></li>
+                <li class="paginItem"><a href="javascript:;">4</a></li>
+                <li class="paginItem"><a href="javascript:;">5</a></li>
+                <li class="paginItem more"><a href="javascript:;">...</a></li>
+                <li class="paginItem"><a href="javascript:;">10</a></li>
+                <li class="paginItem"><a href="javascript:;"><span class="pagenxt"></span></a></li>
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

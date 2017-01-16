@@ -57,13 +57,13 @@ $(document).ready(function(){
     <div class="tools">
 
         <ul class="toolbar">
-            <li  ><a th:href="@{/admin/rotateedit}"><span><img src="/images/t01.png"/></span>添加</a></li>
+            <li  ><a th:href="@{/admin/rotate_a}"><span><img src="/images/t01.png"/></span>添加</a></li>
         </ul>
 
     </div>
 
 
-    <table class="imgtable">
+   <!-- <table class="imgtable">
 
         <thead>
         <tr>
@@ -87,7 +87,70 @@ $(document).ready(function(){
 
         </tbody>
 
-    </table>
+    </table>-->
+    <ul class="imglist">
+
+        <li class="selected" th:each="newbean:${news}">
+            <span>  <img src="/images/img01.png" th:src="@{${newbean.rotate_url}}" width="168px" height="126px" />  </span>
+            <h2><a th:href="@{${newbean.helf_url}}" th:text="${#dates.format(newbean.create_date,'yyyy-MM-dd HH:mm:ss')}+'上传' ">软件界面设计下载</a></h2>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<a th:href="@{'/admin/rotateDelete/'+ ${newbean.id}}">删除</a></p>
+        </li>
+
+      <!--  <li>
+            <span><img src="images/img02.png" /></span>
+            <h2><a href="#">界面样式素材下载</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img03.png" /></span>
+            <h2><a href="#">弹出小窗口界面设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img04.png" /></span>
+            <h2><a href="#">羽毛图标设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img05.png" /></span>
+            <h2><a href="#">日历组件样式设计</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img06.png" /></span>
+            <h2><a href="#">羽毛图标设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img07.png" /></span>
+            <h2><a href="#">弹出小窗口界面设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img08.png" /></span>
+            <h2><a href="#">弹出小窗口界面设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img09.png" /></span>
+            <h2><a href="#">弹出小窗口界面设计教程</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>
+
+        <li>
+            <span><img src="images/img10.png" /></span>
+            <h2><a href="#">软件界面设计下载</a></h2>
+            <p><a href="#">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">删除</a></p>
+        </li>-->
+
+    </ul>
 
 
     <div class="tip">

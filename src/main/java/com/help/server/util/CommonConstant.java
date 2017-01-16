@@ -1,24 +1,14 @@
 package com.help.server.util;
 
 public class CommonConstant {
+    public static final String USER_ID = "user_id";
+    public static final String VALIDATE_ID = "validate_id";
+    public static final String HELP_ID = "help_id";
+    public static final String NEW_ID = "new_id";
+    public static final String LEAVING_ID = "leaving_id";
+    public static final String ROTATE_ID = "rotate_id";
 
-	//
-	public static final String SUCCESS = "success";
-	
-	//逗号
-	public static final String COMMA = ",";
-	
-	//semicolon分号
-	public static final String SEMICOLON = ";";
-	
-	//运力图默认数据取值前多少条
-	public static final int DEFAULT_TRANSPORT_LIMIT_NUM = 4000;
-	
-	//运力图默认数据取值TOP 起始
-	public static final int DEFAULT_TOP_TRANSPORT_START_LIMIT_NUM = 0;
-	//运力图默认数据取值TOP 终结
-	public static final int DEFAULT_TOP_TRANSPORT_END_LIMIT_NUM = 10;
-	
-	//路线图，值为 0 1 2
-	public static final int DEFAULT_TRANSPORT_LINE_NUM = 0;
+    public static final String START_DAY = " 00:00:00";
+    public static final String END_DAY = " 23:59:59";
+    public static final String BASE_IMAGE_URL = "http://127.0.0.1:8001/images/";
 }

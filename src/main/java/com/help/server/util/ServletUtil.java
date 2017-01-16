@@ -1,12 +1,15 @@
 package com.help.server.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.model.User;
 import com.help.server.security.UnloginException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,6 +40,34 @@ public class ServletUtil {
             e.printStackTrace();
         }
         return res;
+    }
+    public static Map getRequestParameterMap(HttpServletRequest request) {
+        Map map = new HashMap();
+        JSONObject json;
+        try {
+            Map params = null;
+            try {
+                params = request.getParameterMap();
+            } catch (Exception localException1) {
+            }
+            if (params != null) {
+                Iterator iterator = params.keySet()
+                        .iterator();
+                while (iterator.hasNext()) {
+                    String key = (String)iterator.next();
+                    Object val = params.get(key);
+                    if ((val instanceof String[]) && (((String[])val).length == 1) &&
+                            (((String[])val)[0] != null))
+                        map.put(key, ((String[])val)[0]);
+                    else if (val != null)
+                        map.put(key, val);
+                }
+            }
+        }
+        catch (Exception e) {
+           // log.debug(e);
+        }
+        return map;
     }
 
     public static JSONObject getAppRequestParameters(HttpServletRequest request) {

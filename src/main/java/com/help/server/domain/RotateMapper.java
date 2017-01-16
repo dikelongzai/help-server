@@ -14,7 +14,7 @@ public interface RotateMapper {
 	 * 获取所有轮播图
 	 * @return
      */
-	@Select("select id,rotate_url,create_date from rotate_news where state<>'D' ")
+	@Select("select id,rotate_url,create_date,helf_url from rotate_news where state<>'D' ")
 	public List<Rotate> findAllNews();
 	/**
 	 * 删除轮播图
@@ -33,8 +33,8 @@ public interface RotateMapper {
 	 * @param rotate_url
      * @return
      */
-	@Insert("INSERT INTO rotate_news(state,create_date,new_url)SELECT 'N',(SELECT UNIX_TIMESTAMP()*1000),#{rotate_url}")
-    public boolean addRotate(@Param("rotate_url") String rotate_url);
+	@Insert("INSERT INTO rotate_news(state,create_date,rotate_id,rotate_url,helf_url)SELECT 'N',(SELECT UNIX_TIMESTAMP()*1000),(select id_count  from id_generator where id_name ='rotate_id'),#{rotate_url},#{href_url}")
+    public boolean addRotate(@Param("rotate_url") String rotate_url,@Param("href_url") String href_url);
 
 
 	/**

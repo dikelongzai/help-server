@@ -77,5 +77,15 @@ public class Rotate {
 
     private String rotate_url;
 
+    public String getHelf_url() {
+        return helf_url;
+    }
+
+    public void setHelf_url(String helf_url) {
+        this.helf_url = helf_url;
+    }
+
+    private String helf_url;
+
 
 }

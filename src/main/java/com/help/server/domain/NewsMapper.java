@@ -33,8 +33,8 @@ public interface NewsMapper {
 	 * @param new_content
      * @return
      */
-	@Insert("INSERT INTO news(state,create_date,new_title,new_content)SELECT 'N',(SELECT UNIX_TIMESTAMP()*1000),#{new_title},#{new_content}")
-    public boolean addNews(@Param("new_title") String new_title,@Param("new_content") String new_content);
+	@Insert("INSERT INTO news(state,create_date,new_id,new_title,new_content)SELECT 'N',(SELECT UNIX_TIMESTAMP()*1000),(select id_count  from id_generator where id_name ='new_id'),#{new_title},#{new_content}")
+    public boolean addNews(@Param("new_title") String new_title, @Param("new_content") String new_content);
 
 
 	/**
@@ -42,6 +42,6 @@ public interface NewsMapper {
 	 * @return
 	 */
 	@Update("UPDATE news SET state='U',last_update=(SELECT UNIX_TIMESTAMP()*1000),new_title=#{new_title},new_content=#{new_content} WHERE id=#{id} ")
-	public boolean updateNew(@Param("id") long id,@Param("new_title") String new_title,@Param("new_content") String new_content);
+	public boolean updateNew(@Param("id") long id, @Param("new_title") String new_title, @Param("new_content") String new_content);
 
 }

@@ -1,6 +1,9 @@
 package com.help.server.util;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.help.server.domain.Page;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -240,11 +243,34 @@ public class JdbcUtils {
         jdbcUtils.getConnection();
         return jdbcUtils;
     }
+    public JSONObject getPageBySql(String sql,int cpage)throws Exception{
+        JSONObject json=new JSONObject();
+        String sqlPage="";
+        //取得总记录数，创建Page对象
+        int totalRow = getCountBySql(sql);//通过select count 取得总记录数
+        Page page = new Page(totalRow, cpage);
+        if(cpage==1){
+             sqlPage=sql+" LIMIT "+page.getPageSize();
+        }else{
+             sqlPage=sql+" LIMIT "+page.getBeginIndex()+","+page.getEndIndex();
+        }
+      //  String sqlPage=sql+" LIMIT "+page.getBeginIndex()+","+page.getEndIndex();
+        System.out.println("sql = [" + sql + "], cpage = [" + cpage + "],sqlPage="+sqlPage);
+        json.put("data", this.findModeResult(sqlPage, null));
+        json.put("page", page);
+        return json;
+
+    }
+    public int getCountBySql(String sql)throws Exception{
+        String sqlCount="select count(1) as count from ("+sql+") as tmpTable";
+        System.out.print("getCountBySql sql="+sqlCount);
+        return Integer.valueOf(this.findModeResult(sqlCount, null).get(0).get("count").toString());
+    }
 
     /**
      * @param args
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
         // TODO Auto-generated method stub
         JdbcUtils jdbcUtils = new JdbcUtils();
         jdbcUtils.getConnection();
@@ -291,6 +317,7 @@ public class JdbcUtils {
         params.add("3b4fb73635d52f1ce50d7ca579abe51c");
         List<Map<String, Object>> list = jdbcUtils.findModeResult(sql2, params);
 		System.out.println(list);
+        System.out.println(jdbcUtils.getPageBySql("select * from leaving_msg",1));
 
         //利用反射查询 单条记录
 //        String sql = "select * from userinfo where username = ? ";

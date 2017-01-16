@@ -185,6 +185,9 @@ public class DateUtil {
         String res = getDateFormatter8().format(dateLong);
         return res;
     }
+    public static long getLongdate(String date)throws Exception{
+        return getDateFormatter2().parse(date).getTime();
+    }
 
     public static String dateLongToStringYYYYMMDD(Long datelong) {
         return getDateFormatter3().format(datelong);
