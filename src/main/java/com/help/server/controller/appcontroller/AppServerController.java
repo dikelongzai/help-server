@@ -43,7 +43,7 @@ public class AppServerController {
     @Autowired
     private AppServerMapper appServerMapper;
 
-    @RequestMapping(value = "10001")
+    @RequestMapping(value = "10001", method = RequestMethod.GET)
 
     /**
      * 获取用户信息
@@ -311,10 +311,25 @@ public class AppServerController {
 
         int codeCount = sendActivationcodeReq.getCount();
         String username = sendActivationcodeReq.getFaccount();
+        int nUserCount = appServerMapper.getUserCount(username);
+        JSONObject jsonObject =null;
+        if(nUserCount!=1){
+            commResp.setCode("C10013");
+            commResp.setMsg("用户信息不存在！");
+            jsonObject = (JSONObject) JSON.toJSON(commResp);
+            return jsonObject;
+        }
         long fromuid = appServerMapper.getUserIDByaccount(username);
         int usable_code_num = appServerMapper.getUserCodeNum(fromuid);
 
         username = sendActivationcodeReq.getTaccount();
+        nUserCount = appServerMapper.getUserCount(username);
+        if(nUserCount!=1){
+            commResp.setCode("C10013");
+            commResp.setMsg("用户信息不存在！");
+            jsonObject = (JSONObject) JSON.toJSON(commResp);
+            return jsonObject;
+        }
         long touid = appServerMapper.getUserIDByaccount(username);
         int nCount = appServerMapper.getUserCount(username);
 
@@ -340,7 +355,7 @@ public class AppServerController {
             commResp.setMsg("激活码的数量不足！");
         }
 
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        jsonObject = (JSONObject) JSON.toJSON(commResp);
         return jsonObject;
     }
 
