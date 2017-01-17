@@ -8,9 +8,8 @@ import com.help.server.domain.requestbean.*;
 import com.help.server.domain.responsebean.*;
 import com.help.server.domain.tables.*;
 import com.help.server.service.AppService;
-import com.help.server.util.Base64Util;
-import com.help.server.util.CommonUtil;
-import com.help.server.util.DateUtil;
+import com.help.server.service.FileUploadService;
+import com.help.server.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ public class AppServerController {
     private static final Log log = LogFactory.getLog(AppServerController.class);
     @Autowired
     private AppService appService;
+    @Autowired
+    private FileUploadService fileUploadService;
     @Autowired
     private AppServerMapper appServerMapper;
 
@@ -262,6 +264,9 @@ public class AppServerController {
         } else {
             appServerMapper.updateValCode(code, userphone, validatetype);
         }
+        //发送短信
+        String content = SendSmsUtil.getSmsContent(randcode);
+        SendSmsUtil.sendSms(userphone,content);
 
         commResp.setCode(retCode);
         commResp.setMsg(retMsg);
@@ -798,6 +803,26 @@ public class AppServerController {
         return jsonObject;
     }
 
+    @RequestMapping(value = "10021", method = RequestMethod.POST)
+
+    public JSONObject uploadfile(@RequestParam("file") MultipartFile file){
+
+        String url = "";
+        String fileName= null;
+        try {
+            fileName = fileUploadService.handleFileUpload(file).getFileName();
+            url= CommonConstant.BASE_IMAGE_URL+fileName;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        log.info("uploadfile="+url);
+        FileUpLoadResp fileUpLoadResp = new FileUpLoadResp();
+        fileUpLoadResp.setMsg(retMsg);
+        fileUpLoadResp.setCode(retCode);
+        fileUpLoadResp.setFile_url(url);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(fileUpLoadResp);
+        return jsonObject;
+    }
 
 
     }
