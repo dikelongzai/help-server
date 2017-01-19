@@ -10,5 +10,5 @@ public class CommonConstant {
 
     public static final String START_DAY = " 00:00:00";
     public static final String END_DAY = " 23:59:59";
-    public static final String BASE_IMAGE_URL = "http://127.0.0.1:9090/images/";
+    public static final String BASE_IMAGE_URL = "http://127.0.0.1:8080/images/";
 }

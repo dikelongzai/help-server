@@ -4,22 +4,16 @@ import com.help.server.configurations.FileUploadConfiguration;
 import com.help.server.filter.AdminAuthorize;
 import com.help.server.filter.AppHTTPBasicAuthorizeAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +22,7 @@ import java.util.List;
 @ComponentScan
 @EnableAutoConfiguration
 @Configuration
-public class Application  {
+public class Application  extends SpringBootServletInitializer {
 	@Autowired
 	FileUploadConfiguration fileUploaderConfiguration;
 	/**
@@ -45,7 +39,6 @@ public class Application  {
 		registrationBean.setUrlPatterns(urlPatterns);
 		return registrationBean;
 	}
-
 	/**
 	 * 对后台操作进行拦截
 	 * @return
@@ -64,6 +57,11 @@ public class Application  {
 	@ConfigurationProperties("fileUpload")
 	public FileUploadConfiguration uploaderConfiguration() {
 		return new FileUploadConfiguration();
+	}
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		application.sources(this.getClass());
+		return super.configure(application);
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
