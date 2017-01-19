@@ -34,7 +34,7 @@ import java.util.List;
 @RequestMapping("appserver")
 public class AppServerController {
 
-    private final String retCode = "C000";
+    private final String retCode = "C0000";
     private final String retMsg = "ok";
 
     private static final Log log = LogFactory.getLog(AppServerController.class);
@@ -805,6 +805,7 @@ public class AppServerController {
 
     @RequestMapping(value = "10021", method = RequestMethod.POST)
 
+    @ResponseBody
     public JSONObject uploadfile(@RequestParam("file") MultipartFile file){
 
         String url = "";
