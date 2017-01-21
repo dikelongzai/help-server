@@ -8,8 +8,27 @@ public class UserMberInfo {
     private  String account = "";
     private  int account_type =0;
     private  String image_url ="";
+
+    public String getInvite() {
+        return invite;
+    }
+
+    public void setInvite(String invite) {
+        this.invite = invite;
+    }
+
+    public String getId_num() {
+        return id_num;
+    }
+
+    public void setId_num(String id_num) {
+        this.id_num = id_num;
+    }
+
     private  String title = "";
     private  int status=0;
+    private  String invite="";
+    private  String id_num ="";
 
     public String getUid() {
         return uid;

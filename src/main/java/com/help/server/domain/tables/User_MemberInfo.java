@@ -153,6 +153,23 @@ public class User_MemberInfo {
     private String user_bank_name;
     //银行账号
     private String user_bank_account;
+
+    public String getUser_referee_phone() {
+        return user_referee_phone;
+    }
+
+    public void setUser_referee_phone(String user_referee_phone) {
+        this.user_referee_phone = user_referee_phone;
+    }
+
+    public String getUser_carded() {
+        return user_carded;
+    }
+
+    public void setUser_carded(String user_carded) {
+        this.user_carded = user_carded;
+    }
+
     //支付宝账号
     private  String user_payment;
     //微信账号
@@ -169,4 +186,9 @@ public class User_MemberInfo {
     private  Integer used_code_num;
     //个人等级id
     private Integer title_id;
+
+    private  String user_referee_phone;
+
+    private  String user_carded;
+
 }

@@ -16,7 +16,7 @@ public interface AppServerMapper {
      * 获取用户信息 10001 user_member
      * @return user_name,is_activate,user_phone
      */
-    @Select("select user_name,user_id,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id from user_member where user_id = #{userId} ")
+    @Select("select user_name,user_id,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded from user_member where user_id = #{userId} ")
     public User_MemberInfo getUserInfo(@Param("userId") Long userId);
 
     /**
@@ -157,6 +157,31 @@ public interface AppServerMapper {
             " values(#{create_date}, #{last_update},#{state},#{leaving_id},#{user_id},#{msg_content}" +
             ",#{is_reply},#{msg_date})")
     public  int InsertLeavingMsg(Leaving_Msg leaving_msg);
+
+    //  根据titleid获取 title name
+    @Select("select * from dynamic_award_rules  where user_title_id = #{titleid} AND state = 'N'")
+    public String  getTitleName(@Param("titleid") long titleid);
+
+    // 更新用户的银行信息
+    @Update("update user_member set user_bank = #{userbank},user_bank_site = #{banksite},user_bank_name = #{bankname},user_bank_account = #{bankaccount} where user_id = #{uid} ")
+    public int  updateUserBankInfo(@Param("userbank") String userbank,@Param("banksite") String banksite
+            ,@Param("bankname") String bankname,@Param("bankaccount") String bankaccount,@Param("uid") long uid);
+
+    // 更新用户的支付宝
+    @Update("update user_member set user_payment_name = #{payment_name},user_payment = #{userpayment} where user_id = #{uid} ")
+    public int  updateUserPayInfo(@Param("payment_name") String payment_name,@Param("userpayment") String userpayment
+            ,@Param("uid") long uid);
+
+    // 更新用户的支付宝
+    @Update("update user_member set user_weixin = #{userweixin} where user_id = #{uid} ")
+    public int  updateUserWinxinInfo(@Param("userweixin") String userweixin,@Param("uid") long uid);
+
+    /**
+     * 获取用户信息 10024 user_member
+     * @return user_name,is_activate,user_phone
+     */
+    @Select("select user_bank,user_bank_site,user_bank_name,user_bank_account,user_payment_name,user_payment,user_weixin user_carded from user_member where user_phone = #{userphone} ")
+    public UserPayInfo getUserPayInfo(@Param("userphone") String userphone);
 
 }
 

@@ -69,7 +69,10 @@ public class AppServerController {
             data.setImage_url(user_member.getUser_head_url());
             data.setName(user_member.getUser_name());
             data.setStatus(user_member.getIs_freeze());
-            data.setTitle(String.valueOf(user_member.getTitle_id()));
+            long titleid = user_member.getTitle_id();
+            data.setTitle(appServerMapper.getTitleName(titleid));
+            data.setId_num(user_member.getUser_carded());
+            data.setInvite(user_member.getUser_referee_phone());
             getUserInfoResp.setData(data);
 
 
@@ -145,7 +148,10 @@ public class AppServerController {
                 data.setImage_url(user_member.getUser_head_url());
                 data.setName(user_member.getUser_name());
                 data.setStatus(user_member.getIs_freeze());
-                data.setTitle(String.valueOf(user_member.getTitle_id()));
+                long titleid = user_member.getTitle_id();
+                data.setTitle(appServerMapper.getTitleName(titleid));
+                data.setId_num(user_member.getUser_carded());
+                data.setInvite(user_member.getUser_referee_phone());
                 getUserInfoResp.setData(data);
 
             } else {
@@ -825,5 +831,71 @@ public class AppServerController {
         return jsonObject;
     }
 
+    @RequestMapping(value = "10022")
+
+    @ResponseBody
+    public JSONObject uploadPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        UploadPayInfoReq payInfoReq = JSON.parseObject(msgBody, UploadPayInfoReq.class);
+        int ntype = payInfoReq.getType();
+        if(ntype ==0){ //银行账号
+            appServerMapper.updateUserBankInfo(payInfoReq.getBank(),payInfoReq.getSite(),payInfoReq.getName()
+                    ,payInfoReq.getBankaccount(),payInfoReq.getUid());
+        }else if(ntype==1){//支付宝
+            appServerMapper.updateUserPayInfo(payInfoReq.getName()
+                    ,payInfoReq.getBankaccount(),payInfoReq.getUid());
+        }else if(ntype==2){
+            appServerMapper.updateUserWinxinInfo(payInfoReq.getBankaccount(),payInfoReq.getUid());
+        }
+        CommResp commResp = new CommResp();
+        commResp.setMsg(retMsg);
+        commResp.setCode(retCode);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "10024")
+
+    @ResponseBody
+    public JSONObject GetPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserPayInfoReq getUserPayInfoReq = JSON.parseObject(msgBody, GetUserPayInfoReq.class);
+        UserPayInfo userPayInfo = appServerMapper.getUserPayInfo(getUserPayInfoReq.getAccount());
+
+        GetUserPayInfoResp getUserPayInfoResp = new GetUserPayInfoResp();
+
+        if(userPayInfo!=null){
+
+            BankInfo bankInfo = new BankInfo();
+            bankInfo.setBank(userPayInfo.getUser_bank());
+            bankInfo.setAccount(userPayInfo.getUser_bank_account());
+            bankInfo.setName(userPayInfo.getUser_bank_name());
+            bankInfo.setSite(userPayInfo.getUser_bank_site());
+            getUserPayInfoResp.setBank(bankInfo);
+
+            PaymentInfo paymentInfo = new PaymentInfo();
+            paymentInfo.setName(userPayInfo.getUser_payment_name());
+            paymentInfo.setAccount(userPayInfo.getUser_payment());
+            getUserPayInfoResp.setPayment(paymentInfo);
+
+            WeixinInfo weixinInfo = new WeixinInfo();
+            weixinInfo.setAccount(userPayInfo.getUser_weixin());
+            getUserPayInfoResp.setWeixin(weixinInfo);
+
+
+            getUserPayInfoResp.setCode(retCode);
+            getUserPayInfoResp.setMsg(retMsg);
+        }else{
+            getUserPayInfoResp.setCode("支付信息查询失败");
+            getUserPayInfoResp.setCode("C0013");
+        }
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserPayInfoResp);
+        return jsonObject;
 
     }
+}
