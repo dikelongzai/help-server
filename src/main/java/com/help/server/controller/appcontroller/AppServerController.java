@@ -898,4 +898,121 @@ public class AppServerController {
         return jsonObject;
 
     }
-}
+
+    @RequestMapping(value = "10025")
+
+    @ResponseBody
+    public JSONObject UpLoadPayOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        UpLoadPayOrderReq upLoadPayOrderReq = JSON.parseObject(msgBody, UpLoadPayOrderReq.class);
+        long ncurrent = System.currentTimeMillis();
+        CommResp commResp = new CommResp();
+        try {
+            appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
+            commResp.setMsg(retMsg);
+            commResp.setCode(retCode);
+        }catch (Exception ex){
+            commResp.setCode("数据库操作失败！");
+            commResp.setCode("C0014");
+        }
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return  jsonObject;
+    }
+
+    @RequestMapping(value = "10026")
+
+    @ResponseBody
+    public JSONObject UserAuthInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        UserAuthReq userAuthReq = JSON.parseObject(msgBody, UserAuthReq.class);
+
+        CommResp commResp = new CommResp();
+        try {
+            appServerMapper.updateUserAuthInfo(userAuthReq.getFile_url(),userAuthReq.getId_num()
+                    ,userAuthReq.getName(),userAuthReq.getAccount());
+            commResp.setMsg(retMsg);
+            commResp.setCode(retCode);
+        }catch (Exception ex){
+            commResp.setCode("数据库操作失败！");
+            commResp.setCode("C0014");
+        }
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return  jsonObject;
+    }
+
+    @RequestMapping(value = "10027")
+
+    @ResponseBody
+    public JSONObject GetActivateCodeLogInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        ActivateCodeLogReq activateCodeLogReq = JSON.parseObject(msgBody, ActivateCodeLogReq.class);
+        ActivateCodeLogResp activateCodeLogResp = new ActivateCodeLogResp();
+        ArrayList<ActivateCodeLogInfo> activateCodeLogInfoList = new ArrayList<ActivateCodeLogInfo>();
+        List<Activate_Code> activateCodeList = appServerMapper.getActivateInfo(activateCodeLogReq.getUid());
+        for (int i = 0; i < activateCodeList.size(); i++) {
+            Activate_Code activate_code = activateCodeList.get(i);
+            ActivateCodeLogInfo activateCodeLogInfo = new ActivateCodeLogInfo();
+            activateCodeLogInfo.setDate(activate_code.getCreate_date());
+            activateCodeLogInfo.setNum(activate_code.getCode_num());
+            User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(activate_code.getFrom_uid());
+            activateCodeLogInfo.setFaccount(user_memberInfo.getUser_phone());
+            activateCodeLogInfo.setName(user_memberInfo.getUser_name());
+            activateCodeLogInfoList.add(activateCodeLogInfo);
+        }
+        activateCodeLogResp.setData(activateCodeLogInfoList);
+        activateCodeLogResp.setMsg(retMsg);
+        activateCodeLogResp.setCode(retCode);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(activateCodeLogResp);
+        return  jsonObject;
+    }
+
+    @RequestMapping(value = "10028")
+
+    @ResponseBody
+    public JSONObject GetRuleSetting(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetRuleReq getRuleReq = JSON.parseObject(msgBody, GetRuleReq.class);
+
+        GetRuleResp getRuleResp = new GetRuleResp();
+
+        GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
+        getRuleResp.setData(getRuleInfo);
+        getRuleResp.setCode(retCode);
+        getRuleResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getRuleResp);
+        return  jsonObject;
+    }
+    @RequestMapping(value = "10032")
+
+    @ResponseBody
+    public JSONObject ModifPwd(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        ModifPwdReq modifPwdReq = JSON.parseObject(msgBody, ModifPwdReq.class);
+        CommResp commResp = new CommResp();
+        int ncount = appServerMapper.checkUserOldPwd(modifPwdReq.getUid(),modifPwdReq.getPwd());
+        if(ncount>0){
+            appServerMapper.updateUserPWdByUid(modifPwdReq.getNewpwd(),modifPwdReq.getUid());
+            commResp.setMsg(retMsg);
+            commResp.setCode(retCode);
+        }else{
+            commResp.setMsg("旧密码校验失败！");
+            commResp.setCode("C0014");
+        }
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+        return  jsonObject;
+    }
+
+    }

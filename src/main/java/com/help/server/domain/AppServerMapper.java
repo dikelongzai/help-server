@@ -1,6 +1,7 @@
 
 package com.help.server.domain;
 
+import com.help.server.domain.responsebean.GetRuleInfo;
 import com.help.server.domain.tables.*;
 import org.apache.ibatis.annotations.*;
 
@@ -176,12 +177,37 @@ public interface AppServerMapper {
     @Update("update user_member set user_weixin = #{userweixin} where user_id = #{uid} ")
     public int  updateUserWinxinInfo(@Param("userweixin") String userweixin,@Param("uid") long uid);
 
-    /**
+     /**
      * 获取用户信息 10024 user_member
      * @return user_name,is_activate,user_phone
      */
     @Select("select user_bank,user_bank_site,user_bank_name,user_bank_account,user_payment_name,user_payment,user_weixin user_carded from user_member where user_phone = #{userphone} ")
     public UserPayInfo getUserPayInfo(@Param("userphone") String userphone);
+
+    // 更新订单的支付信息
+    @Update("update orders set payment_date = #{paymentdate}, remittance_url = #{remittanceurl},order_type = 3  where order_num = #{ordernum}")
+    public int  updateUserOrderInfo(@Param("paymentdate") long paymentdate,@Param("remittanceurl") String remittanceurl,@Param("ordernum") String ordernum);
+
+    // 认证用户信息
+    @Update("update user_member set user_carded_url = #{carded_url}, user_carded = #{usercarded},user_name = #{username}  where user_phone = #{userphone}")
+    public int  updateUserAuthInfo(@Param("carded_url") String carded_url,@Param("usercarded") String usercarded,@Param("username") String username,@Param("userphone") String userphone);
+
+    @Select("select state,from_uid,to_uid,code_num,is_from_admin,create_date,last_update from activate_code where to_uid = #{touid} ")
+    public List<Activate_Code> getActivateInfo(@Param("touid") long touid);
+    // 获取规则表
+    @Select("select * from order_setting  where state = 'N'")
+    public GetRuleInfo getRuleInfo();
+    /**
+     * 检查用户密码
+     * @return
+     */
+    @Select("select count(1)  from user_member where user_id = #{userid} AND user_login_pwd = #{pwd}")
+    public int  checkUserOldPwd(@Param("userid") long userid, @Param("pwd") String pwd);
+
+    // 修改用户密码
+    @Update("update user_member set user_login_pwd = #{user_login_pwd}  where user_id = #{userid} ")
+    public int  updateUserPWdByUid(@Param("user_login_pwd") String user_login_pwd,@Param("userid") long userid);
+
 
 }
 

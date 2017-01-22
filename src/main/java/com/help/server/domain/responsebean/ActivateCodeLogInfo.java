@@ -7,8 +7,8 @@ public class ActivateCodeLogInfo {
 
     private String faccount;
     private String name;
-    private String num;
-    private String date;
+    private int num;
+    private long date;
 
     public String getFaccount() {
         return faccount;
@@ -26,19 +26,19 @@ public class ActivateCodeLogInfo {
         this.name = name;
     }
 
-    public String getNum() {
+    public int getNum() {
         return num;
     }
 
-    public void setNum(String num) {
+    public void setNum(int num) {
         this.num = num;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 }

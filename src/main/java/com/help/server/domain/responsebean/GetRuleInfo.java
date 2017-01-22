@@ -5,12 +5,7 @@ package com.help.server.domain.responsebean;
  */
 public class GetRuleInfo {
 
-    private  long order_max_money;
-    private long match_date_min;
-    private long   match_date_max;
-    private int freezing_time;
-
-    public long getOrder_max_money() {
+    public float getOrder_max_money() {
         return order_max_money;
     }
 
@@ -159,7 +154,8 @@ public class GetRuleInfo {
     private  int  is_order_timer;
     private  long start_date;
     private  long end_date;
-
-
-
+    private  float order_max_money;
+    private long match_date_min;
+    private long   match_date_max;
+    private int freezing_time;
 }
