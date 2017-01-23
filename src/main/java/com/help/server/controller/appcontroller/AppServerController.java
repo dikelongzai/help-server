@@ -1015,4 +1015,49 @@ public class AppServerController {
         return  jsonObject;
     }
 
+    @RequestMapping(value = "10029")
+
+    @ResponseBody
+    public JSONObject GetUserPayInfoBySn(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserPayInfoSnReq getUserPayInfoSnReq = JSON.parseObject(msgBody, GetUserPayInfoSnReq.class);
+        Orders orders = appServerMapper.getOrderInfoDetails(getUserPayInfoSnReq.getSn());
+        UserPayInfo userPayInfo = null;
+        GetPayInfoBySnResp getPayInfoBySnResp = new GetPayInfoBySnResp();
+        String account = "";
+        if(orders.getRecharge_phone().equals(getUserPayInfoSnReq.getAccount())){
+            account = orders.getWithdrawals_phone();
+        }else{
+            account = orders.getRecharge_phone();
+        }
+        userPayInfo = appServerMapper.getUserPayInfo(account);
+        BankInfo bank = new BankInfo();
+        bank.setName(userPayInfo.getUser_bank_name());
+        bank.setAccount(userPayInfo.getUser_bank_account());
+        bank.setBank(userPayInfo.getUser_bank());
+        bank.setSite(userPayInfo.getUser_bank_site());
+        getPayInfoBySnResp.setBank(bank);
+
+        PaymentInfo payment = new PaymentInfo();
+        payment.setAccount(userPayInfo.getUser_payment());
+        payment.setName(userPayInfo.getUser_payment_name());
+        getPayInfoBySnResp.setPayment(payment);
+
+        WeixinInfo weixin = new WeixinInfo();
+        weixin.setAccount(userPayInfo.getUser_weixin());
+
+        LeaderInfo leader = new LeaderInfo();
+        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(getUserPayInfoSnReq.getUid());
+        String name = appServerMapper.getUserName(user_memberInfo.getUser_referee_phone());
+        leader.setName(name);
+        leader.setTel(user_memberInfo.getUser_referee_phone());
+        getPayInfoBySnResp.setLeader(leader);
+        getPayInfoBySnResp.setMsg(retMsg);
+        getPayInfoBySnResp.setCode(retCode);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
+        return  jsonObject;
+    }
+
     }
