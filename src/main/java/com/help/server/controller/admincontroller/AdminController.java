@@ -3,10 +3,7 @@ package com.help.server.controller.admincontroller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.*;
-import com.help.server.domain.tables.Leaving_Msg;
-import com.help.server.domain.tables.News;
-import com.help.server.domain.tables.OrderSetting;
-import com.help.server.domain.tables.Rotate;
+import com.help.server.domain.tables.*;
 import com.help.server.model.User;
 import com.help.server.service.AdminService;
 import com.help.server.service.AppService;
@@ -49,6 +46,8 @@ public class AdminController {
     private LeaveMsgMapper leaveMsgMapper;
     @Autowired
     private OrderSettingMapper orderSettingMapper;
+    @Autowired
+    private AwardMapper awardMapper;
 
     @RequestMapping("/")
     public String indexmain() {
@@ -361,6 +360,92 @@ public class AdminController {
     }
 
      /*  =============================订单规则设置end==================================**/
+    /*  ============================= 动态奖励规则设置start==================================**/
 
+    /**
+     * 动态奖励规则列表
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/award")
+    public String award(Map<String, Object> map, HttpServletRequest request) {
+        List<Award> list = awardMapper.findAllNews();
+        log.info("admin/award get All news=" + JSON.toJSONString(list));
+        map.put("news", list);
+        return "admin/award";
+    }
+
+    /**
+     * 修改动态奖励规则
+     *
+     * @return
+     */
+    @RequestMapping(value = "/awardIndex", method = RequestMethod.GET)
+    public String awardIndex() {
+        return "admin/awardIndex";
+    }
+
+    /**
+     * 添加动态奖励规则
+     *
+     * @param news
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = "/addAward", method = RequestMethod.POST)
+    public String addAward(@ModelAttribute Award news, BindingResult result) {
+        log.info("success addAward parm="+JSON.toJSON(news) );
+        awardMapper.addNews(news.getDirect_num(),news.getTeam_num(),news.getOne_generation(),news.getTwo_generation(),news.getThree_generation(),news.getFour_generation(),news.getUser_title());
+        appServerMapper.id_generator(CommonConstant.DYNAMIC_ID);
+        appServerMapper.id_generator(CommonConstant.USER_TITLE_ID);
+        return "redirect:/admin/award";
+    }
+
+    /**
+     * 修改动态奖励规则
+     *
+     * @param news
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = "/updateAward", method = RequestMethod.POST)
+    public String updateAward(@ModelAttribute Award news, BindingResult result)throws Exception {
+        JSONObject param= JSON.parseObject(JSON.toJSONString(news));
+        log.info("success updateAward parm=" + JSON.toJSON(news) );
+        aadminService.updateAward(param);
+        //awardMapper.updateNew(news.getId(),news.getDirect_num(),news.getTeam_num(),news.getOne_generation(),news.getTwo_generation(),news.getThree_generation(),news.getFour_generation(),news.getUser_title());
+
+        return "redirect:/admin/award";
+    }
+
+    /**
+     * 删除动态奖励规则
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/deleteAward/{id}")
+    public String deleteAward(@PathVariable("id") long id) {
+        awardMapper.deleteNew(id);
+        log.info("success deleteNew id=" + id);
+        return "redirect:/admin/award";
+    }
+
+    /**
+     * 根据id获取新闻并跳转至修改页
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/editAward/{id}")
+    public String editAward(@PathVariable("id") long id, Map<String, Object> map) {
+        Award news = awardMapper.findNewsById(id);
+        log.info("/editAward/{id}=" + JSON.toJSONString(news));
+        map.put("news", news);
+        return "/admin/awardUpdate";
+    }
+   /*  ============================= 动态奖励规则设置end==================================**/
 
 }

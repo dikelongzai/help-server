@@ -126,5 +126,30 @@ public class AdminService {
         return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
     }
 
+    /**
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public boolean updateAward(JSONObject param) throws Exception {
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append("UPDATE dynamic_award_rules SET state='U',last_update=(SELECT UNIX_TIMESTAMP()*1000)");
+        //{"direct_num":1,"four_generation":0.1,"id":7,"one_generation":0.2,"team_num":1,"three_generation":0.3,"two_generation":0.2,"user_title":"教授"}
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+            if("user_title".equals(entry.getKey())){
+                sqlBuffer.append(",").append(entry.getKey()).append("='").append(entry.getValue().toString()).append("'");
+            }else{
+                if(!entry.getKey().equals("id")){
+                    sqlBuffer.append(",").append(entry.getKey()).append("=").append(entry.getValue());
+                }
+            }
+            //System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
+        sqlBuffer.append(" WHERE id=").append(param.getString("id"));
+        log.info("updateAward sql="+sqlBuffer.toString());
+        return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
+    }
+
 
 }

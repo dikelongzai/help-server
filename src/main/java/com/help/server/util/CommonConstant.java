@@ -7,6 +7,10 @@ public class CommonConstant {
     public static final String NEW_ID = "new_id";
     public static final String LEAVING_ID = "leaving_id";
     public static final String ROTATE_ID = "rotate_id";
+    public static final String  DYNAMIC_ID="dynamic_id";
+    public static final String  USER_TITLE_ID="user_title_id";
+
+
 
     public static final String START_DAY = " 00:00:00";
     public static final String END_DAY = " 23:59:59";

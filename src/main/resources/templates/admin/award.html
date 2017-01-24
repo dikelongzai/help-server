@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+
+    <script language="javascript">
+$(function(){	
+	//导航切换
+	$(".imglist li").click(function(){
+		$(".imglist li.selected").removeClass("selected")
+		$(this).addClass("selected");
+	})	
+})	
+
+    </script>
+    <script type="text/javascript">
+$(document).ready(function(){
+  $(".click").click(function(){
+  $(".tip").fadeIn(200);
+  });
+  
+  $(".tiptop a").click(function(){
+  $(".tip").fadeOut(200);
+});
+
+  $(".sure").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+  $(".cancel").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+});
+
+    </script>
+</head>
+
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">交易设置</a></li>
+        <li><a href="#">动态奖规则设置</a></li>
+    </ul>
+</div>
+
+<div class="rightinfo">
+
+    <div class="tools">
+
+        <ul class="toolbar">
+            <li  ><a th:href="@{/admin/awardIndex}"><span><img src="/images/t01.png"/></span>添加</a></li>
+        </ul>
+
+
+        <ul class="toolbar1">
+            <li><span><img src="/images/t05.png"/></span>设置</li>
+        </ul>
+
+    </div>
+
+
+    <table class="tablelist">
+
+        <thead>
+        <tr>
+            <th>等级</th>
+            <th>直推人数</th>
+            <th>团队人数</th>
+            <th>一代</th>
+            <th>二代</th>
+            <th>三代</th>
+            <th>四代</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${news.empty}">
+            <td colspan="8">
+                No messages
+            </td>
+        </tr>
+        <tr th:each="newbean:${news}">
+            <td th:text="${newbean.user_title}">1</td>
+            <td th:text="${newbean.direct_num}">1</td>
+          <td th:text="${newbean.team_num}"></td>
+            <td th:text="${newbean.one_generation}">
+        </td>
+            <td th:text="${newbean.two_generation}">
+            </td>
+            <td th:text="${newbean.three_generation}">
+            </td>
+            <td th:text="${newbean.four_generation}">
+            </td>
+            <td><a th:href="@{'/admin/editAward/'+ ${newbean.id}}" class="tablelink">修改</a> <a  th:href="@{'/admin/deleteAward/'+ ${newbean.id}}" class="tablelink">删除</a></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+
+    <div class="tip">
+        <div class="tiptop"><span>提示信息</span><a></a></div>
+
+        <div class="tipinfo">
+            <span><img src="images/ticon.png"/></span>
+
+            <div class="tipright">
+                <p>是否确认对信息的修改 ？</p>
+                <cite>如果是请点击确定按钮 ，否则请点取消。</cite>
+            </div>
+        </div>
+
+        <div class="tipbtn">
+            <input name="" type="button" class="sure" value="确定"/>&nbsp;
+            <input name="" type="button" class="cancel" value="取消"/>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="tip">
+    <div class="tiptop"><span>提示信息</span><a></a></div>
+
+    <div class="tipinfo">
+        <span><img src="/images/ticon.png"/></span>
+
+        <div class="tipright">
+            <p>是否确认对信息的修改 ？</p>
+            <cite>如果是请点击确定按钮 ，否则请点取消。</cite>
+        </div>
+    </div>
+
+    <div class="tipbtn">
+        <input name="" type="button" class="sure" value="确定"/>&nbsp;
+        <input name="" type="button" class="cancel" value="取消"/>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$('.imgtable tbody tr:odd').addClass('odd');
+
+</script>
+
+</body>
+
+</html>

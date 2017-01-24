@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">交易设置</a></li>
+        <li><a href="#">动态奖规则修改</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+    <form action="/admin/updateAward" method="post" th:action="@{/admin/updateAward}" th:object="${Award}">
+
+        <div class="formtitle"><span>公告信息</span></div>
+        <ul class="forminfo">
+            <li><label>等级名称</label><input name="id"  th:value="${news.id}" type="hidden" class="dfinput"/><input name="user_title"  th:value="${news.user_title}" type="text" class="dfinput"/><i>用户等级</i></li>
+            <li><label>直推人数</label><input name="direct_num" type="text" class="dfinput"  th:value="${news.direct_num}"/><i>直推人数</i></li>
+            <li><label>团队人数</label><input name="team_num" type="text" th:value="${news.team_num}" class="dfinput"/><i>团队人数</i></li>
+            <li><label>一级奖励</label><input name="one_generation" type="text" th:value="${news.one_generation}" class="dfinput"/><i>一级奖励小数</i></li>
+            <li><label>二级奖励</label><input name="two_generation" type="text" th:value="${news.two_generation}" class="dfinput"/><i>二级奖励小数</i></li>
+            <li><label>三级奖励</label><input name="three_generation" type="text" th:value="${news.three_generation}"  class="dfinput"/><i>三级奖励小数</i></li>
+            <li><label>四级奖励</label><input name="four_generation" type="text" th:value="${news.four_generation}" class="dfinput"/><i>四级奖励小数</i></li>
+            <li><label>&nbsp;</label><input  type="submit" class="btn" value="确认保存"/></li>
+        </ul>
+    </form>
+
+</div>
+
+
+</body>
+
+</html>
