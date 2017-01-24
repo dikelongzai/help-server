@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">交易设置</a></li>
+        <li><a href="#">订单规则设置</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+    <form action="/admin/updateOrderSetting" method="post"  >
+
+        <div class="formtitle"><span>订单规则设置</span></div>
+        <ul class="forminfo">
+            <li><label>创建时间</label><input name="id"  th:value="${news.id}" type="hidden" class="dfinput"/><input name="create_date" th:value="${#dates.format(news.create_date,'yyyy-MM-dd HH:mm:ss')} "  type="text" class="dfinput" readonly="readonly"/><i>创建规则时间</i></li>
+            <li><label>是否启用</label><input name="is_order_timer" id="is_order_timer" th:value="${news.is_order_timer}"  type="text" class="dfinput"/><i>排单时间限制是否启用0表示不启用1启用</i></li>
+            <li><label>配置生效时间</label><input name="start_date" id="start_date" type="text" class="dfinput" th:value="${#dates.format(news.start_date,'yyyy-MM-dd HH:mm:ss')} "  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
+                <input name="end_date" id="end_date" type="text" th:value="${#dates.format(news.end_date,'yyyy-MM-dd HH:mm:ss')} " class="dfinput"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/></li>
+            <li><label>排单金额</label><input name="order_max_money" id="order_max_money" th:value="${news.order_max_money}"  type="text" class="dfinput"/><i>每天最大的排单金额</i></li>
+            <li><label>匹配期从</label><input name="match_date_min" id="match_date_min" type="text" class="dfinput" th:value="${news.match_date_min}" />
+               <input name="match_date_max" id="match_date_max" type="text" th:value="${news.match_date_max}" class="dfinput"/><i>匹配期天数从n-m天</i></li>
+            <li><label>冻结周期</label><input name="freezing_time" id="freezing_time" type="text" th:value="${news.freezing_time}" class="dfinput"/><i>冻结时间以小时为单位168就是7天</i></li>
+            <li><label>订单最小金额</label><input name="min_order_amount" id="min_order_amount" type="text" th:value="${news.min_order_amount}" class="dfinput"/><i>订单最小金额,额度必现是100的倍数</i></li>
+            <li><label>每天最大排单</label><input name="max_order_num" id="max_order_num" type="text" th:value="${news.max_order_num}" class="dfinput"/><i>每天最大的排单量</i></li>
+            <li><label>静态提现最小金额</label><input name="static_min_money" id="static_min_money" type="text" th:value="${news.static_min_money}" class="dfinput"/><i>静态提现最小金额</i></li>
+            <li><label>静态提现倍数</label><input name="static_times_money" id="static_times_money" type="text" th:value="${news.static_times_money}" class="dfinput"/><i>静态提现倍数</i></li>
+            <li><label>动态提现最小金额</label><input name="dynamic_min_money" id="dynamic_min_money" type="text" th:value="${news.dynamic_min_money}" class="dfinput"/><i>动态提现最小金额</i></li>
+            <li><label>动态提现倍数</label><input name="dynamic_times_money" id="dynamic_times_money" type="text" th:value="${news.dynamic_times_money}" class="dfinput"/><i>动态提现倍数</i></li>
+            <li><label>动态提现最大金额</label><input name="dynamic_max_money" id="dynamic_max_money" type="text" th:value="${news.dynamic_max_money}" class="dfinput"/><i>动态提现最大金额</i></li>
+            <li><label>动态提现扣除比例</label><input name="dynamic_deduct_proportion" id="dynamic_deduct_proportion" type="text" th:value="${news.dynamic_deduct_proportion}" class="dfinput"/><i>动态提现扣除比例</i></li>
+
+            <li><label>未打款利息</label><input name="interest_not_paid" id="interest_not_paid" type="text" th:value="${news.interest_not_paid}" class="dfinput"/><i>未打款利息</i></li>
+            <li><label>已打款利息</label><input name="interest_paid" id="interest_paid" type="text" th:value="${news.interest_paid}" class="dfinput"/><i>已打款利息</i></li>
+
+            <li><label>&nbsp;</label><input  type="submit" class="btn" value="确认保存"/></li>
+        </ul>
+    </form>
+
+</div>
+
+
+</body>
+
+</html>

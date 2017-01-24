@@ -1,7 +1,9 @@
 package com.help.server.domain;
 import com.help.server.domain.tables.Leaving_Msg;
-import com.help.server.domain.tables.News;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
