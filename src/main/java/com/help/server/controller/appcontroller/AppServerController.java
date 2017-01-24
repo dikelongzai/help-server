@@ -1059,5 +1059,19 @@ public class AppServerController {
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
         return  jsonObject;
     }
+    @RequestMapping(value = "10030")
 
+    @ResponseBody
+    public JSONObject GetUserOfferHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserOfferHelpsReq getUserOfferHelpsReq = JSON.parseObject(msgBody, GetUserOfferHelpsReq.class);
+        GetUserOfferHelpsResp getPayInfoBySnResp = new GetUserOfferHelpsResp();
+        List<Offer_Help> offerHelpList =  appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
+                ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type(),getUserOfferHelpsReq.getHelp_status());
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
+        return  jsonObject;
     }
+
+}
