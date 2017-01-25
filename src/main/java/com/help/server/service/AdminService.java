@@ -56,6 +56,43 @@ public class AdminService {
     }
 
     /**
+     * 获取激活码分页查询sql
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public String getSearchCodeSql(JSONObject param) throws Exception {
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append(SqlConstant.SQL_BASE_CODE_MSG);
+      //  int status = Integer.valueOf(param.getString("status"));
+        //{"et":"","page":"1","st":"","status":"0"}
+        if (!StringUtil.isEmpty(param.getString("user_name"))) {
+            sqlBuffer.append(" and user_name like %'")
+                    .append(param.getString("user_name")).append("'%");
+        }
+        if (!StringUtil.isEmpty(param.getString("user_phone"))) {
+            sqlBuffer.append(" and user_phone like %'")
+                    .append(param.getString("user_phone")).append("'%");
+        }
+
+        log.info("getSearchLeaveMessageSql sql=" + sqlBuffer.toString());
+        return sqlBuffer.toString();
+    }
+
+    /**
+     * 获取激活码分页信息
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getPageCode(JSONObject param) throws Exception {
+        String sql = getSearchCodeSql(param);
+        int cpage = Integer.valueOf(param.getString("page"));
+        return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
+    }
+
+
+    /**
      * 修改订单设置
      *
      * @param param

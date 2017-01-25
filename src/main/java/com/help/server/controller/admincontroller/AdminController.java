@@ -447,5 +447,36 @@ public class AdminController {
         return "/admin/awardUpdate";
     }
    /*  ============================= 动态奖励规则设置end==================================**/
+    /* ===========================激活码管理start==================================**/
+    /**
+     * 激活码管理
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/code")
+    public String code(Map<String, Object> map, HttpServletRequest request) {
+        return "admin/code";
+    }
+    /**
+     * ajax获取用户激活码
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getCodeList", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getCodeList(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        log.info("param=" + param.toJSONString());
+        JSONObject resultJson = aadminService.getPageCode(param);
+        log.info(resultJson.toJSONString());
+        return resultJson;
+    }
+
+
+
 
 }
