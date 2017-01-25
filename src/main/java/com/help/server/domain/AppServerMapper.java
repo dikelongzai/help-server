@@ -208,6 +208,10 @@ public interface AppServerMapper {
     @Update("update user_member set user_login_pwd = #{user_login_pwd}  where user_id = #{userid} ")
     public int  updateUserPWdByUid(@Param("user_login_pwd") String user_login_pwd,@Param("userid") long userid);
 
+    @Select("select * from offer_help  where user_id = #{userid} AND order_type = #{ordertype} " +
+            "AND order_type = #{ordertype} AND wallet_type = #{wallettype} AND help_status = #{helpstatus} ")
+    public List<Offer_Help> getOfferHelpInfo(@Param("userid") long userid,@Param("ordertype") int ordertype,
+                                        @Param("wallettype") int wallettype,@Param("helpstatus") int helpstatus);
 
 }
 
