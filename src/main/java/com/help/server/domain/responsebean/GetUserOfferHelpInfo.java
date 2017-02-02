@@ -6,7 +6,7 @@ package com.help.server.domain.responsebean;
 public class GetUserOfferHelpInfo {
 
     private String order_num;
-    private long money;
+    private float money;
 
     public String getOrder_num() {
         return order_num;
@@ -16,11 +16,11 @@ public class GetUserOfferHelpInfo {
         this.order_num = order_num;
     }
 
-    public long getMoney() {
+    public float getMoney() {
         return money;
     }
 
-    public void setMoney(long money) {
+    public void setMoney(float money) {
         this.money = money;
     }
 

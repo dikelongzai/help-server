@@ -1066,11 +1066,27 @@ public class AppServerController {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserOfferHelpsReq getUserOfferHelpsReq = JSON.parseObject(msgBody, GetUserOfferHelpsReq.class);
-        GetUserOfferHelpsResp getPayInfoBySnResp = new GetUserOfferHelpsResp();
+        GetUserOfferHelpsResp getUserOfferHelpsResp = new GetUserOfferHelpsResp();
+
         List<Offer_Help> offerHelpList =  appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
                 ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type(),getUserOfferHelpsReq.getHelp_status());
+        ArrayList<GetUserOfferHelpInfo> getUserOfferHelpInfos = new ArrayList<>();
 
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
+        for (int i =0;i<offerHelpList.size();i++){
+            Offer_Help offer_help = offerHelpList.get(i);
+            GetUserOfferHelpInfo getUserOfferHelpInfo = new GetUserOfferHelpInfo();
+            getUserOfferHelpInfo.setFrom_date(offer_help.getCreate_date());
+            getUserOfferHelpInfo.setHelp_status(offer_help.getHelp_status());
+            getUserOfferHelpInfo.setMoney(offer_help.getMoney_num());
+            getUserOfferHelpInfo.setOrder_num(offer_help.getHelp_order());
+            getUserOfferHelpInfo.setHelp_type(offer_help.getHelp_type());
+            getUserOfferHelpInfo.setWallet_type(offer_help.getWallet_type());
+            getUserOfferHelpInfos.add(getUserOfferHelpInfo);
+        }
+        getUserOfferHelpsResp.setCode(retCode);
+        getUserOfferHelpsResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserOfferHelpsResp);
         return  jsonObject;
     }
 
