@@ -73,8 +73,8 @@ public class AppServerController {
             data.setTitle(appServerMapper.getTitleName(titleid));
             data.setId_num(user_member.getUser_carded());
             data.setInvite(user_member.getUser_referee_phone());
+            data.setCode_num(user_member.getUsable_code_num());
             getUserInfoResp.setData(data);
-
 
         } else {
             getUserInfoResp.setCode("C0002");
@@ -152,6 +152,7 @@ public class AppServerController {
                 data.setTitle(appServerMapper.getTitleName(titleid));
                 data.setId_num(user_member.getUser_carded());
                 data.setInvite(user_member.getUser_referee_phone());
+                data.setCode_num(user_member.getUsable_code_num());
                 getUserInfoResp.setData(data);
 
             } else {

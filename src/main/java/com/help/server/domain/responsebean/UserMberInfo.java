@@ -8,6 +8,15 @@ public class UserMberInfo {
     private  String account = "";
     private  int account_type =0;
     private  String image_url ="";
+    private  int code_num;
+
+    public int getCode_num() {
+        return code_num;
+    }
+
+    public void setCode_num(int code_num) {
+        this.code_num = code_num;
+    }
 
     public String getInvite() {
         return invite;
