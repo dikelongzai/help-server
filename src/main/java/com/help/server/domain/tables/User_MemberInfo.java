@@ -41,14 +41,6 @@ public class User_MemberInfo {
         this.user_phone = user_phone;
     }
 
-    public Integer getIs_freeze() {
-        return is_freeze;
-    }
-
-    public void setIs_freeze(Integer is_freeze) {
-        this.is_freeze = is_freeze;
-    }
-
     public String getUser_head_url() {
         return user_head_url;
     }
@@ -145,8 +137,7 @@ public class User_MemberInfo {
     private Integer is_activate;
     //用户电话
     private String user_phone;
-    //是否冻结
-    private Integer is_freeze;
+
     //用户头像
     private String user_head_url;
     //用户银行名称和开开户行
@@ -176,6 +167,15 @@ public class User_MemberInfo {
     private String user_weixin;
     //静态钱包金额
     private Float ustatic_wallet;
+
+    public long getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(long create_date) {
+        this.create_date = create_date;
+    }
+
     //动台钱包金额
     private Float udynamic_wallet;
     //冻结钱包金额
@@ -190,5 +190,9 @@ public class User_MemberInfo {
     private  String user_referee_phone;
 
     private  String user_carded;
+
+    private  long create_date;
+
+
 
 }

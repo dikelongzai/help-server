@@ -17,7 +17,7 @@ public interface AppServerMapper {
      * 获取用户信息 10001 user_member
      * @return user_name,is_activate,user_phone
      */
-    @Select("select user_name,user_id,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded from user_member where user_id = #{userId} ")
+    @Select("select create_date,user_name,user_id,is_activate,user_phone,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded from user_member where user_id = #{userId} ")
     public User_MemberInfo getUserInfo(@Param("userId") Long userId);
 
     /**
@@ -208,10 +208,29 @@ public interface AppServerMapper {
     @Update("update user_member set user_login_pwd = #{user_login_pwd}  where user_id = #{userid} ")
     public int  updateUserPWdByUid(@Param("user_login_pwd") String user_login_pwd,@Param("userid") long userid);
 
-    @Select("select * from offer_help  where user_id = #{userid} AND order_type = #{ordertype} " +
-            "AND order_type = #{ordertype} AND wallet_type = #{wallettype} AND help_status = #{helpstatus} ")
-    public List<Offer_Help> getOfferHelpInfo(@Param("userid") long userid,@Param("ordertype") int ordertype,
+    @Select("select * from offer_help  where user_id = #{userid} AND help_type = #{helptype} " +
+            "AND wallet_type = #{wallettype} AND help_status = #{helpstatus} ")
+    public List<Offer_Help> getOfferHelpInfo(@Param("userid") long userid,@Param("helptype") int helptype,
                                         @Param("wallettype") int wallettype,@Param("helpstatus") int helpstatus);
+										
+	@Select("select * from offer_help  where user_id = #{userid} AND help_type = #{helptype} " +
+            "AND help_status = #{helpstatus} ")
+    public List<Offer_Help> getOfferHelpInfoByWall(@Param("userid") long userid,@Param("helptype") int helptype,@Param("helpstatus") int helpstatus);
+
+			
+	@Select("select * from offer_help  where user_id = #{userid} AND help_type = #{helptype} " +
+            "AND wallet_type = #{wallettype}")
+    public List<Offer_Help> getOfferHelpInfoByHelpStatus(@Param("userid") long userid,@Param("helptype") int helptype,
+                                        @Param("wallettype") int wallettype);
+										
+	@Select("select * from offer_help  where user_id = #{userid} AND help_type = #{helptype} ")
+    public List<Offer_Help> getOfferHelpInfoByHelpStatusAndWall(@Param("userid") long userid,@Param("helptype") int helptype);
+										
+    @Select("select * from user_member  where referee_user_id = #{refereeuid}")
+    public  List<User_MemberInfo> getUserLevel(@Param("refereeuid") long refereeuid);
+
+    @Select("SELECT * FROM  offer_help where user_id =#{userid} AND state = 'N' ORDER BY  create_date DESC LIMIT 1 ")
+    public Offer_Help getOfferHelpInfoByDesc(@Param("userid") long userid);
 
 }
 
