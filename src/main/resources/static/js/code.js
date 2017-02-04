@@ -32,10 +32,6 @@ var leave ={
 			page:leave.cpage
 		};
 		$.myPostJSON(url, params, function(data){
-
-
-
-			//{"data":[{"id":1,"usable_code_num":0,"used_code_num":0,"user_name":"测试","user_phone":"13759889278"},{"id":3,"usable_code_num":0,"used_code_num":0,"user_name":"测试","user_phone":"15389290468"},{"id":5,"usable_code_num":0,"used_code_num":0,"user_name":"肖振宇","user_phone":"17709211685"},{"id":6,"usable_code_num":0,"used_code_num":0,"user_name":"","user_phone":""}],"page":{"beginIndex":0,"count":1,"endIndex":4,"pageSize":10,"total":1,"totalRow":4}}
 		  if(data.data){
 		  	$('.tablelist tbody')[0].innerHTML=tbody;
 				for (var i = 0; i < data.data.length; i++) {
