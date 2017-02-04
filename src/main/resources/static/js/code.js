@@ -35,7 +35,7 @@ var leave ={
 
 
 
-		// {"data":[{"create_date":1484206020008,"id":1,"is_reply":1,"last_update":1484206020008,"leaving_id":2,"msg_content":"testContent","msg_date":1484206020008,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484207784440,"id":2,"is_reply":1,"last_update":1484207784440,"leaving_id":3,"msg_content":"testContent","msg_date":1484207784440,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484207938301,"id":3,"is_reply":1,"last_update":1484207938301,"leaving_id":4,"msg_content":"testContent","msg_date":1484207938301,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484240138388,"id":4,"is_reply":1,"last_update":1484240138388,"leaving_id":5,"msg_content":"testContent","msg_date":1484240138388,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484401179019,"id":5,"is_reply":1,"last_update":1484401179019,"leaving_id":6,"msg_content":"testContent","msg_date":1484401179019,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484401631335,"id":6,"is_reply":1,"last_update":1484401631335,"leaving_id":7,"msg_content":"testContent","msg_date":1484401631335,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484401704990,"id":7,"is_reply":1,"last_update":1484401704990,"leaving_id":8,"msg_content":"testContent","msg_date":1484401704990,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484401790451,"id":8,"is_reply":1,"last_update":1484401790451,"leaving_id":9,"msg_content":"testContent","msg_date":1484401790451,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484402797133,"id":9,"is_reply":1,"last_update":1484402797133,"leaving_id":10,"msg_content":"testContent","msg_date":1484402797133,"reply_content":"","reply_date":"","state":"N","user_id":0},{"create_date":1484402909842,"id":10,"is_reply":1,"last_update":1484402909842,"leaving_id":11,"msg_content":"testContent","msg_date":1484402909842,"reply_content":"","reply_date":"","state":"N","user_id":0}],"page":{"beginIndex":0,"count":1,"endIndex":10,"pageSize":10,"total":2,"totalRow":18}}
+			//{"data":[{"id":1,"usable_code_num":0,"used_code_num":0,"user_name":"测试","user_phone":"13759889278"},{"id":3,"usable_code_num":0,"used_code_num":0,"user_name":"测试","user_phone":"15389290468"},{"id":5,"usable_code_num":0,"used_code_num":0,"user_name":"肖振宇","user_phone":"17709211685"},{"id":6,"usable_code_num":0,"used_code_num":0,"user_name":"","user_phone":""}],"page":{"beginIndex":0,"count":1,"endIndex":4,"pageSize":10,"total":1,"totalRow":4}}
 		  if(data.data){
 		  	$('.tablelist tbody')[0].innerHTML=tbody;
 				for (var i = 0; i < data.data.length; i++) {
@@ -98,41 +98,21 @@ var leave ={
      return lihtml;
     },
 	getStrHtml:function(leaveInfo){
+		// {"data":[{"usable_code_num":20,"used_code_num":0,"user_id":3,"user_name":"测试","user_phone":"13759889278"},{"usable_code_num":20,"used_code_num":0,"user_id":5,"user_name":"测试","user_phone":"15389290468"},{"usable_code_num":20,"used_code_num":0,"user_id":7,"user_name":"肖振宇","user_phone":"17709211685"},{"usable_code_num":20,"used_code_num":0,"user_id":8,"user_name":"","user_phone":""}],"page":{"beginIndex":0,"count":1,"endIndex":4,"pageSize":10,"total":1,"totalRow":4}}
 	  var html="<tr>";
 	  //留言内容
-	  html+="<td>"+leaveInfo.msg_content+"</td>";
-	  if(leaveInfo.is_reply==1){
-	    html+="<td>已回复</td>";
-	  }else{
-	    html+="<td>未回复</td>";
-	  }
-		html+="<td>"+leaveInfo.reply_content+"</td>";
-      //留言时间
-	   html+="<td>"+common.UnixToDate(leaveInfo.create_date,true)+"</td>";
-	   	  if(leaveInfo.is_reply==1){
-	   	    html+=" <td><a href='javascript:leave.delLeave("+leaveInfo.id+")' class='tablelink'> 删除</a></td>";
-	   	  }else{
-	   	    html+=" <td><a a href='/admin/editLeave/"+leaveInfo.id+"' class=\"tablelink\">回复</a> <a href='javascript:leave.delLeave("+leaveInfo.id+")' class='tablelink'> 删除</a></td>";
-	   	  }
+	   html+="<td>"+leaveInfo.user_name+"</td>";
+		html+="<td>"+leaveInfo.user_phone+"</td>";
+		html+="<td>"+leaveInfo.usable_code_num+"</td>";
+		html+="<td>"+leaveInfo.used_code_num+"</td>";
+		html+=" <td><a a href='/admin/addCode/"+leaveInfo.user_id+"' class=\"tablelink\">下发激活码</a></td>";
+
       html+="</tr>"
       return html;
 	},
 	changePage:function(pageClick){
        this.cpage=pageClick;
        this.getIncAndAct();
-	},
-	delLeave:function (leaveId) {
-		var url = "/admin/delLeaveMessage";
-		var params={
-			leaveId:leaveId
-		};
-		$.myPostJSON(url, params, function(data){
-			if(data&&data.msg=='OK'){
-				location.reload();
-			}
-
-		}, false);
-
 	},
 };
 

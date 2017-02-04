@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            //导航切换
+            $("#sbbt").click(function(){
+                var url = "/admin/doAddCode";
+                var user_id = $("#user_id").val();
+                var addNum = $("#addnum").val();
+                var params={
+                    user_id:user_id,
+                    addNum:addNum
+                };
+                $.myPostJSON(url, params, function(data){
+                    if(data.msg=='OK'){
+                        alert("下发成功");
+                        location.href ="/admin/code";
+                    }
+
+
+
+                }, false);
+            })
+        })
+    </script>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">其他设置</a></li>
+        <li><a href="#">激活码下发</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+
+
+        <div class="formtitle"><span>激活码下发</span></div>
+        <ul class="forminfo">
+            <li><label>用户姓名</label><input name="user_id" id="user_id" th:value="${news.user_id}" type="hidden" class="dfinput"/><input id="user_name" th:value="${news.user_name}" type="text" class="dfinput" readonly="readonly"/><i></i></li>
+            <li><label>用户手机</label><input  th:value="${news.user_phone}" type="text" class="dfinput" readonly="readonly"/><i>用户手机号</i></li>
+            <li><label>可用激活码</label><input  th:value="${news.usable_code_num}" type="text" class="dfinput" readonly="readonly"/><i>用户当前可用激活码数量</i></li>
+            <li><label>下发激活码</label><input name="addnum" id="addnum" type="text" class="dfinput"/><i>用户激活码为可用激活码+下发激活码</i></li>
+            <li><label>&nbsp;</label><input  id="sbbt" class="btn" value="保存"/></li>
+        </ul>
+
+
+</div>
+
+
+</body>
+
+</html>

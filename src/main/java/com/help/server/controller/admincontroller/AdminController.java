@@ -475,7 +475,34 @@ public class AdminController {
         log.info(resultJson.toJSONString());
         return resultJson;
     }
+    /**
+     * 下发激活码
+     *
+     * @return
+     */
+    @GetMapping(value = "/addCode/{user_id}")
+    public String addCode(@PathVariable("user_id") long user_id, Map<String, Object> map) {
+        User_MemberInfo news = appServerMapper.getUserInfo(user_id);
+        log.info("/addCode/{user_id}=" + JSON.toJSONString(news));
+        map.put("news", news);
+        return "/admin/addCodeIndex";
+    }
 
+    /**
+     * ajax添加激活码
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/doAddCode", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject doAddCode(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        log.info("param=" + param.toJSONString());
+        int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
+        return ResultStatusCode.OK.toJson();
+    }
 
 
 
