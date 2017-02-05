@@ -17,7 +17,7 @@ public interface AppServerMapper {
      * 获取用户信息 10001 user_member
      * @return user_name,is_activate,user_phone
      */
-    @Select("select user_name,user_id,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded from user_member where user_id = #{userId} ")
+    @Select("select user_name,user_qq,user_id,user_carded_url,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded,referee_user_id from user_member where user_id = #{userId} ")
     public User_MemberInfo getUserInfo(@Param("userId") Long userId);
 
     /**
