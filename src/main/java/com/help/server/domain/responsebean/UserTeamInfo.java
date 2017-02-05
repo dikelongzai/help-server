@@ -24,19 +24,19 @@ public class UserTeamInfo {
         this.account = account;
     }
 
-    public String getRt() {
+    public long getRt() {
         return rt;
     }
 
-    public void setRt(String rt) {
+    public void setRt(long rt) {
         this.rt = rt;
     }
 
-    public String getCsale() {
+    public float getCsale() {
         return csale;
     }
 
-    public void setCsale(String csale) {
+    public void setCsale(float csale) {
         this.csale = csale;
     }
 
@@ -56,8 +56,8 @@ public class UserTeamInfo {
         this.uid = uid;
     }
 
-    private String rt;
-    private String csale;
+    private long rt;
+    private float csale;
     private int status;
     private  long uid;
 

@@ -68,7 +68,7 @@ public class AppServerController {
             data.setAccount_type(user_member.getIs_activate());
             data.setImage_url(user_member.getUser_head_url());
             data.setName(user_member.getUser_name());
-            data.setStatus(user_member.getIs_freeze());
+            data.setStatus(user_member.getIs_activate());
             long titleid = user_member.getTitle_id();
             data.setTitle(appServerMapper.getTitleName(titleid));
             data.setId_num(user_member.getUser_carded());
@@ -147,7 +147,7 @@ public class AppServerController {
                 data.setAccount_type(user_member.getIs_activate());
                 data.setImage_url(user_member.getUser_head_url());
                 data.setName(user_member.getUser_name());
-                data.setStatus(user_member.getIs_freeze());
+                data.setStatus(user_member.getIs_activate());
                 long titleid = user_member.getTitle_id();
                 data.setTitle(appServerMapper.getTitleName(titleid));
                 data.setId_num(user_member.getUser_carded());
@@ -372,16 +372,147 @@ public class AppServerController {
     }
 
     @RequestMapping(value = "10008")
-    /**
-     * 验证验证码协议
-     */
+/**
+ * 验证验证码协议
+ */
     @ResponseBody
     public JSONObject GetUserTema(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserTemaReq getUserTemaReq = JSON.parseObject(msgBody, GetUserTemaReq.class);
-
         GetUserTemaResp getUserTemaResp = new GetUserTemaResp();
+
+        ArrayList <UserTeamInfo> userTeamInfoArrayList = new ArrayList<>();
+        List<User_MemberInfo> userMemberInfoList= appServerMapper.getUserLevel(getUserTemaReq.getUid());
+        int nLevel = getUserTemaReq.getLevel();
+        if(nLevel == 1){
+            if(userMemberInfoList!=null){
+                for (int i =0;i<userMemberInfoList.size();i++){
+                    User_MemberInfo user_memberInfo = userMemberInfoList.get(i);
+                    UserTeamInfo userTeamInfo = new UserTeamInfo();
+                    userTeamInfo.setAccount(user_memberInfo.getUser_phone());
+                    userTeamInfo.setTname(user_memberInfo.getUser_name());
+                    userTeamInfo.setUid(user_memberInfo.getUser_id());
+                    userTeamInfo.setRt(user_memberInfo.getCreate_date());
+                    userTeamInfo.setStatus(user_memberInfo.getIs_activate());
+                    Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                    if(offerHelp!=null){
+                        if(offerHelp.getHelp_type()==1){
+                         userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
+                        }else{
+                            userTeamInfo.setCsale(offerHelp.getMoney_num());
+                        }
+
+                    }else{
+                        userTeamInfo.setCsale(0);
+                    }
+
+                    userTeamInfoArrayList.add(userTeamInfo);
+                }
+            }
+        }else if(nLevel == 2){
+
+            if(userMemberInfoList!=null){
+                for (int i =0;i<userMemberInfoList.size();i++){
+                    User_MemberInfo user_memberInfo = userMemberInfoList.get(i);
+                    List<User_MemberInfo> dataTwoList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
+                    for (int j =0;j<dataTwoList.size();j++){
+
+                        User_MemberInfo dataInfo = dataTwoList.get(j);
+                        UserTeamInfo userTeamInfo = new UserTeamInfo();
+                        userTeamInfo.setAccount(dataInfo.getUser_phone());
+                        userTeamInfo.setTname(dataInfo.getUser_name());
+                        userTeamInfo.setUid(dataInfo.getUser_id());
+                        userTeamInfo.setRt(dataInfo.getCreate_date());
+                        userTeamInfo.setStatus(dataInfo.getIs_activate());
+                        Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                        if(offerHelp!=null){
+                            if(offerHelp.getHelp_type()==1){
+                                userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
+                            }else{
+                                userTeamInfo.setCsale(offerHelp.getMoney_num());
+                            }
+
+                        }else{
+                            userTeamInfo.setCsale(0);
+                        }
+                        userTeamInfoArrayList.add(userTeamInfo);
+                    }
+                }
+            }
+        }else if(nLevel == 3){
+            if(userMemberInfoList!=null){
+                for (int i =0;i<userMemberInfoList.size();i++){
+                    User_MemberInfo user_memberInfo = userMemberInfoList.get(i);
+                    List<User_MemberInfo> dataTwoList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
+                    for (int j =0;j<dataTwoList.size();j++){
+
+                        User_MemberInfo dataTwoInfo = dataTwoList.get(j);
+                        List<User_MemberInfo> datathreeList= appServerMapper.getUserLevel(dataTwoInfo.getUser_id());
+                        for (int k=0;k<datathreeList.size();k++){
+                            User_MemberInfo datathreeInfo = datathreeList.get(k);
+                            UserTeamInfo userTeamInfo = new UserTeamInfo();
+                            userTeamInfo.setAccount(datathreeInfo.getUser_phone());
+                            userTeamInfo.setTname(datathreeInfo.getUser_name());
+                            userTeamInfo.setUid(datathreeInfo.getUser_id());
+                            userTeamInfo.setRt(datathreeInfo.getCreate_date());
+                            userTeamInfo.setStatus(datathreeInfo.getIs_activate());
+                            Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                            if(offerHelp!=null){
+                                if(offerHelp.getHelp_type()==1){
+                                    userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
+                                }else{
+                                    userTeamInfo.setCsale(offerHelp.getMoney_num());
+                                }
+
+                            }else{
+                                userTeamInfo.setCsale(0);
+                            }
+                            userTeamInfoArrayList.add(userTeamInfo);
+                        }
+                    }
+                }
+            }
+        }else if(nLevel == 4){
+            if(userMemberInfoList!=null){
+                for (int i =0;i<userMemberInfoList.size();i++){
+                    User_MemberInfo user_memberInfo = userMemberInfoList.get(i);
+                    List<User_MemberInfo> dataTwoList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
+                    for (int j =0;j<dataTwoList.size();j++){
+                        User_MemberInfo dataTwoInfo = dataTwoList.get(j);
+                        List<User_MemberInfo> datathreeList= appServerMapper.getUserLevel(dataTwoInfo.getUser_id());
+                        for (int k=0;k<datathreeList.size();k++){
+                            User_MemberInfo datathreeInfo = dataTwoList.get(k);
+                            List<User_MemberInfo> datafourList= appServerMapper.getUserLevel(datathreeInfo.getUser_id());
+                            for (int m=0;m<datathreeList.size();m++){
+                                User_MemberInfo datafourInfo = datafourList.get(m);
+                                UserTeamInfo userTeamInfo = new UserTeamInfo();
+                                userTeamInfo.setAccount(datafourInfo.getUser_phone());
+                                userTeamInfo.setTname(datafourInfo.getUser_name());
+                                userTeamInfo.setUid(datafourInfo.getUser_id());
+                                userTeamInfo.setRt(datafourInfo.getCreate_date());
+                                userTeamInfo.setStatus(datafourInfo.getIs_activate());
+                                Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                                if(offerHelp!=null){
+                                    if(offerHelp.getHelp_type()==1){
+                                        userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
+                                    }else{
+                                        userTeamInfo.setCsale(offerHelp.getMoney_num());
+                                    }
+
+                                }else{
+                                    userTeamInfo.setCsale(0);
+                                }
+                                userTeamInfoArrayList.add(userTeamInfo);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        getUserTemaResp.setData(userTeamInfoArrayList);
+        getUserTemaResp.setCode(retCode);
+        getUserTemaResp.setMsg(retMsg);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserTemaResp);
         return jsonObject;
     }
@@ -436,15 +567,7 @@ public class AppServerController {
                 long userId = appServerMapper.getUserIDByaccount(userphone);
                 User_MemberInfo userinfo = appServerMapper.getUserInfo(userId);
                 forgetpwdInfo.setUid(userId);
-                if(userinfo.getIs_activate()==0){ //如果没有激活
-                    forgetpwdInfo.setStatus(1);
-                }else{
-                    if(userinfo.getIs_freeze()==1){
-                        forgetpwdInfo.setStatus(2);
-                    }else{
-                        forgetpwdInfo.setStatus(0);
-                    }
-                }
+                forgetpwdInfo.setStatus(userinfo.getIs_activate());
                 forgetpwdResp.setData(forgetpwdInfo);
                 forgetpwdResp.setCode(retCode);
                 forgetpwdResp.setMsg(retMsg);
@@ -584,7 +707,7 @@ public class AppServerController {
         String ordernum = CommonUtil.genRandomOrder(help_id+"");
         offer_helps.setHelp_order(ordernum);
         offer_helps.setMoney_num(helpsOrderReq.getMoney());
-        offer_helps.setHelp_status(0);
+        offer_helps.setHelp_status(1);
         offer_helps.setPayment_type("0,1,2");
         offer_helps.setUser_id(helpsOrderReq.getUid());
         offer_helps.setUser_phone(helpsOrderReq.getAccount());
@@ -1068,22 +1191,40 @@ public class AppServerController {
         String msgBody = Base64Util.decode(inputInt);
         GetUserOfferHelpsReq getUserOfferHelpsReq = JSON.parseObject(msgBody, GetUserOfferHelpsReq.class);
         GetUserOfferHelpsResp getUserOfferHelpsResp = new GetUserOfferHelpsResp();
+        List<Offer_Help> offerHelpList = null;
+        if(getUserOfferHelpsReq.getWallet_type()==0&&getUserOfferHelpsReq.getHelp_status()!=0){
+            offerHelpList =  appServerMapper.getOfferHelpInfoByWall(getUserOfferHelpsReq.getUid()
+                    ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getHelp_status());
 
-        List<Offer_Help> offerHelpList =  appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
-                ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type(),getUserOfferHelpsReq.getHelp_status());
-        ArrayList<GetUserOfferHelpInfo> getUserOfferHelpInfos = new ArrayList<>();
+        }else if(getUserOfferHelpsReq.getHelp_status()==0&&getUserOfferHelpsReq.getWallet_type()!=0){
+            offerHelpList =  appServerMapper.getOfferHelpInfoByHelpStatus(getUserOfferHelpsReq.getUid()
+                    ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type());
 
-        for (int i =0;i<offerHelpList.size();i++){
-            Offer_Help offer_help = offerHelpList.get(i);
-            GetUserOfferHelpInfo getUserOfferHelpInfo = new GetUserOfferHelpInfo();
-            getUserOfferHelpInfo.setFrom_date(offer_help.getCreate_date());
-            getUserOfferHelpInfo.setHelp_status(offer_help.getHelp_status());
-            getUserOfferHelpInfo.setMoney(offer_help.getMoney_num());
-            getUserOfferHelpInfo.setOrder_num(offer_help.getHelp_order());
-            getUserOfferHelpInfo.setHelp_type(offer_help.getHelp_type());
-            getUserOfferHelpInfo.setWallet_type(offer_help.getWallet_type());
-            getUserOfferHelpInfos.add(getUserOfferHelpInfo);
+        }else if ((getUserOfferHelpsReq.getWallet_type()==0)&&(getUserOfferHelpsReq.getHelp_status()==0)){
+
+            offerHelpList =  appServerMapper.getOfferHelpInfoByHelpStatusAndWall(getUserOfferHelpsReq.getUid()
+                    ,getUserOfferHelpsReq.getOrder_type());
+        }else{
+            offerHelpList =  appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
+                    ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type(),getUserOfferHelpsReq.getHelp_status());
         }
+
+        ArrayList<GetUserOfferHelpInfo> getUserOfferHelpInfos = new ArrayList<>();
+        if(offerHelpList!=null){
+            for (int i =0;i<offerHelpList.size();i++){
+                log.info("3");
+                Offer_Help offer_help = offerHelpList.get(i);
+                GetUserOfferHelpInfo getUserOfferHelpInfo = new GetUserOfferHelpInfo();
+                getUserOfferHelpInfo.setFrom_date(offer_help.getCreate_date());
+                getUserOfferHelpInfo.setHelp_status(offer_help.getHelp_status());
+                getUserOfferHelpInfo.setMoney(offer_help.getMoney_num());
+                getUserOfferHelpInfo.setOrder_num(offer_help.getHelp_order());
+                getUserOfferHelpInfo.setHelp_type(offer_help.getHelp_type());
+                getUserOfferHelpInfo.setWallet_type(offer_help.getWallet_type());
+                getUserOfferHelpInfos.add(getUserOfferHelpInfo);
+            }
+        }
+        getUserOfferHelpsResp.setData(getUserOfferHelpInfos);
         getUserOfferHelpsResp.setCode(retCode);
         getUserOfferHelpsResp.setMsg(retMsg);
 
