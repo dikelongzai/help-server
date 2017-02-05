@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">用户管理</a></li>
+        <li><a href="#">用户详情</a></li>
+    </ul>
+</div>
+<div class="formbody">
+    <div class="formtitle"><span>用户详情</span></div>
+    <ul class="forminfo">
+        <li><label>用户姓名</label><input name="user_id" th:value="${news.user_id}" type="hidden" class="dfinput"/><input
+                name="user_name" th:value="${news.user_name} " type="text"
+                class="dfinput" readonly="readonly"/><i></i></li>
+        <li><label>头像</label><span>  <img src="/images/img01.png" th:src="@{${news.user_head_url}}" width="168px" height="126px" />  </span></li>
+        <li><label>用户手机</label><input name="user_phone" id="user_phone" type="text" class="dfinput"
+                                        th:value="${news.user_phone} " readonly="readonly"/></li>
+        <li><label>推荐人手机</label><input name="user_referee_phone" id="user_referee_phone" th:value="${news.user_referee_phone}"
+                                      type="text"  readonly="readonly" class="dfinput"/><a  href="@{'/admin/userDetail/'+ ${news.referee_user_id}}" class="tablelink">推荐人详情</a><i>推荐人</i></li>
+        <li><label>身份证</label><input name="user_carded" readonly="readonly" id="user_carded" type="text" class="dfinput"
+                                      th:value="${news.user_carded}"/></li>
+        <li><label>身份证照</label><span>  <img src="/images/img01.png" th:src="@{${news.user_carded_url}}" width="168px" height="126px" />  </span></li>
+        <li><label>用户QQ</label><input name="user_qq" id="user_qq" readonly="readonly" type="text" th:value="${news.user_qq}" class="dfinput"/><i>用户QQ</i></li>
+        <li><label>银行名称</label><input name="user_bank_name" readonly="readonly" id="user_bank_name" type="text" th:value="${news.user_bank_name}" class="dfinput"/><i>银行名称</i></li>
+        <li><label>银行卡号</label><input name="user_bank_account" readonly="readonly"  id="user_bank_account" type="text" th:value="${news.user_bank_account}" class="dfinput"/><i>银行卡号</i></li>
+        <li><label>支付宝账号</label><input name="user_payment" readonly="readonly" id="user_payment" type="text" th:value="${news.user_payment}" class="dfinput"/><i>支付宝账号</i></li>
+        <li><label>微信账号</label><input name="user_weixin" readonly="readonly" id="user_weixin" type="text" th:value="${news.user_weixin}" class="dfinput"/><i>微信账号</i></li>
+        <li><label>静态钱包</label><input name="ustatic_wallet" readonly="readonly" id="ustatic_wallet" type="text" th:value="${news.ustatic_wallet}" class="dfinput"/><i>静态钱包</i></li>
+        <li><label>动态钱包</label><input name="udynamic_wallet" readonly="readonly" id="udynamic_wallet" type="text" th:value="${news.udynamic_wallet}" class="dfinput"/><i>动态钱包</i></li>
+        <li><label>冻结钱包</label><input name="ufrozen_wallet" readonly="readonly" id="ufrozen_wallet" type="text" th:value="${news.ufrozen_wallet}" class="dfinput"/><i>冻结钱包</i></li>
+        <li><label>可用激活码</label><input name="usable_code_num" readonly="readonly" id="usable_code_num" type="text" th:value="${news.usable_code_num}" class="dfinput"/><i>可用激活码</i></li>
+        <li><label>已用激活码</label><input name="used_code_num" readonly="readonly" id="used_code_num" type="text" th:value="${news.used_code_num}" class="dfinput"/><i>已用激活码</i></li>
+        <li><label>&nbsp;</label><a  href="/admin/user" class="tablelink">返回</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  th:href="@{'/admin/appro/'+ ${news.user_id}}" th:if="${news.is_activate == 1}" class="tablelink">审批</a></li>
+    </ul>
+
+</div>
+
+
+</body>
+
+</html>

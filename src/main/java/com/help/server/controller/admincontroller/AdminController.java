@@ -48,7 +48,8 @@ public class AdminController {
     private OrderSettingMapper orderSettingMapper;
     @Autowired
     private AwardMapper awardMapper;
-
+    @Autowired
+    private UserMapper userMapper;
     @RequestMapping("/")
     public String indexmain() {
         return "admin/main";
@@ -503,7 +504,90 @@ public class AdminController {
         int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
         return ResultStatusCode.OK.toJson();
     }
-
-
+/* ===========================激活码管理end==================================**/
+/* ===========================用户管理start==================================**/
+    /**
+     * 用户管理starts
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/user")
+    public String user(Map<String, Object> map, HttpServletRequest request) {
+        //获取所有title及titleid
+        List<Award> list = awardMapper.findAllNews();
+        log.info("admin/award get All news=" + JSON.toJSONString(list));
+        map.put("news", list);
+        return "admin/user";
+    }
+    /**
+     * ajax获取用户列表
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getUserList", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getUserList(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        JSONObject resultJson = aadminService.getPageUser(param);
+        log.info("param=" + param.toJSONString()+";result="+resultJson.toJSONString());
+        return resultJson;
+    }
+    /**
+     * 单用户审批
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/appro/{user_id}", method = RequestMethod.GET)
+    public String appro(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        userMapper.updateUserStatus(2,user_id);
+        return "redirect:/admin/user";
+    }
+    /**
+     * 冻结
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/frozen/{user_id}", method = RequestMethod.GET)
+    public String frozen(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        userMapper.updateUserStatus(3,user_id);
+        return "redirect:/admin/user";
+    }
+    /**
+     * 解冻
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/unfrozen/{user_id}", method = RequestMethod.GET)
+    public String unfrozen(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        userMapper.updateUserStatus(2,user_id);
+        return "redirect:/admin/user";
+    }
+    /**
+     * 解冻
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/approall", method = RequestMethod.GET)
+    public String approall() throws Exception {
+        userMapper.approveAll();
+        return "redirect:/admin/user";
+    }
+    /**
+     * 用户详情
+     *
+     * @return
+     */
+    @GetMapping(value = "/userDetail/{user_id}")
+    public String userDetail(@PathVariable("user_id") long user_id, Map<String, Object> map) {
+        User_MemberInfo news = appServerMapper.getUserInfo(user_id);
+        log.info("/userDetail/{user_id}=" + JSON.toJSONString(news));
+        map.put("news", news);
+        return "/admin/userdetail";
+    }
+    /* ===========================用户管理end==================================**/
 
 }

@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/select.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+    <script type="text/javascript" src="/editor/kindeditor.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/user.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            $(".select3").uedSelect({
+                width: 152
+            });
+        });
+
+    </script>
+</head>
+
+<body class="sarchbody">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">用户管理</a></li>
+        <li><a href="#">用户管理</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+    <div id="usual1" class="usual">
+        <ul class="seachform1">
+            <li><label>手机号</label><input name="user_phone" id="user_phone" type="text" class="scinput1"/></li>
+            <li><label>推荐人手机</label><input name="user_referee_phone" id="user_referee_phone" type="text"
+                                           class="scinput1"/></li>
+            <li><label>用户姓名</label><input name="user_name" id="user_name" type="text" class="scinput1"/></li>
+        </ul>
+        <ul class="seachform1">
+            <li><label>用户状态</label>
+                <div class="vocation">
+                    <select class="select3" name="is_activate" id="is_activate">
+                        <option value="-1">全部</option>
+                        <option value="0">未激活</option>
+                        <option value="1">已激活</option>
+                        <option value="2">已审批</option>
+                        <option value="3">已冻结</option>
+                    </select>
+                </div>
+            </li>
+            <li><label>用户等级</label>
+                <div class="vocation">
+                    <select class="select3" name="title_id" id="title_id">
+                        <option value="-1">全部</option>
+                        <option th:each="title : ${news}"
+                                th:value="${title.user_title_id}" th:text="${title.user_title}">Credit card
+                        </option>
+                    </select>
+                </div>
+            </li>
+        </ul>
+        <ul class="seachform1">
+            <li class="sarchbtn"><label>&nbsp;</label><input id="searchBt" type="button" class="scbtn" value="查询"/></li>
+        </ul>
+        <div class="tools">
+            <ul class="toolbar1">
+                <li><a href="/admin/approall"><span><img src="/images/t05.png"/></span>审批全部</a></li>
+            </ul>
+
+        </div>
+        <div class="formtitle"><span>用户管理</span></div>
+        <table class="tablelist">
+            <thead>
+            <tr>
+                <th>用户姓名</th>
+                <th>级别</th>
+                <th>手机号</th>
+                <th>推荐人</th>
+                <th>动态钱包</th>
+                <th>静态钱包</th>
+                <th>冻结钱包</th>
+                <th>注册时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="pagin">
+            <div class="message">共<i class="blue">1256</i>条记录，当前显示第&nbsp;<i class="blue">2&nbsp;</i>页</div>
+            <ul class="paginList">
+                <li class="paginItem"><a href="javascript:;"><span class="pagepre"></span></a></li>
+                <li class="paginItem"><a href="javascript:;">1</a></li>
+                <li class="paginItem current"><a href="javascript:;">2</a></li>
+                <li class="paginItem"><a href="javascript:;">3</a></li>
+                <li class="paginItem"><a href="javascript:;">4</a></li>
+                <li class="paginItem"><a href="javascript:;">5</a></li>
+                <li class="paginItem more"><a href="javascript:;">...</a></li>
+                <li class="paginItem"><a href="javascript:;">10</a></li>
+                <li class="paginItem"><a href="javascript:;"><span class="pagenxt"></span></a></li>
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

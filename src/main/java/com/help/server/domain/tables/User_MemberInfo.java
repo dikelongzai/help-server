@@ -154,6 +154,16 @@ public class User_MemberInfo {
     //银行账号
     private String user_bank_account;
 
+    public String getUser_carded_url() {
+        return user_carded_url;
+    }
+
+    public void setUser_carded_url(String user_carded_url) {
+        this.user_carded_url = user_carded_url;
+    }
+
+    private String user_carded_url;
+
     public String getUser_referee_phone() {
         return user_referee_phone;
     }
@@ -190,5 +200,15 @@ public class User_MemberInfo {
     private  String user_referee_phone;
 
     private  String user_carded;
+
+    public String getUser_qq() {
+        return user_qq;
+    }
+
+    public void setUser_qq(String user_qq) {
+        this.user_qq = user_qq;
+    }
+
+    private  String  user_qq;
 
 }
