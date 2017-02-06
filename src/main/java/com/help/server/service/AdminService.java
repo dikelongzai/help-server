@@ -69,12 +69,12 @@ public class AdminService {
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append(SqlConstant.SQL_BASE_CODE_MSG);
         if (!StringUtil.isEmpty(param.getString("user_name"))) {
-            sqlBuffer.append(" and user_name like %'")
-                    .append(param.getString("user_name")).append("'%");
+            sqlBuffer.append(" and user_name like '%")
+                    .append(param.getString("user_name").trim()).append("%'");
         }
         if (!StringUtil.isEmpty(param.getString("user_phone"))) {
-            sqlBuffer.append(" and user_phone like %'")
-                    .append(param.getString("user_phone")).append("'%");
+            sqlBuffer.append(" and user_phone like '%")
+                    .append(param.getString("user_phone").trim()).append("%'");
         }
 
         log.info("getSearchLeaveMessageSql sql=" + sqlBuffer.toString());
@@ -92,16 +92,16 @@ public class AdminService {
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append(SqlConstant.SQL_BASE_USER_MSG);
         if (!StringUtil.isEmpty(param.getString("user_name"))) {
-            sqlBuffer.append(" and u.user_name like %'")
-                    .append(param.getString("user_name")).append("'%");
+            sqlBuffer.append(" and u.user_name like '%")
+                    .append(param.getString("user_name").trim()).append("%'");
         }
         if (!StringUtil.isEmpty(param.getString("user_phone"))) {
-            sqlBuffer.append(" and u.user_phone like %'")
-                    .append(param.getString("user_phone")).append("'%");
+            sqlBuffer.append(" and u.user_phone like '%")
+                    .append(param.getString("user_phone").trim()).append("%'");
         }
         if (!StringUtil.isEmpty(param.getString("user_referee_phone"))) {
-            sqlBuffer.append(" and u.user_referee_phone like %'")
-                    .append(param.getString("user_referee_phone")).append("'%");
+            sqlBuffer.append(" and u.user_referee_phone like '%")
+                    .append(param.getString("user_referee_phone").trim()).append("%'");
         }
         if (!StringUtil.isEmpty(param.getString("title_id")) && !COMMON_SELECT_ALL.equals(param.getString("title_id"))) {
             sqlBuffer.append(" and u.title_id="

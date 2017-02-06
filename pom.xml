@@ -44,13 +44,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${org.springframework.version}</version>
-			<!-- 移除嵌入式tomcat插件 -->
-			<exclusions>
+			<!-- 移除嵌入式tomcat插件正式 -->
+			<!--<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions>-->
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

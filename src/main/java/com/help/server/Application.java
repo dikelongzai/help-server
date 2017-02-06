@@ -14,6 +14,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 @ComponentScan
 @EnableAutoConfiguration
 @Configuration
+@EnableScheduling
 public class Application  extends SpringBootServletInitializer {
 	@Autowired
 	FileUploadConfiguration fileUploaderConfiguration;
