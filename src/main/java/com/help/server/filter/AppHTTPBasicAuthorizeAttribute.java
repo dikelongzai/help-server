@@ -13,6 +13,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by houlongbin on 2016/12/19.
@@ -38,7 +40,14 @@ public class AppHTTPBasicAuthorizeAttribute implements Filter {
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.setContentType("application/json; charset=utf-8");
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpResponse.getWriter().write(resultStatusCode.toJson().toJSONString());
+            String retMsg = Base64Util.encode(resultStatusCode.toJson().toJSONString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            httpResponse.getWriter().write(retMsg);
+            //httpResponse.getWriter().write(resultStatusCode.toJson().toJSONString());
             return;
         }
         else

@@ -156,10 +156,10 @@ public interface AppServerMapper {
     public List<Rotate_News> getRotateNews();
 
     // 获取新闻信息数量Count
-    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N'")
+    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0 ")
     public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
 
-    @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N'")
+    @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")
     public int getLeavingMsgCount(@Param("uid") long uid);
 
 
@@ -203,8 +203,8 @@ public interface AppServerMapper {
     @Update("update user_member set user_carded_url = #{carded_url}, user_carded = #{usercarded},user_name = #{username}  where user_phone = #{userphone}")
     public int updateUserAuthInfo(@Param("carded_url") String carded_url, @Param("usercarded") String usercarded, @Param("username") String username, @Param("userphone") String userphone);
 
-    @Select("select state,from_uid,to_uid,code_num,is_from_admin,create_date,last_update from activate_code where to_uid = #{touid} ")
-    public List<Activate_Code> getActivateInfo(@Param("touid") long touid);
+    @Select("select state,from_uid,to_uid,code_num,is_from_admin,create_date,last_update from activate_code where to_uid = #{touid} or from_uid = #{fromuid} ")
+    public List<Activate_Code> getActivateInfo(@Param("touid") long touid,@Param("fromuid") long fromuid);
 
     // 获取规则表
     @Select("select * from order_setting  where state = 'N'")

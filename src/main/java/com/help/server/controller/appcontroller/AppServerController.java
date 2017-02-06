@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +47,13 @@ public class AppServerController {
     @Autowired
     private AppServerMapper appServerMapper;
 
-    @RequestMapping(value = "10001", method = RequestMethod.GET)
+    @RequestMapping(value = "10001")
 
     /**
      * 获取用户信息
      */
     @ResponseBody
-    public JSONObject getuserInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String getuserInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserInfoReq getUserInfoReq = JSON.parseObject(msgBody, GetUserInfoReq.class);
@@ -81,9 +83,15 @@ public class AppServerController {
             getUserInfoResp.setMsg("用户不存在！");
             getUserInfoResp.setData(data);
         }
-
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserInfoResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+
+        return retMsg;
 
     }
 
@@ -92,7 +100,7 @@ public class AppServerController {
      * 获取用户钱包
      */
     @ResponseBody
-    public JSONObject getuserWallet(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String getuserWallet(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserInfoReq getUserInfoReq = JSON.parseObject(msgBody, GetUserInfoReq.class);
@@ -117,7 +125,14 @@ public class AppServerController {
 
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserWalletResp);
-        return jsonObject;
+
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10003")
@@ -125,7 +140,7 @@ public class AppServerController {
      * 获取用户登录
      */
     @ResponseBody
-    public JSONObject userLogIn(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String userLogIn(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         UserLoginReq userLoginfoReq = JSON.parseObject(msgBody, UserLoginReq.class);
@@ -165,7 +180,13 @@ public class AppServerController {
             getUserInfoResp.setData(data);
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserInfoResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10004")
@@ -173,7 +194,7 @@ public class AppServerController {
      * 获取用户登录
      */
     @ResponseBody
-    public JSONObject RegisterUser(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String RegisterUser(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -230,7 +251,13 @@ public class AppServerController {
         }
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(registerinfoResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10005")
@@ -238,7 +265,7 @@ public class AppServerController {
      * 发送验证码
      */
     @ResponseBody
-    public JSONObject SendValidateCode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String SendValidateCode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -279,7 +306,13 @@ public class AppServerController {
         commResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10006")
@@ -287,7 +320,7 @@ public class AppServerController {
      * 验证验证码协议
      */
     @ResponseBody
-    public JSONObject VerifyCode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String VerifyCode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -306,7 +339,13 @@ public class AppServerController {
             commResp.setMsg("验证码校验失败！");
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10007")
@@ -314,7 +353,7 @@ public class AppServerController {
      * 验证验证码协议
      */
     @ResponseBody
-    public JSONObject SendActivationcode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String SendActivationcode(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -329,7 +368,7 @@ public class AppServerController {
             commResp.setCode("C10013");
             commResp.setMsg("用户信息不存在！");
             jsonObject = (JSONObject) JSON.toJSON(commResp);
-            return jsonObject;
+
         }
         long fromuid = appServerMapper.getUserIDByaccount(username);
         int usable_code_num = appServerMapper.getUserCodeNum(fromuid);
@@ -340,7 +379,7 @@ public class AppServerController {
             commResp.setCode("C10013");
             commResp.setMsg("用户信息不存在！");
             jsonObject = (JSONObject) JSON.toJSON(commResp);
-            return jsonObject;
+
         }
         long touid = appServerMapper.getUserIDByaccount(username);
         int nCount = appServerMapper.getUserCount(username);
@@ -368,7 +407,13 @@ public class AppServerController {
         }
 
         jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10008")
@@ -376,7 +421,7 @@ public class AppServerController {
  * 验证验证码协议
  */
     @ResponseBody
-    public JSONObject GetUserTema(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetUserTema(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserTemaReq getUserTemaReq = JSON.parseObject(msgBody, GetUserTemaReq.class);
@@ -514,7 +559,13 @@ public class AppServerController {
         getUserTemaResp.setCode(retCode);
         getUserTemaResp.setMsg(retMsg);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserTemaResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10009")
@@ -522,7 +573,7 @@ public class AppServerController {
      * 验证验证码协议
      */
     @ResponseBody
-    public JSONObject UserActivate(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String UserActivate(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         CommResp commResp = new CommResp();
@@ -539,7 +590,13 @@ public class AppServerController {
             commResp.setMsg("手机号不是账号，不能激活！");
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10012")
@@ -547,7 +604,7 @@ public class AppServerController {
      * 忘记密码
      */
     @ResponseBody
-    public JSONObject forgetPwd(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String forgetPwd(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -586,7 +643,13 @@ public class AppServerController {
             forgetpwdResp.setData(forgetpwdInfo);
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(forgetpwdResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
 
     }
     @RequestMapping(value = "10023")
@@ -594,7 +657,7 @@ public class AppServerController {
      * 已匹配成功订单
      */
     @ResponseBody
-    public JSONObject GetMaterOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetMaterOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -634,7 +697,13 @@ public class AppServerController {
         }
         getMateOrderResp.setData(getMaterOrderList);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getMateOrderResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10013")
@@ -642,7 +711,7 @@ public class AppServerController {
      * 已匹配成功订单
      */
     @ResponseBody
-    public JSONObject GetOrderByStatus(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetOrderByStatus(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -679,7 +748,13 @@ public class AppServerController {
         }
         byStatusGetOrderResp.setData(getMaterOrderList);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(byStatusGetOrderResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10014")
@@ -687,7 +762,7 @@ public class AppServerController {
      * 接受和提供帮助订单
      */
     @ResponseBody
-    public JSONObject AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -723,14 +798,20 @@ public class AppServerController {
         helpsOrderResp.setData(helpsOrderRespInfo);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
     @RequestMapping(value = "10015")
     /**
      * 获取订单详情
      */
     @ResponseBody
-    public JSONObject GetOrderInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetOrderInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -761,14 +842,20 @@ public class AppServerController {
             sendMoneyResp.setData(sendMoneyInfo);
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(sendMoneyResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
     @RequestMapping(value = "10016")
     /**
      * 确认收款、确认未收到款
      */
     @ResponseBody
-    public JSONObject ConfirmMoneyInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String ConfirmMoneyInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -780,7 +867,13 @@ public class AppServerController {
         commResp.setCode(retCode);
         commResp.setMsg(retMsg);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10017")
@@ -788,7 +881,7 @@ public class AppServerController {
      * 获取公告信息
      */
     @ResponseBody
-    public JSONObject GetNews(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetNews(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -810,7 +903,13 @@ public class AppServerController {
             newsResp.setMsg("没有系统公告！");
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(newsResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
 
     }
 
@@ -819,7 +918,7 @@ public class AppServerController {
      * 获取轮播信息
      */
     @ResponseBody
-    public JSONObject GetTurnChartInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetTurnChartInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -841,7 +940,13 @@ public class AppServerController {
         chartResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(chartResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10019")
@@ -849,7 +954,7 @@ public class AppServerController {
      * 获取留言信息
      */
     @ResponseBody
-    public JSONObject getLeavingMsgInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String getLeavingMsgInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -890,7 +995,13 @@ public class AppServerController {
         }
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(leavingMsgResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
 
     }
 
@@ -899,7 +1010,7 @@ public class AppServerController {
      * 获取留言信息
      */
     @ResponseBody
-    public JSONObject InsertLeavingMsg(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String InsertLeavingMsg(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -930,13 +1041,19 @@ public class AppServerController {
         commResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10021", method = RequestMethod.POST)
 
     @ResponseBody
-    public JSONObject uploadfile(@RequestParam("file") MultipartFile file){
+    public String uploadfile(@RequestParam("file") MultipartFile file){
 
         String url = "";
         String fileName= null;
@@ -952,13 +1069,19 @@ public class AppServerController {
         fileUpLoadResp.setCode(retCode);
         fileUpLoadResp.setFile_url(url);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(fileUpLoadResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10022")
 
     @ResponseBody
-    public JSONObject uploadPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+    public String uploadPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -977,13 +1100,19 @@ public class AppServerController {
         commResp.setMsg(retMsg);
         commResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10024")
 
     @ResponseBody
-    public JSONObject GetPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+    public String GetPayInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1019,14 +1148,20 @@ public class AppServerController {
         }
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserPayInfoResp);
-        return jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
 
     }
 
     @RequestMapping(value = "10025")
 
     @ResponseBody
-    public JSONObject UpLoadPayOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+    public String UpLoadPayOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1043,13 +1178,19 @@ public class AppServerController {
         }
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10026")
 
     @ResponseBody
-    public JSONObject UserAuthInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
+    public String UserAuthInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request){
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1067,20 +1208,26 @@ public class AppServerController {
         }
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10027")
 
     @ResponseBody
-    public JSONObject GetActivateCodeLogInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetActivateCodeLogInfo(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         ActivateCodeLogReq activateCodeLogReq = JSON.parseObject(msgBody, ActivateCodeLogReq.class);
         ActivateCodeLogResp activateCodeLogResp = new ActivateCodeLogResp();
         ArrayList<ActivateCodeLogInfo> activateCodeLogInfoList = new ArrayList<ActivateCodeLogInfo>();
-        List<Activate_Code> activateCodeList = appServerMapper.getActivateInfo(activateCodeLogReq.getUid());
+        List<Activate_Code> activateCodeList = appServerMapper.getActivateInfo(activateCodeLogReq.getUid(),activateCodeLogReq.getUid());
         for (int i = 0; i < activateCodeList.size(); i++) {
             Activate_Code activate_code = activateCodeList.get(i);
             ActivateCodeLogInfo activateCodeLogInfo = new ActivateCodeLogInfo();
@@ -1089,19 +1236,27 @@ public class AppServerController {
             User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(activate_code.getFrom_uid());
             activateCodeLogInfo.setFaccount(user_memberInfo.getUser_phone());
             activateCodeLogInfo.setName(user_memberInfo.getUser_name());
+            user_memberInfo = appServerMapper.getUserInfo(activate_code.getTo_uid());
+            activateCodeLogInfo.setTaccount(user_memberInfo.getUser_phone());
             activateCodeLogInfoList.add(activateCodeLogInfo);
         }
         activateCodeLogResp.setData(activateCodeLogInfoList);
         activateCodeLogResp.setMsg(retMsg);
         activateCodeLogResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(activateCodeLogResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10028")
 
     @ResponseBody
-    public JSONObject GetRuleSetting(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetRuleSetting(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1115,12 +1270,18 @@ public class AppServerController {
         getRuleResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getRuleResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
     @RequestMapping(value = "10032")
 
     @ResponseBody
-    public JSONObject ModifPwd(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String ModifPwd(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1136,13 +1297,19 @@ public class AppServerController {
             commResp.setCode("C0014");
         }
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "10029")
 
     @ResponseBody
-    public JSONObject GetUserPayInfoBySn(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetUserPayInfoBySn(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
@@ -1181,12 +1348,18 @@ public class AppServerController {
         getPayInfoBySnResp.setMsg(retMsg);
         getPayInfoBySnResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
     @RequestMapping(value = "10030")
 
     @ResponseBody
-    public JSONObject GetUserOfferHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+    public String GetUserOfferHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetUserOfferHelpsReq getUserOfferHelpsReq = JSON.parseObject(msgBody, GetUserOfferHelpsReq.class);
@@ -1229,7 +1402,13 @@ public class AppServerController {
         getUserOfferHelpsResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserOfferHelpsResp);
-        return  jsonObject;
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
     }
 
 }

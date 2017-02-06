@@ -6,6 +6,16 @@ package com.help.server.domain.responsebean;
 public class ActivateCodeLogInfo {
 
     private String faccount;
+
+    public String getTaccount() {
+        return taccount;
+    }
+
+    public void setTaccount(String taccount) {
+        this.taccount = taccount;
+    }
+
+    private String taccount;
     private String name;
     private int num;
     private long date;
