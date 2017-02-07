@@ -582,9 +582,17 @@ public class AppServerController {
         String to_phone = activationUserReq.getTaccount();
         int ncount = appServerMapper.getUserCount(to_phone);
         if (ncount > 0) {
-            appServerMapper.updateValUser(to_phone);
-            commResp.setCode(retCode);
-            commResp.setMsg(retMsg);
+            int usable_code_num = appServerMapper.getUserUsableCount(from_phone);
+            if(usable_code_num>1){
+                appServerMapper.updateValUser(to_phone);
+                appServerMapper.updateUserActiveNum_dec(1,from_phone);
+                commResp.setCode(retCode);
+                commResp.setMsg(retMsg);
+            }else{
+                commResp.setCode("C0017");
+                commResp.setMsg("激活码数量小于1！");
+            }
+
         } else {
             commResp.setCode("C0009");
             commResp.setMsg("手机号不是账号，不能激活！");

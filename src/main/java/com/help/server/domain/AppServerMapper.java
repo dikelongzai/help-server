@@ -91,9 +91,16 @@ public interface AppServerMapper {
             ",#{state},#{from_uid},#{to_uid},#{code_num},#{is_from_admin})")
     public int insertActivateCode(Activate_Code activate_code);
 
-    // 查询更新用户的激活码--减少
-    @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")
+    // 查询更新用户的激活码
+    @Update("update user_member set is_activate = 2 where user_phone = #{to_phone} ")
     public int updateValUser(@Param("to_phone") String to_phone);
+
+    // 查询更新用户的激活码--减少
+    @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_phone = #{userphone} ")
+    public int updateUserActiveNum_dec(@Param("codenum") int codenum, @Param("user_phone") String user_phone);
+
+    @Select("select usable_code_num  from user_member where user_phone = #{username}")
+    public int getUserUsableCount(@Param("username") String username);
 
     // 查询用户是否存在
     @Select("select count(1)  from user_member where user_phone = #{userphone} AND user_referee_phone =  #{user_referee_phone}")
@@ -170,7 +177,7 @@ public interface AppServerMapper {
     public int InsertLeavingMsg(Leaving_Msg leaving_msg);
 
     //  根据titleid获取 title name
-    @Select("select * from dynamic_award_rules  where user_title_id = #{titleid} AND state = 'N'")
+    @Select("select user_title from dynamic_award_rules  where user_title_id = #{titleid} AND state = 'N'")
     public String getTitleName(@Param("titleid") long titleid);
 
     // 更新用户的银行信息
