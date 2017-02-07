@@ -247,6 +247,25 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  offer_help where user_id =#{userid} AND state = 'N' ORDER BY  create_date DESC LIMIT 1 ")
     public Offer_Help getOfferHelpInfoByDesc(@Param("userid") long userid);
 
+    @Select("select * from leaving_msg  where state = 'N' AND reply_type = 1 ")
+    public List<Leaving_Msg> getLeavingMsg();
+
+    //更新冻结钱包
+    @Update("update user_member set ufrozen_wallet = ufrozen_wallet + #{num} where user_id = #{userid}")
+    public int updateUserFrozen(@Param("userid") long userid,@Param("num") float num);
+
+    //更新静态钱包
+    @Update("update user_member set ustatic_wallet = ustatic_wallet - #{num} where user_id = #{userid}")
+    public int updateUserstatic(@Param("userid") long userid,@Param("num") float num);
+
+    //更新dynamic钱包
+    @Update("update user_member set udynamic_wallet = udynamic_wallet - #{num} where user_id = #{userid}")
+    public int updateUserdynamic(@Param("userid") long userid,@Param("num") float num);
+
+    @Select("select * from offer_help where user_id = #{userid} AND help_type = #{helptype} " +
+            " AND help_status <> 2 ")
+    public List<Offer_Help> getOfferHelpInfoUn(@Param("userid") long userid, @Param("helptype") int helptype);
+
 }
 
 

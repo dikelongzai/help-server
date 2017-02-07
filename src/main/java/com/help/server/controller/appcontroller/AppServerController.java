@@ -758,9 +758,9 @@ public class AppServerController {
     }
 
     @RequestMapping(value = "10014")
-    /**
-     * 接受和提供帮助订单
-     */
+   /**
+    * 接受和提供帮助订单
+    */
     @ResponseBody
     public String AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
@@ -768,12 +768,45 @@ public class AppServerController {
         String msgBody = Base64Util.decode(inputInt);
         HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
         HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
-        long ncurTimer = System.currentTimeMillis();
 
+        if(helpsOrderReq.getHelp_type() ==2) { //请求帮助
+            User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
+            if (helpsOrderReq.getWallet_type() == 2) { //静态钱包
+                if (userMemberInfo.getUdynamic_wallet() < helpsOrderReq.getMoney()) {
+                    helpsOrderResp.setMsg("余额不足，不能发单！");
+                    helpsOrderResp.setCode("C0015");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    }catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+            }
+            if (helpsOrderReq.getWallet_type() == 1) {
+
+                if (userMemberInfo.getUstatic_wallet() < helpsOrderReq.getMoney()) {
+                    helpsOrderResp.setMsg("余额不足，不能发单！");
+                    helpsOrderResp.setCode("C0015");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    }catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+            }
+        }
+        long ncurTimer = System.currentTimeMillis();
         Offer_Help offer_helps = new Offer_Help();
         offer_helps.setCreate_date(ncurTimer);
         offer_helps.setLast_update(ncurTimer);
-
+        //提供帮助 100 天加到冻结钱包
+       //请求帮助 100 相应钱包减100，其中动态钱包时同时提供帮助生成订单同样金额订单。
         long help_id = 0;
         String idname = "help_id";
         appServerMapper.id_generator(idname);
@@ -790,7 +823,41 @@ public class AppServerController {
         offer_helps.setState('N');
         offer_helps.setStatus_confirmation(0);
         offer_helps.setHelp_type(helpsOrderReq.getHelp_type());
+        offer_helps.setIs_income(1);
         appServerMapper.OfferHelp(offer_helps);
+        if(helpsOrderReq.getHelp_type() == 1){ //提供帮助
+            appServerMapper.updateUserFrozen(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+        }
+        if(helpsOrderReq.getHelp_type() ==2){ //请求帮助
+            User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
+            if(helpsOrderReq.getWallet_type()==2){ //动态钱包
+                appServerMapper.updateUserstatic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+//提供帮助
+                ncurTimer = System.currentTimeMillis();
+                offer_helps.setCreate_date(ncurTimer);
+                offer_helps.setLast_update(ncurTimer);
+                appServerMapper.id_generator(idname);
+                help_id = appServerMapper.get_id_generator(idname);
+                offer_helps.setHelp_id(help_id);
+                ordernum = CommonUtil.genRandomOrder(help_id+"");
+                offer_helps.setHelp_order(ordernum);
+                offer_helps.setMoney_num(helpsOrderReq.getMoney());
+                offer_helps.setHelp_status(1);
+                offer_helps.setPayment_type("0,1,2");
+                offer_helps.setUser_id(helpsOrderReq.getUid());
+                offer_helps.setUser_phone(helpsOrderReq.getAccount());
+                offer_helps.setWallet_type(0);
+                offer_helps.setState('N');
+                offer_helps.setStatus_confirmation(0);
+                offer_helps.setHelp_type(1);
+                offer_helps.setIs_income(0);
+                appServerMapper.OfferHelp(offer_helps);
+                appServerMapper.updateUserFrozen(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+            }else{ //静态钱包
+                appServerMapper.updateUserdynamic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+            }
+        }
+
         helpsOrderResp.setMsg(retMsg);
         helpsOrderResp.setCode(retCode);
         HelpsOrderRespInfo helpsOrderRespInfo = new HelpsOrderRespInfo();
@@ -806,6 +873,7 @@ public class AppServerController {
         }
         return retMsg;
     }
+
     @RequestMapping(value = "10015")
     /**
      * 获取订单详情
@@ -1238,6 +1306,7 @@ public class AppServerController {
             activateCodeLogInfo.setName(user_memberInfo.getUser_name());
             user_memberInfo = appServerMapper.getUserInfo(activate_code.getTo_uid());
             activateCodeLogInfo.setTaccount(user_memberInfo.getUser_phone());
+            activateCodeLogInfo.setTname(user_memberInfo.getUser_name());
             activateCodeLogInfoList.add(activateCodeLogInfo);
         }
         activateCodeLogResp.setData(activateCodeLogInfoList);
@@ -1366,26 +1435,28 @@ public class AppServerController {
         GetUserOfferHelpsResp getUserOfferHelpsResp = new GetUserOfferHelpsResp();
         List<Offer_Help> offerHelpList = null;
         if(getUserOfferHelpsReq.getWallet_type()==0&&getUserOfferHelpsReq.getHelp_status()!=0){
-            offerHelpList =  appServerMapper.getOfferHelpInfoByWall(getUserOfferHelpsReq.getUid()
+            offerHelpList = appServerMapper.getOfferHelpInfoByWall(getUserOfferHelpsReq.getUid()
                     ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getHelp_status());
 
         }else if(getUserOfferHelpsReq.getHelp_status()==0&&getUserOfferHelpsReq.getWallet_type()!=0){
-            offerHelpList =  appServerMapper.getOfferHelpInfoByHelpStatus(getUserOfferHelpsReq.getUid()
+            offerHelpList = appServerMapper.getOfferHelpInfoByHelpStatus(getUserOfferHelpsReq.getUid()
                     ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type());
 
         }else if ((getUserOfferHelpsReq.getWallet_type()==0)&&(getUserOfferHelpsReq.getHelp_status()==0)){
 
-            offerHelpList =  appServerMapper.getOfferHelpInfoByHelpStatusAndWall(getUserOfferHelpsReq.getUid()
+            offerHelpList = appServerMapper.getOfferHelpInfoByHelpStatusAndWall(getUserOfferHelpsReq.getUid()
                     ,getUserOfferHelpsReq.getOrder_type());
-        }else{
-            offerHelpList =  appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
+        }else if(getUserOfferHelpsReq.getHelp_status() == 4){
+            offerHelpList = appServerMapper.getOfferHelpInfoUn(getUserOfferHelpsReq.getUid()
+                    ,getUserOfferHelpsReq.getOrder_type());
+        } else{
+            offerHelpList = appServerMapper.getOfferHelpInfo(getUserOfferHelpsReq.getUid()
                     ,getUserOfferHelpsReq.getOrder_type(),getUserOfferHelpsReq.getWallet_type(),getUserOfferHelpsReq.getHelp_status());
         }
 
         ArrayList<GetUserOfferHelpInfo> getUserOfferHelpInfos = new ArrayList<>();
         if(offerHelpList!=null){
             for (int i =0;i<offerHelpList.size();i++){
-                log.info("3");
                 Offer_Help offer_help = offerHelpList.get(i);
                 GetUserOfferHelpInfo getUserOfferHelpInfo = new GetUserOfferHelpInfo();
                 getUserOfferHelpInfo.setFrom_date(offer_help.getCreate_date());
@@ -1402,6 +1473,39 @@ public class AppServerController {
         getUserOfferHelpsResp.setMsg(retMsg);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserOfferHelpsResp);
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
+    }
+
+    @RequestMapping(value = "10033")
+
+    @ResponseBody
+    public String getUserCommonQuest(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserCommonQuestReq getUserCommonQuestReq = JSON.parseObject(msgBody, GetUserCommonQuestReq.class);
+        GetUserCommonQuestResp getUserCommonQuestResp = new GetUserCommonQuestResp();
+
+        ArrayList<GetUserCommonQuestInfo> data = new ArrayList<>();
+        List<Leaving_Msg> leavingMsgList = appServerMapper.getLeavingMsg();
+        for (int i =0;i<leavingMsgList.size();i++){
+            GetUserCommonQuestInfo getUserCommonQuestInfo = new GetUserCommonQuestInfo();
+            Leaving_Msg leaving_msg = leavingMsgList.get(i);
+            getUserCommonQuestInfo.setContent(leaving_msg.getMsg_content());
+            getUserCommonQuestInfo.setReply_content(leaving_msg.getReply_content());
+            data.add(getUserCommonQuestInfo);
+        }
+        getUserCommonQuestResp.setData(data);
+        getUserCommonQuestResp.setMsg(retMsg);
+        getUserCommonQuestResp.setCode(retCode);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserCommonQuestResp);
         String retMsg = Base64Util.encode(jsonObject.toString());
         try {
             retMsg = URLEncoder.encode(retMsg, "UTF-8");

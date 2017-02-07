@@ -13,8 +13,19 @@ public class Offer_Help {
     private  long help_id;
     private  String help_order;
     private  int help_type;
+    private int is_income = 1;
+
+
+    public int getIs_income() {
+        return is_income;
+    }
+
+    public void setIs_income(int is_income) {
+        this.is_income = is_income;
+    }
 
     public Offer_Help() {
+
     }
 
     private  long user_id;
@@ -22,7 +33,7 @@ public class Offer_Help {
     private  String payment_type;
     private  int help_status;
 
-    public Offer_Help(long create_date, long last_update, char state, long help_id, String help_order, int help_type, long user_id, String user_phone, String payment_type, int help_status, int status_confirmation, float money_num, int wallet_type) {
+    public Offer_Help(long create_date, long last_update, char state, long help_id, String help_order, int help_type, long user_id, String user_phone, String payment_type, int help_status, int status_confirmation, float money_num, int wallet_type,int is_income ) {
 
         this.create_date = create_date;
         this.last_update = last_update;
@@ -37,6 +48,7 @@ public class Offer_Help {
         this.status_confirmation = status_confirmation;
         this.money_num = money_num;
         this.wallet_type = wallet_type;
+        this.is_income = is_income;
     }
 
     private  int status_confirmation;

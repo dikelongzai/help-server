@@ -5,6 +5,14 @@ package com.help.server.domain.responsebean;
  */
 public class ActivateCodeLogInfo {
 
+    public String getTname() {
+        return tname;
+    }
+
+    public void setTname(String tname) {
+        this.tname = tname;
+    }
+
     private String faccount;
 
     public String getTaccount() {
@@ -19,6 +27,7 @@ public class ActivateCodeLogInfo {
     private String name;
     private int num;
     private long date;
+    private String tname;
 
     public String getFaccount() {
         return faccount;
