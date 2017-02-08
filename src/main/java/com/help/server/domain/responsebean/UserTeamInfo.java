@@ -8,6 +8,16 @@ public class UserTeamInfo {
     private String tname;
     private String account;
 
+    public String getTile_name() {
+        return tile_name;
+    }
+
+    public void setTile_name(String tile_name) {
+        this.tile_name = tile_name;
+    }
+
+    private String tile_name;
+
     public String getTname() {
         return tname;
     }

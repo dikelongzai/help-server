@@ -441,6 +441,8 @@ public class AppServerController {
                     userTeamInfo.setRt(user_memberInfo.getCreate_date());
                     userTeamInfo.setStatus(user_memberInfo.getIs_activate());
                     Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                    int titleid = user_memberInfo.getTitle_id();
+                    userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                     if(offerHelp!=null){
                         if(offerHelp.getHelp_type()==1){
                          userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
