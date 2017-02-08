@@ -18,7 +18,7 @@ public interface AppServerMapper {
      *
      * @return user_name, is_activate, user_phone
      */
-    @Select("select create_date,user_name,user_qq,user_id,user_carded_url,is_activate,user_phone,is_freeze,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded,referee_user_id from user_member where user_id = #{userId} ")
+    @Select("select create_date,user_name,user_qq,user_id,user_carded_url,is_activate,user_phone,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded,referee_user_id from user_member where user_id = #{userId} ")
     public User_MemberInfo getUserInfo(@Param("userId") Long userId);
 
     /**
@@ -132,9 +132,9 @@ public interface AppServerMapper {
     public String getUserName(@Param("userphone") String userphone);
 
     // 提供或接受帮助 10014
-    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type)" +
+    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type,is_admin)" +
             " values(#{create_date}, #{last_update},#{state},#{help_id},#{help_order},#{help_type}" +
-            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type})")
+            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type},#{is_admin})")
     public int OfferHelp(Offer_Help offerHelp);
 
     /**
@@ -163,7 +163,7 @@ public interface AppServerMapper {
     public List<Rotate_News> getRotateNews();
 
     // 获取新闻信息数量Count
-    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0 ")
+    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
     public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
 
     @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")

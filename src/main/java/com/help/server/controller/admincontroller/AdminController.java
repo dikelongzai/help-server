@@ -546,6 +546,17 @@ public class AdminController {
         userMapper.updateUserStatus(2,user_id);
         return "redirect:/admin/user";
     }
+
+    /**
+     * 设置管理账户
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/doAdminUser/{user_id}", method = RequestMethod.GET)
+    public String doAdminUser(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        userMapper.updateUserRoleAdmin(user_id);
+        return "redirect:/admin/user";
+    }
     /**
      * 冻结
      * @return
@@ -589,5 +600,48 @@ public class AdminController {
         return "/admin/userdetail";
     }
     /* ===========================用户管理end==================================**/
+    /* ===========================添加订单start==================================**/
+    /**
+     * 添加订单先展示管理账户列表
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/adminlist")
+    public String adminlist(Map<String, Object> map, HttpServletRequest request) {
+        List<User_MemberInfo> list = userMapper.getAdminInfo();
+        log.info("admin/adminlist get All adminlist=" + JSON.toJSONString(list));
+        map.put("news", list);
+        return "/admin/adminlistIndex";
+    }
+    /**
+     * 造单携带用户信息过去
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/addOfferHelp/{user_id}", method = RequestMethod.GET)
+    public String addOfferHelp(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        User_MemberInfo news = appServerMapper.getUserInfo(user_id);
+        log.info("/addOfferHelp/{user_id}=" + JSON.toJSONString(news));
+        map.put("news", news);
+        return "/admin/addOfferIndex";
+    }
+    /**
+     * ajax添加订单
+     *@param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/doAddOfferHelp", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject doAddOfferHelp(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        // param={"create_date":"2017-02-06 11:05:01","help_type":"0","money_num":"10000","user_id":"3","user_phone":"13759889278","wallet_type":"1"}
+        log.info("param=" + param.toJSONString());
+        //int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
+        return aadminService.doAddOfferHelp(param);
+    }
 
+    /* ===========================添加订单end==================================**/
 }

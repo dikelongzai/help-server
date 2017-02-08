@@ -1,12 +1,19 @@
 package com.help.server.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.help.server.domain.AppServerMapper;
+import com.help.server.domain.tables.Offer_Help;
 import com.help.server.domain.tables.OrderSetting;
+import com.help.server.domain.tables.User_MemberInfo;
 import com.help.server.util.*;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import static com.help.server.util.SqlConstant.COMMON_SELECT_ALL;
@@ -17,6 +24,8 @@ import static com.help.server.util.SqlConstant.COMMON_SELECT_ALL;
 @Service
 public class AdminService {
     private Logger log = Logger.getLogger(AdminService.class);
+    @Autowired
+    private AppServerMapper appServerMappe;
 
     /**
      * 获取分页查询sql
@@ -230,6 +239,108 @@ public class AdminService {
         sqlBuffer.append(" WHERE id=").append(param.getString("id"));
         log.info("updateAward sql=" + sqlBuffer.toString());
         return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
+    }
+
+    /**
+     * 添加订单
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public JSONObject doAddOfferHelp(JSONObject param)throws Exception {
+        //帮助类型 1申请帮助（出钱）,2请求帮助（提现）
+        ResultStatusCode rs=new ResultStatusCode();
+        int help_type=Integer.valueOf(param.getString("help_type"));
+        int wallet_type=Integer.valueOf(param.getString("wallet_type"));
+        long uid=Long.parseLong(param.getString("user_id"));
+        long create_date=DateUtil.getLongdate(param.getString("create_date"));
+        int money_num=Integer.valueOf(param.getString("money_num"));
+        // param={"create_date":"2017-02-06 11:05:01","help_type":"0","money_num":"10000","user_id":"3","user_phone":"13759889278","wallet_type":"1"}
+        if(help_type==2) { //请求帮助
+            User_MemberInfo userMemberInfo = appServerMappe.getUserInfo(uid);
+            if (wallet_type == 2) {//动态钱包
+                if (userMemberInfo.getUdynamic_wallet() < money_num) {
+                    rs.setMessage("余额不足，不能发单！");
+                    rs.setCode("C0015");
+                    return rs.toJson();
+                }
+            }
+            if (wallet_type == 1) {
+                if (userMemberInfo.getUstatic_wallet() < money_num) {
+                    rs.setMessage("余额不足，不能发单！");
+                    rs.setCode("C0015");
+                    return rs.toJson();
+                }
+            }
+        }
+        Offer_Help offer_helps = new Offer_Help();
+        offer_helps.setCreate_date(create_date);
+        offer_helps.setLast_update(create_date);
+        //提供帮助 100 天加到冻结钱包
+        //请求帮助 100 相应钱包减100，其中动态钱包时同时提供帮助生成订单同样金额订单。
+        long help_id = 0;
+        String idname = "help_id";
+        appServerMappe.id_generator(idname);
+        help_id = appServerMappe.get_id_generator(idname);
+        offer_helps.setHelp_id(help_id);
+        String ordernum = CommonUtil.genRandomOrder(help_id+"");
+        offer_helps.setHelp_order(ordernum);
+        offer_helps.setMoney_num(money_num);
+        offer_helps.setHelp_status(1);
+        offer_helps.setPayment_type("0,1,2");
+        offer_helps.setUser_id(uid);
+        offer_helps.setUser_phone(param.getString("user_phone"));
+        offer_helps.setWallet_type(wallet_type);
+        offer_helps.setState('N');
+        offer_helps.setStatus_confirmation(0);
+        offer_helps.setHelp_type(help_type);
+        offer_helps.setIs_income(1);
+        offer_helps.setIs_admin(1);
+        appServerMappe.OfferHelp(offer_helps);
+        log.info("doAddOfferHelp addOfferHelp success");
+        if(help_type == 1){ //提供帮助
+            appServerMappe.updateUserFrozen(uid,money_num);
+            log.info("doAddOfferHelp updateUserFrozen success");
+        }
+        if(help_type ==2){ //请求帮助
+            User_MemberInfo userMemberInfo = appServerMappe.getUserInfo(uid);
+            //动态钱包
+            if(wallet_type==2){
+                appServerMappe.updateUserdynamic(uid,money_num);
+                log.info("doAddOfferHelp updateUserFrozen success");
+                //提供帮助
+                offer_helps.setCreate_date(create_date);
+                offer_helps.setLast_update(create_date);
+                appServerMappe.id_generator(idname);
+                help_id = appServerMappe.get_id_generator(idname);
+                offer_helps.setHelp_id(help_id);
+                ordernum = CommonUtil.genRandomOrder(help_id+"");
+                offer_helps.setHelp_order(ordernum);
+                offer_helps.setMoney_num(money_num);
+                offer_helps.setHelp_status(1);
+                offer_helps.setPayment_type("0,1,2");
+                offer_helps.setUser_id(uid);
+                offer_helps.setUser_phone(param.getString("user_phone"));
+                offer_helps.setWallet_type(0);
+                offer_helps.setState('N');
+                offer_helps.setStatus_confirmation(0);
+                offer_helps.setHelp_type(1);
+                offer_helps.setIs_income(1);
+                offer_helps.setIs_admin(1);
+                appServerMappe.OfferHelp(offer_helps);
+                appServerMappe.updateUserFrozen(uid,money_num);
+                log.info("doAddOfferHelp  复投 success");
+            }else{
+                //从静态钱包提现，只减就可以，不到冻结里面去。
+                appServerMappe.updateUserstatic(uid,money_num);
+                //appServerMappe.updateUserFrozen(uid,money_num);
+                log.info("doAddOfferHelp  updateUserdynamic success");
+            }
+        }
+
+
+        return ResultStatusCode.OK.toJson();
+
     }
 
 

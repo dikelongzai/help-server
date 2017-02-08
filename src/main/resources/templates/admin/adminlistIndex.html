@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/select.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+    <script type="text/javascript" src="/editor/kindeditor.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function (e) {
+            $(".select3").uedSelect({
+                width: 152
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">用户管理</a></li>
+        <li><a href="#">管理账户列表</a></li>
+    </ul>
+</div>
+<div class="tools">
+    <ul class="toolbar1">
+        <li><a href="/admin/user"><span><img src="/images/t05.png"/></span>设置管理账户</a></li>
+    </ul>
+
+</div>
+<div class="formbody">
+        <div class="formtitle"><span>管理账户列表</span></div>
+        <table class="tablelist">
+            <thead>
+            <tr>
+                <th>用户姓名</th>
+                <th>手机号</th>
+                <th>动态钱包</th>
+                <th>静态钱包</th>
+                <th>冻结钱包</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${news.empty}">
+                <td colspan="5">
+                    <a href="/admin/user" class="tablelink">设置管理账户</a>
+                </td>
+            </tr>
+            <tr th:each="newbean:${news}">
+                <td th:text="${newbean.user_name}">1</td>
+                <td th:text="${newbean.user_phone}"></td>
+                <td th:text="${newbean.udynamic_wallet}">
+                </td>
+                <td th:text="${newbean.ustatic_wallet}">
+                </td>
+                <td th:text="${newbean.ufrozen_wallet}">
+                </td>
+                <td><a th:href="@{'/admin/addOfferHelp/'+ ${newbean.user_id}}" class="tablelink">造单</a> </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+</body>
+
+</html>

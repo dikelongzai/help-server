@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            //导航切换
+            $("#sbbt").click(function(){
+                var url = "/admin/doAddOfferHelp";
+                var user_id = $("#user_id").val();
+                var create_date = $("#create_date").val();
+                var user_phone = $("#user_phone").val();
+                var wallet_type = $("#wallet_type").val();
+                var help_type = $("#help_type").val();
+                var money_num = $("#money_num").val();
+
+                var params={
+                    user_id:user_id,
+                    user_phone:user_phone,
+                    wallet_type:wallet_type,
+                    help_type:help_type,
+                    create_date:create_date,
+                    money_num:money_num
+                };
+                $.myPostJSON(url, params, function(data){
+                    if(data.msg=='OK'){
+                        alert("发单成功");
+                       location.href ="/admin/adminlist";
+                    }else{
+                        alert(data.msg);
+                    }
+
+
+
+                }, false);
+            })
+        })
+    </script>
+</head>
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">订单管理</a></li>
+        <li><a href="#">添加订单</a></li>
+    </ul>
+</div>
+
+<div class="formbody">
+    <div class="formtitle"><span>添加订单</span></div>
+        <ul class="forminfo">
+            <li><label>用户姓名</label><input name="user_id" id="user_id" th:value="${news.user_id}" type="hidden" class="dfinput"/><input id="user_name" th:value="${news.user_name}" type="text" class="dfinput" readonly="readonly"/><i></i></li>
+            <li><label>用户手机</label><input  th:value="${news.user_phone}" id="user_phone" type="text" class="dfinput" readonly="readonly"/><i>用户手机号</i></li>
+            <li><label>订单时间</label><input name="create_date" id="create_date" type="text" class="dfinput"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/></li>
+            <li><label>静态钱包</label><input name="ustatic_wallet" readonly="readonly" id="ustatic_wallet" type="text" th:value="${news.ustatic_wallet}" class="dfinput"/><i>静态钱包</i></li>
+            <li><label>动态钱包</label><input name="udynamic_wallet" readonly="readonly" id="udynamic_wallet" type="text" th:value="${news.udynamic_wallet}" class="dfinput"/><i>动态钱包</i></li>
+            <li><label>冻结钱包</label><input name="ufrozen_wallet" readonly="readonly" id="ufrozen_wallet" type="text" th:value="${news.ufrozen_wallet}" class="dfinput"/><i>冻结钱包</i></li>
+            <li><label>帮助类型</label><input name="help_type" id="help_type"   type="text" class="dfinput" value="1"/><i>帮助类型 1申请帮助（出钱）,2请求帮助（提现)</i></li>
+            <li><label>订单金额</label><input name="money_num" id="money_num"   type="text" class="dfinput"/><i>订单金额</i></li>
+            <li><label>钱包类型</label><input name="wallet_type" id="wallet_type"   type="text" class="dfinput" value="1"/><i>钱包类型1静态钱包2 动态钱包 </i></li>
+            <li><label>&nbsp;</label><input  id="sbbt" class="btn" value="保存"/></li>
+        </ul>
+
+
+</div>
+
+
+</body>
+
+</html>

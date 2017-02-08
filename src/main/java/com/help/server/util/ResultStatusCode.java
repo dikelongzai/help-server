@@ -27,6 +27,9 @@ public class ResultStatusCode {
         this.code = code;
         this.message = message;
     }
+    public ResultStatusCode() {
+
+    }
     /**
      * @return the code
      */
