@@ -1,11 +1,23 @@
+
 package com.help.server.domain.responsebean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hou on 2017/1/21.
  */
 public class GetRuleResp {
 
-    private  String code;
+    public ArrayList<GetDynamicRuleInfo> getD_data() {
+        return d_data;
+    }
+
+    public void setD_data(ArrayList<GetDynamicRuleInfo> d_data) {
+        this.d_data = d_data;
+    }
+
+    private String code;
 
     public String getCode() {
         return code;
@@ -31,6 +43,7 @@ public class GetRuleResp {
         this.data = data;
     }
 
-    private  String msg;
-    private  GetRuleInfo data;
+    private String msg;
+    private GetRuleInfo data;
+    private ArrayList<GetDynamicRuleInfo> d_data;
 }

@@ -68,7 +68,7 @@ public class AppServerController {
             data.setUid(String.valueOf(user_member.getUser_id()));
             data.setAccount(user_member.getUser_phone());
             data.setAccount_type(user_member.getIs_activate());
-            data.setImage_url(user_member.getUser_head_url());
+            data.setImage_url(user_member.getUser_carded_url());
             data.setName(user_member.getUser_name());
             data.setStatus(user_member.getIs_activate());
             long titleid = user_member.getTitle_id();
@@ -839,7 +839,7 @@ public class AppServerController {
         if(helpsOrderReq.getHelp_type() ==2){ //请求帮助
             User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
             if(helpsOrderReq.getWallet_type()==2){ //动态钱包
-                appServerMapper.updateUserstatic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+                appServerMapper.updateUserdynamic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
 //提供帮助
                 ncurTimer = System.currentTimeMillis();
                 offer_helps.setCreate_date(ncurTimer);
@@ -862,7 +862,7 @@ public class AppServerController {
                 appServerMapper.OfferHelp(offer_helps);
                 appServerMapper.updateUserFrozen(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
             }else{ //静态钱包
-                appServerMapper.updateUserdynamic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
+                appServerMapper.updateUserstatic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
             }
         }
 
@@ -1338,11 +1338,21 @@ public class AppServerController {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         GetRuleReq getRuleReq = JSON.parseObject(msgBody, GetRuleReq.class);
-
         GetRuleResp getRuleResp = new GetRuleResp();
+        ArrayList<GetDynamicRuleInfo> d_data = new ArrayList<>();
 
+        List<Dynamic_Award> dynamicAwardList = appServerMapper.findDynmicRules();
+        for(int i =0;i<dynamicAwardList.size();i++){
+            GetDynamicRuleInfo getDynamicRuleInfo = new GetDynamicRuleInfo();
+            Dynamic_Award dynamicAward = dynamicAwardList.get(i);
+            getDynamicRuleInfo.setD_limit(dynamicAward.getD_limit());
+            getDynamicRuleInfo.setUser_title(dynamicAward.getUser_title());
+            getDynamicRuleInfo.setUser_title_id(dynamicAward.getUser_title_id());
+            d_data.add(getDynamicRuleInfo);
+        }
         GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
         getRuleResp.setData(getRuleInfo);
+        getRuleResp.setD_data(d_data);
         getRuleResp.setCode(retCode);
         getRuleResp.setMsg(retMsg);
 
@@ -1501,7 +1511,7 @@ public class AppServerController {
         GetUserCommonQuestResp getUserCommonQuestResp = new GetUserCommonQuestResp();
 
         ArrayList<GetUserCommonQuestInfo> data = new ArrayList<>();
-        List<Leaving_Msg> leavingMsgList = appServerMapper.getLeavingMsg();
+        List<Leaving_Msg> leavingMsgList = appServerMapper.getLeavingMsg_Quest();
         for (int i =0;i<leavingMsgList.size();i++){
             GetUserCommonQuestInfo getUserCommonQuestInfo = new GetUserCommonQuestInfo();
             Leaving_Msg leaving_msg = leavingMsgList.get(i);

@@ -41,14 +41,6 @@ public class User_MemberInfo {
         this.user_phone = user_phone;
     }
 
-    public Integer getIs_freeze() {
-        return is_freeze;
-    }
-
-    public void setIs_freeze(Integer is_freeze) {
-        this.is_freeze = is_freeze;
-    }
-
     public String getUser_head_url() {
         return user_head_url;
     }
@@ -145,8 +137,6 @@ public class User_MemberInfo {
     private Integer is_activate;
     //用户电话
     private String user_phone;
-    //是否冻结
-    private Integer is_freeze;
 
     //用户头像
     private String user_head_url;

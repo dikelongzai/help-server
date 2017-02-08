@@ -13,6 +13,7 @@ import java.util.List;
 @Mapper
 public interface AppServerMapper {
 
+
     /**
      * 获取用户信息 10001 user_member
      *
@@ -177,7 +178,7 @@ public interface AppServerMapper {
     public int InsertLeavingMsg(Leaving_Msg leaving_msg);
 
     //  根据titleid获取 title name
-    @Select("select user_title from dynamic_award_rules  where user_title_id = #{titleid} AND state = 'N'")
+    @Select("select user_title from dynamic_award_rules  where user_title_id = #{titleid} AND state<>'D' ")
     public String getTitleName(@Param("titleid") long titleid);
 
     // 更新用户的银行信息
@@ -214,7 +215,7 @@ public interface AppServerMapper {
     public List<Activate_Code> getActivateInfo(@Param("touid") long touid,@Param("fromuid") long fromuid);
 
     // 获取规则表
-    @Select("select * from order_setting  where state = 'N'")
+    @Select("select * from order_setting  where state<>'D'")
     public GetRuleInfo getRuleInfo();
 
     /**
@@ -254,8 +255,8 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  offer_help where user_id =#{userid} AND state = 'N' ORDER BY  create_date DESC LIMIT 1 ")
     public Offer_Help getOfferHelpInfoByDesc(@Param("userid") long userid);
 
-    @Select("select * from leaving_msg  where state = 'N' AND reply_type = 1 ")
-    public List<Leaving_Msg> getLeavingMsg();
+    @Select("select * from leaving_msg  where state<>'D' AND reply_type = 1 ")
+    public List<Leaving_Msg> getLeavingMsg_Quest();
 
     //更新冻结钱包
     @Update("update user_member set ufrozen_wallet = ufrozen_wallet + #{num} where user_id = #{userid}")
@@ -273,6 +274,8 @@ public interface AppServerMapper {
             " AND help_status <> 2 ")
     public List<Offer_Help> getOfferHelpInfoUn(@Param("userid") long userid, @Param("helptype") int helptype);
 
+    @Select("select * from dynamic_award_rules where state<>'D' ")
+    public List<Dynamic_Award> findDynmicRules();
 }
 
 

@@ -1,3 +1,4 @@
+
 package com.help.server.domain.responsebean;
 
 /**
@@ -141,21 +142,109 @@ public class GetRuleInfo {
         this.end_date = end_date;
     }
 
-    private  int  min_order_amount;
-    private  int max_order_num;
-    private  int static_min_money;
-    private  int static_times_money;
-    private  int dynamic_min_money;
-    private  int dynamic_times_mone;
-    private  int dynamic_max_money;
-    private  float   dynamic_deduct_proportion;
-    private  float  interest_not_paid;
-    private  float  interest_paid;
-    private  int  is_order_timer;
-    private  long start_date;
-    private  long end_date;
-    private  float order_max_money;
+    private int min_order_amount;
+    private int max_order_num;
+    private int static_min_money;
+    private int static_times_money;
+    private int dynamic_min_money;
+    private int dynamic_times_mone;
+    private int dynamic_max_money;
+    private float dynamic_deduct_proportion;
+    private float interest_not_paid;
+    private float interest_paid;
+    private int is_order_timer;
+    private long start_date;
+    private long end_date;
+    private float order_max_money;
+
+    public void setOrder_max_money(float order_max_money) {
+        this.order_max_money = order_max_money;
+    }
+
+    public float getApply_num_lown() {
+        return apply_num_lown;
+    }
+
+    public void setApply_num_lown(float apply_num_lown) {
+        this.apply_num_lown = apply_num_lown;
+    }
+
+    public float getApply_num_high() {
+        return apply_num_high;
+    }
+
+    public void setApply_num_high(float apply_num_high) {
+        this.apply_num_high = apply_num_high;
+    }
+
+    public int getApply_num_times() {
+        return apply_num_times;
+    }
+
+    public void setApply_num_times(int apply_num_times) {
+        this.apply_num_times = apply_num_times;
+    }
+
+    public int getApply_num_term() {
+        return apply_num_term;
+    }
+
+    public void setApply_num_term(int apply_num_term) {
+        this.apply_num_term = apply_num_term;
+    }
+
+    public float getAsk_num_lown() {
+        return ask_num_lown;
+    }
+
+    public void setAsk_num_lown(float ask_num_lown) {
+        this.ask_num_lown = ask_num_lown;
+    }
+
+    public float getAsk_num_high() {
+        return ask_num_high;
+    }
+
+    public void setAsk_num_high(float ask_num_high) {
+        this.ask_num_high = ask_num_high;
+    }
+
+    public int getAsk_num_times() {
+        return ask_num_times;
+    }
+
+    public void setAsk_num_times(int ask_num_times) {
+        this.ask_num_times = ask_num_times;
+    }
+
+    public int getAsk_num_term() {
+        return ask_num_term;
+    }
+
+    public void setAsk_num_term(int ask_num_term) {
+        this.ask_num_term = ask_num_term;
+    }
+
+    public String getQuest_desc() {
+        return quest_desc;
+    }
+
+    public void setQuest_desc(String quest_desc) {
+        this.quest_desc = quest_desc;
+    }
+
     private long match_date_min;
-    private long   match_date_max;
+    private long match_date_max;
     private int freezing_time;
+
+    private float apply_num_lown;
+    private float apply_num_high;
+    private int apply_num_times;
+    private int apply_num_term;
+
+    private float ask_num_lown;
+    private float ask_num_high;
+    private int ask_num_times;
+    private int ask_num_term;
+    private String quest_desc;
 }
