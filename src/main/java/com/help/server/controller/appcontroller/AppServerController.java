@@ -228,7 +228,7 @@ public class AppServerController {
             regUserInfo.setIs_activate(0);
             regUserInfo.setUsable_code_num(0);
             regUserInfo.setUsed_code_num(0);
-            regUserInfo.setTitle_id(0);
+            regUserInfo.setTitle_id(1);
             regUserInfo.setUser_name(registerinfoReq.getTname());
             regUserInfo.setUser_login_pwd(registerinfoReq.getPwd());
             regUserInfo.setUser_phone(registerinfoReq.getTel());
