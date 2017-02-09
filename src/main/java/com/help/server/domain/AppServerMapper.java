@@ -133,9 +133,9 @@ public interface AppServerMapper {
     public String getUserName(@Param("userphone") String userphone);
 
     // 提供或接受帮助 10014
-    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type,is_admin)" +
+    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type,is_admin,is_income)" +
             " values(#{create_date}, #{last_update},#{state},#{help_id},#{help_order},#{help_type}" +
-            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type},#{is_admin})")
+            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type},#{is_admin},#{is_income})")
     public int OfferHelp(Offer_Help offerHelp);
 
     /**
@@ -162,10 +162,10 @@ public interface AppServerMapper {
     // 获取轮播图
     @Select("select create_date,last_update,state,rotate_id,rotate_url,helf_url from rotate_news  where state = 'N' order by create_date asc")
     public List<Rotate_News> getRotateNews();
-
-    // 获取新闻信息数量Count
-    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
-    public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
+//
+//    // 获取新闻信息数量Count
+//    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
+//    public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
 
     @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")
     public int getLeavingMsgCount(@Param("uid") long uid);
