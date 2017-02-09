@@ -472,6 +472,8 @@ public class AppServerController {
                         userTeamInfo.setUid(dataInfo.getUser_id());
                         userTeamInfo.setRt(dataInfo.getCreate_date());
                         userTeamInfo.setStatus(dataInfo.getIs_activate());
+                        int titleid = user_memberInfo.getTitle_id();
+                        userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                         Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                         if(offerHelp!=null){
                             if(offerHelp.getHelp_type()==1){
@@ -504,6 +506,8 @@ public class AppServerController {
                             userTeamInfo.setUid(datathreeInfo.getUser_id());
                             userTeamInfo.setRt(datathreeInfo.getCreate_date());
                             userTeamInfo.setStatus(datathreeInfo.getIs_activate());
+                            int titleid = user_memberInfo.getTitle_id();
+                            userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                             Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                             if(offerHelp!=null){
                                 if(offerHelp.getHelp_type()==1){
@@ -539,6 +543,8 @@ public class AppServerController {
                                 userTeamInfo.setUid(datafourInfo.getUser_id());
                                 userTeamInfo.setRt(datafourInfo.getCreate_date());
                                 userTeamInfo.setStatus(datafourInfo.getIs_activate());
+                                int titleid = user_memberInfo.getTitle_id();
+                                userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                                 Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                                 if(offerHelp!=null){
                                     if(offerHelp.getHelp_type()==1){
@@ -1434,6 +1440,7 @@ public class AppServerController {
         leader.setName(name);
         leader.setTel(user_memberInfo.getUser_referee_phone());
         getPayInfoBySnResp.setLeader(leader);
+        getPayInfoBySnResp.setRemittance_url(orders.getRemittance_url());
         getPayInfoBySnResp.setMsg(retMsg);
         getPayInfoBySnResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);

@@ -36,6 +36,14 @@ public class GetPayInfoBySnResp {
         return bank;
     }
 
+    public String getRemittance_url() {
+        return remittance_url;
+    }
+
+    public void setRemittance_url(String remittance_url) {
+        this.remittance_url = remittance_url;
+    }
+
     public void setBank(BankInfo bank) {
         this.bank = bank;
     }
@@ -60,5 +68,6 @@ public class GetPayInfoBySnResp {
     private PaymentInfo payment;
     private WeixinInfo weixin;
     private LeaderInfo leader;
+    private  String remittance_url;
 
 }

@@ -162,14 +162,13 @@ public interface AppServerMapper {
     // 获取轮播图
     @Select("select create_date,last_update,state,rotate_id,rotate_url,helf_url from rotate_news  where state = 'N' order by create_date asc")
     public List<Rotate_News> getRotateNews();
-//
-//    // 获取新闻信息数量Count
-//    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
-//    public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
+
+    // 获取新闻信息数量Count
+    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
+    public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
 
     @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")
     public int getLeavingMsgCount(@Param("uid") long uid);
-
 
     // 提供或接受帮助 10014
     @Insert("insert into leaving_msg(create_date,last_update,state,leaving_id,user_id,msg_content,is_reply,msg_date)" +
