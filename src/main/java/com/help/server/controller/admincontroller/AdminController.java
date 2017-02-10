@@ -644,4 +644,35 @@ public class AdminController {
     }
 
     /* ===========================添加订单end==================================**/
+    /* ===========================订单匹配start==================================**/
+    /**
+     * 添加订单先展示管理账户列表
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/match")
+    public String match(Map<String, Object> map, HttpServletRequest request) {
+        return "/admin/match";
+    }
+    /**
+     * ajax获取用户列表
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getMatchList", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getMatchList(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        JSONObject resultJson = aadminService.getMatchList(param);
+        log.info("param=" + param.toJSONString()+";result="+resultJson.toJSONString());
+        return resultJson;
+    }
+
+
+     /* ===========================订单匹配end==================================**/
+
 }

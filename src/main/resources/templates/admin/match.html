@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/select.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.idTabs.min.js"></script>
+    <script type="text/javascript" src="/js/select-ui.min.js"></script>
+    <script type="text/javascript" src="/editor/kindeditor.js"></script>
+    <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/match.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".click").click(function () {
+                $(".tip").fadeIn(200);
+            });
+
+            $(".tiptop a").click(function () {
+                $(".tip").fadeOut(200);
+            });
+
+            $(".sure").click(function () {
+                $(".tip").fadeOut(100);
+            });
+
+            $(".cancel").click(function () {
+                $(".tip").fadeOut(100);
+            });
+
+        });
+    </script>
+
+
+</head>
+
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">订单管理</a></li>
+        <li><a href="#">订单匹配</a></li>
+    </ul>
+</div>
+
+<div class="rightinfo">
+
+
+    <ul class="project">
+        <div class="proleft">匹配步骤</div>
+        <li class="profinish prover "><span>&nbsp;</span><b>1</b>日期选择<i>&nbsp;</i></li>
+        <li class="profinish "><span>&nbsp;</span><b>2</b>勾选日期<i>&nbsp;</i></li>
+        <li class="start"><span>&nbsp;</span><b>3</b>填写金额<i>&nbsp;</i></li>
+        <li><span>&nbsp;</span><b>4</b>开始匹配<i>&nbsp;</i></li>
+    </ul>
+
+
+    <ul class="prosearch">
+
+        <li><label>匹配时间</label><input name="st" id="st" type="text" class="scinput1" onClick="WdatePicker()"/></li>
+        <li><label>一</label><input name="et" id="et" type="text" class="scinput1" onClick="WdatePicker()"/></li>
+        <li><label>查询：</label><a><input id="search" type="button" class="sure" value="查询"/></a><a><input id="match" type="button" class="sure" value="开始匹配"/></a></li>
+    </ul>
+
+    <div class="formtitle1"><span>匹配列表</span></div>
+
+    <table class="tablelist">
+        <thead>
+        <tr>
+            <th colspan="5">买入</th>
+            <th colspan="1"></th>
+            <th colspan="5">卖出</th>
+        </tr>
+        <tr>
+            <th><input type="checkbox" name="bc" id="bc"/></th>
+            <th>日期</th>
+            <th>类目</th>
+            <th>金额</th>
+            <th>匹配金额</th>
+            <th></th>
+            <th><input  type="checkbox" name="sc" id="sc"/></th>
+            <th>日期</th>
+            <th>类目</th>
+            <th>金额</th>
+            <th>匹配金额</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <div class="tip">
+        <div class="tiptop"><span>提示信息</span><a></a></div>
+
+        <div class="tipinfo">
+            <span><img src="images/ticon.png"/></span>
+            <div class="tipright">
+                <p>是否确认对信息的修改 ？</p>
+                <cite>如果是请点击确定按钮 ，否则请点取消。</cite>
+            </div>
+        </div>
+
+        <div class="tipbtn">
+            <input name="" type="button" class="sure" value="确定"/>&nbsp;
+            <input name="" type="button" class="cancel" value="取消"/>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    $('.tablelist tbody tr:odd').addClass('odd');
+</script>
+
+</body>
+
+</html>

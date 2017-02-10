@@ -1,6 +1,7 @@
 package com.help.server.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.AppServerMapper;
 import com.help.server.domain.tables.Offer_Help;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 import static com.help.server.util.SqlConstant.COMMON_SELECT_ALL;
@@ -150,6 +152,126 @@ public class AdminService {
         String sql = getSearchUserSql(param);
         int cpage = Integer.valueOf(param.getString("page"));
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
+    }
+    /**
+     * 获取匹配列表
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getMatchList(JSONObject param) throws Exception {
+        JSONObject jsonReturn=new JSONObject();
+        String et=DateUtil.addDate(-3);
+        String st=DateUtil.addDate(-10);
+        if(!StringUtil.isEmpty(param.getString("st"))){
+            st=param.getString("st").trim().substring(0, 10);
+        }
+        if(!StringUtil.isEmpty(param.getString("et"))){
+            et=param.getString("et").trim().substring(0, 10);
+        }
+        String sqlSell="select \n" +
+                "  date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) as day_time ,wallet_type,sum(money_num) as sum_money\n" +
+                "from\n" +
+                "  offer_help \n" +
+                "where date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) >= '"+st+"' \n" +
+                "  and DATE_FORMAT(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) <= '"+et+"' \n" +
+                "  AND help_status=1 and help_type=2\n" +
+                "  group by date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ),wallet_type\n" +
+                "order by DATE_FORMAT(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) asc ";
+        // 每日提现 按照钱包类型聚合查询总数
+        List<Map<String, Object>> listSell=JdbcUtils.getInstatance().findModeResult(sqlSell,null);
+        log.info("getMatchList sell sql=" +sqlSell+"result="+ JSON.toJSONString(listSell));
+        String sqlBuy="  select \n" +
+                "  date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) as day_time ,is_income,sum(money_num) as sum_money\n" +
+                "from\n" +
+                "  offer_help \n" +
+                "where date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) >= '"+st+"' \n" +
+                "  and DATE_FORMAT(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) <= '"+et+"' \n" +
+                "  AND help_status=1 and help_type=1\n" +
+                "  group by date_format(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ),is_income\n" +
+                "order by DATE_FORMAT(\n" +
+                "    FROM_UNIXTIME(create_date / 1000),\n" +
+                "    '%Y-%m-%d'\n" +
+                "  ) asc ";
+        // -- 把买入的按照时间及是否是复投的聚合 1不是复投 0复投
+        List<Map<String, Object>> listBuy=JdbcUtils.getInstatance().findModeResult(sqlBuy,null);
+        log.info("getMatchList buy sql=" +sqlBuy+"result="+ JSON.toJSONString(listBuy));
+//        jsonReturn.put("data", this.findModeResult(sqlPage, null));
+        List<String> dateBet=DateUtil.getBetweenDates(st,et);
+        JSONArray jsonArray=new JSONArray();
+        for(String str:dateBet){
+            JSONObject json=new JSONObject();
+            float sell_1=0;
+            float sell_2=0;
+            float buy_1=0;
+            float buy_2=0;
+            for(Map<String, Object> mapSell:listSell){
+                if(mapSell.get("day_time").toString().equals(str)){
+                        if(mapSell.containsKey("wallet_type")){
+                            //静态钱包提现
+                            if(mapSell.get("wallet_type").toString().equals("1")){
+                                sell_1=Float.valueOf(mapSell.get("sum_money").toString());
+                            }
+                            //动态钱包提现
+                            if(mapSell.get("wallet_type").toString().equals("2")){
+                                sell_2=Float.valueOf(mapSell.get("sum_money").toString());
+                            }
+                        }
+                }
+
+            }
+            for(Map<String, Object> mapBuy:listBuy){
+                if(mapBuy.get("day_time").toString().equals(str)){
+                    //不是复投即正常买入单
+                    if(mapBuy.get("is_income").toString().equals("1")){
+                        buy_1=Float.valueOf(mapBuy.get("sum_money").toString());
+                    }
+                    //复投买入单
+                    if(mapBuy.get("is_income").toString().equals("0")){
+                        buy_2=Float.valueOf(mapBuy.get("sum_money").toString());
+                    }
+                }
+            }
+            json.put("day",str);
+            json.put("sell_1",sell_1);
+            json.put("sell_2",sell_2);
+            json.put("buy_1",buy_1);
+            json.put("buy_2",buy_2);
+            jsonArray.add(json);
+
+        }
+
+        jsonReturn.put("data", jsonArray);
+        log.info("getMatchList jsonReturn=" +jsonReturn.toJSONString());
+        return jsonReturn;
     }
 
 
@@ -325,7 +447,7 @@ public class AdminService {
                 offer_helps.setState('N');
                 offer_helps.setStatus_confirmation(0);
                 offer_helps.setHelp_type(1);
-                offer_helps.setIs_income(1);
+                offer_helps.setIs_income(0);
                 offer_helps.setIs_admin(1);
                 appServerMappe.OfferHelp(offer_helps);
                 appServerMappe.updateUserFrozen(uid,money_num);

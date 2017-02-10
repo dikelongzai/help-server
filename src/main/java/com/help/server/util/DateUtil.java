@@ -1,8 +1,10 @@
 package com.help.server.util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by houlongbin on 2016/12/19.
@@ -185,6 +187,15 @@ public class DateUtil {
         String res = getDateFormatter8().format(dateLong);
         return res;
     }
+
+    /**
+     * 获取几天前的日期
+     * @param n
+     * @return
+     */
+    public static String addDate(int n){
+        return getDateFormatter1().format(addDays(new Date(),n));
+    }
     public static long getLongdate(String date)throws Exception{
         return getDateFormatter2().parse(date).getTime();
     }
@@ -197,8 +208,31 @@ public class DateUtil {
         String res = getDateFormatter9().format(dateLong);
         return res;
     }
+    /**
+     * 获取两个日期之间的日期
+     * @param start 开始日期
+     * @param end 结束日期
+     * @return 日期集合
+     */
+    public static List<String> getBetweenDates(String start, String end) throws Exception{
+        List<String> result = new ArrayList<String>();
+        Calendar tempStart = Calendar.getInstance();
+        tempStart.setTime(getDateFormatter1().parse(start));
+        //tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar tempEnd = Calendar.getInstance();
+        tempEnd.setTime(getDateFormatter1().parse(end));
+        while (tempEnd.after(tempStart)) {
+            result.add(getDateFormatter1().format(tempEnd.getTime()));
+            tempEnd.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        result.add(start);
+        return result;
+    }
 
-    public static void main(String[] args) {
-        System.out.println(dateLongToString9(System.currentTimeMillis()));
+    public static void main(String[] args) throws Exception{
+        List<String> list=getBetweenDates("2017-01-28","2017-02-01");
+        for(String str:list){
+            System.out.println("str = [" + str + "]");
+        }
     }
 }
