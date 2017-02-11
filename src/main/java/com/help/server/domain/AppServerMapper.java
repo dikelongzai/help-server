@@ -121,7 +121,7 @@ public interface AppServerMapper {
      * @return user_name, is_activate, user_phone
      */
     @Select("select create_date,last_update,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
-            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND recharge_uid = #{rechargeuid} ")
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid}")
     public List<Orders> getOrderInfo(@Param("ordertype") int ordertype, @Param("rechargeuid") Long rechargeuid);
 
     /**
