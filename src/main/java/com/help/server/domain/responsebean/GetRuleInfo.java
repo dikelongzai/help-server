@@ -235,8 +235,18 @@ public class GetRuleInfo {
 
     private long match_date_min;
     private long match_date_max;
+
+    public float getApply_num_first() {
+        return apply_num_first;
+    }
+
+    public void setApply_num_first(float apply_num_first) {
+        this.apply_num_first = apply_num_first;
+    }
+
     private int freezing_time;
 
+    private float apply_num_first;
     private float apply_num_lown;
     private float apply_num_high;
     private int apply_num_times;

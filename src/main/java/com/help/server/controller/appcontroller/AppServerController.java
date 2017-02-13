@@ -691,13 +691,14 @@ public class AppServerController {
 
             GetMaterOrderInfo getMaterOrderInfo = new GetMaterOrderInfo();
             Orders order = orderList.get(i);
-            getMaterOrderInfo.setTo_type(2);
+
             getMaterOrderInfo.setFrom_money(order.getMoney_num());
             getMaterOrderInfo.setTo_money(order.getMoney_num());
             getMaterOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
             getMaterOrderInfo.setFrom_order_num(order.getRecharge_order());
             getMaterOrderInfo.setFrom_st(DateUtil.dateLongToString(order.getFrom_date()));
             String userphone =order.getRecharge_phone();
+            getMaterOrderInfo.setFrom_account(userphone);//
             String name = appServerMapper.getUserName(userphone);
             getMaterOrderInfo.setFrom_tname(name);
             getMaterOrderInfo.setMatch_st(DateUtil.dateLongToString(order.getMatch_date()));
@@ -707,7 +708,7 @@ public class AppServerController {
             getMaterOrderInfo.setTo_tname(name);
             getMaterOrderInfo.setVoucher_url(order.getRemittance_url());
             getMaterOrderInfo.setTo_st(DateUtil.dateLongToString(order.getTo_date()));
-            getMaterOrderInfo.setFrom_type(1);
+            getMaterOrderInfo.setTo_account(userphone);
             getMaterOrderInfo.setOrder_type(order.getOrder_type());
             getMaterOrderList.add(getMaterOrderInfo);
         }
@@ -745,7 +746,7 @@ public class AppServerController {
 
             ByStatusGetOrderInfo byStatusGetOrderInfo = new ByStatusGetOrderInfo();
             Orders order = orderList.get(i);
-            byStatusGetOrderInfo.setTo_type(2);
+            byStatusGetOrderInfo.setFrom_account(order.getRecharge_phone());
             byStatusGetOrderInfo.setFrom_money(order.getMoney_num());
             byStatusGetOrderInfo.setTo_money(order.getMoney_num());
             byStatusGetOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
@@ -758,8 +759,9 @@ public class AppServerController {
             byStatusGetOrderInfo.setTo_order_num(order.getWithdrawals_order());
             userphone = order.getWithdrawals_phone();
             name = appServerMapper.getUserName(userphone);
+            byStatusGetOrderInfo.setTo_tname(name);
             byStatusGetOrderInfo.setTo_st(DateUtil.dateLongToString(order.getTo_date()));
-            byStatusGetOrderInfo.setFrom_type(1);
+            byStatusGetOrderInfo.setTo_account(userphone);
             getMaterOrderList.add(byStatusGetOrderInfo);
         }
         byStatusGetOrderResp.setData(getMaterOrderList);
@@ -946,7 +948,16 @@ public class AppServerController {
         ConfirmMoneyReq confirmMoneyReq = JSON.parseObject(msgBody, ConfirmMoneyReq.class);
         int complaintstatus =confirmMoneyReq.getType();
         String ordernum = confirmMoneyReq.getOrder_num();
-        appServerMapper.updateOrderStatus(complaintstatus,ordernum);
+        Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
+        if(complaintstatus==1){ //确认收款
+            appServerMapper.updateOrderStatus(2,ordernum);
+            appServerMapper.updateOfferHelp(2,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(2,orders.getWithdrawals_order());
+        }else{ //确认未收款
+            appServerMapper.updateOrderStatus(8,ordernum);
+            appServerMapper.updateOfferHelp(8,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(8,orders.getWithdrawals_order());
+        }
         CommResp commResp = new CommResp();
         commResp.setCode(retCode);
         commResp.setMsg(retMsg);
@@ -1250,10 +1261,15 @@ public class AppServerController {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         UpLoadPayOrderReq upLoadPayOrderReq = JSON.parseObject(msgBody, UpLoadPayOrderReq.class);
+        String ordernum = upLoadPayOrderReq.getSn();
+        Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
         long ncurrent = System.currentTimeMillis();
         CommResp commResp = new CommResp();
         try {
             appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
+            appServerMapper.updateOrderStatus(6,ordernum);
+            appServerMapper.updateOfferHelp(6,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(6,orders.getWithdrawals_order());
             commResp.setMsg(retMsg);
             commResp.setCode(retCode);
         }catch (Exception ex){

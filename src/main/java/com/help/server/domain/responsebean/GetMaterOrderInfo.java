@@ -5,24 +5,24 @@ package com.help.server.domain.responsebean;
  */
 public class GetMaterOrderInfo {
 
-    private  int from_type;
-    private  int to_type;
+    private  String from_account;
+    private  String to_account;
     private String from_order_num;
 
-    public int getFrom_type() {
-        return from_type;
+    public String getFrom_account() {
+        return from_account;
     }
 
-    public void setFrom_type(int from_type) {
-        this.from_type = from_type;
+    public void setFrom_account(String from_account) {
+        this.from_account = from_account;
     }
 
-    public int getTo_type() {
-        return to_type;
+    public String getTo_account() {
+        return to_account;
     }
 
-    public void setTo_type(int to_type) {
-        this.to_type = to_type;
+    public void setTo_account(String to_account) {
+        this.to_account = to_account;
     }
 
     public String getFrom_order_num() {

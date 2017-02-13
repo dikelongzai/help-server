@@ -5,22 +5,15 @@ package com.help.server.domain.responsebean;
  */
 public class ByStatusGetOrderInfo {
 
-    private  int from_type;
+    private  String from_account;
+    private  String to_account;
 
-    public int getFrom_type() {
-        return from_type;
+    public String getTo_tname() {
+        return to_tname;
     }
 
-    public void setFrom_type(int from_type) {
-        this.from_type = from_type;
-    }
-
-    public int getTo_type() {
-        return to_type;
-    }
-
-    public void setTo_type(int to_type) {
-        this.to_type = to_type;
+    public void setTo_tname(String to_tname) {
+        this.to_tname = to_tname;
     }
 
     public String getFrom_order_num() {
@@ -75,6 +68,22 @@ public class ByStatusGetOrderInfo {
         return to_st;
     }
 
+    public String getFrom_account() {
+        return from_account;
+    }
+
+    public void setFrom_account(String from_account) {
+        this.from_account = from_account;
+    }
+
+    public String getTo_account() {
+        return to_account;
+    }
+
+    public void setTo_account(String to_account) {
+        this.to_account = to_account;
+    }
+
     public void setTo_st(String to_st) {
         this.to_st = to_st;
     }
@@ -95,7 +104,6 @@ public class ByStatusGetOrderInfo {
         this.confirm_st = confirm_st;
     }
 
-    private  int to_type;
     private  String from_order_num;
     private  String to_order_num;
     private  String from_tname;
@@ -105,4 +113,5 @@ public class ByStatusGetOrderInfo {
     private  String to_st;
     private  String match_st;
     private String confirm_st;
+    private  String to_tname;
 }

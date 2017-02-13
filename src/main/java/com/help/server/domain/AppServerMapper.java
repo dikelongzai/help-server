@@ -147,10 +147,6 @@ public interface AppServerMapper {
             ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_num = #{ordernum} ")
     public Orders getOrderInfoDetails(@Param("ordernum") String ordernum);
 
-    // 更新订单状态
-    @Update("update orders set complaint_status = #{complaintstatus}  where order_num = #{ordernum} ")
-    public int updateOrderStatus(@Param("complaintstatus") int complaintstatus, @Param("ordernum") String ordernum);
-
     // 获取新闻信息
     @Select("select * from news  where type = #{type} AND state = 'N' order by create_date asc LIMIT 1")
     public News getNews(@Param("type") int type);
@@ -279,6 +275,13 @@ public interface AppServerMapper {
 
     @Select("select * from dynamic_award_rules where state<>'D' ")
     public List<Dynamic_Award> findDynmicRules();
+
+    @Update("update orders set order_type = #{ordertype}  where order_num = #{ordernum} ")
+    public int updateOrderStatus(@Param("ordertype") int ordertype, @Param("ordernum") String ordernum);
+
+    //更新offer_help 状态
+    @Update("update offer_help set help_status = {helpstatus} where help_order = #{helporder}")
+    public int updateOfferHelp(@Param("helpstatus") int helpstatus,@Param("helporder") String helporder);
 }
 
 
