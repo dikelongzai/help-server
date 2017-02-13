@@ -26,6 +26,16 @@ public class Offer_Help {
 
     private int is_income = 1;
 
+    public int getIs_split() {
+        return is_split;
+    }
+
+    public void setIs_split(int is_split) {
+        this.is_split = is_split;
+    }
+
+    private  int is_split=0;
+
 
     public int getIs_income() {
         return is_income;
@@ -44,7 +54,7 @@ public class Offer_Help {
     private  String payment_type;
     private  int help_status;
 
-    public Offer_Help(long create_date, long last_update, char state, long help_id, String help_order, int help_type, long user_id, String user_phone, String payment_type, int help_status, int status_confirmation, float money_num, int wallet_type,int is_income,int is_admin ) {
+    public Offer_Help(long create_date, long last_update, char state, long help_id, String help_order, int help_type, long user_id, String user_phone, String payment_type, int help_status, int status_confirmation, float money_num, int wallet_type,int is_income,int is_admin,int is_split ) {
 
         this.create_date = create_date;
         this.last_update = last_update;
@@ -61,6 +71,7 @@ public class Offer_Help {
         this.wallet_type = wallet_type;
         this.is_income = is_income;
         this.is_admin=is_admin;
+        this.is_split=is_split;
     }
 
     private  int status_confirmation;

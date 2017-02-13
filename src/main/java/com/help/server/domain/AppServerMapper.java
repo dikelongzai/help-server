@@ -133,9 +133,9 @@ public interface AppServerMapper {
     public String getUserName(@Param("userphone") String userphone);
 
     // 提供或接受帮助 10014
-    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type,is_admin,is_income)" +
+    @Insert("insert into Offer_Help(create_date,last_update,state,help_id,help_order,help_type,user_id,user_phone,payment_type,help_status,status_confirmation,money_num,wallet_type,is_admin,is_income,is_split)" +
             " values(#{create_date}, #{last_update},#{state},#{help_id},#{help_order},#{help_type}" +
-            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type},#{is_admin},#{is_income})")
+            ",#{user_id},#{user_phone},#{payment_type},#{help_status},#{status_confirmation},#{money_num},#{wallet_type},#{is_admin},#{is_income},#{is_split})")
     public int OfferHelp(Offer_Help offerHelp);
 
     /**
