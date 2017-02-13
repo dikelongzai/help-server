@@ -255,6 +255,9 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  offer_help where user_id =#{userid} AND state = 'N' ORDER BY  create_date DESC LIMIT 1 ")
     public Offer_Help getOfferHelpInfoByDesc(@Param("userid") long userid);
 
+    @Select("SELECT * FROM  offer_help where help_order =#{help_order}")
+    public Offer_Help getOfferHelpByHelpOrder(@Param("help_order") String help_order);
+
     @Select("select * from leaving_msg  where state<>'D' AND reply_type = 1 ")
     public List<Leaving_Msg> getLeavingMsg_Quest();
 
