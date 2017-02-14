@@ -786,7 +786,56 @@ public class AppServerController {
         String msgBody = Base64Util.decode(inputInt);
         HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
         HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
+        GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
+        float money = helpsOrderReq.getMoney();
+        //申请帮助，出钱
+        if(helpsOrderReq.getHelp_type() ==1) {
 
+            int times = (int) (money % getRuleInfo.getApply_num_times());
+            if (money < getRuleInfo.getApply_num_lown() || money < getRuleInfo.getApply_num_high() || times != 0) {
+                helpsOrderResp.setMsg("申请帮助的发单规则不正确，请重新发单！");
+                helpsOrderResp.setCode("C0017");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
+            int nCount = appServerMapper.getUserOfferHelpCount(helpsOrderReq.getUid());
+            if (nCount == 0) {
+                if (helpsOrderReq.getMoney() < getRuleInfo.getApply_num_first()) {
+                    helpsOrderResp.setMsg("首次发单申请帮助金额大于" + getRuleInfo.getApply_num_first());
+                    helpsOrderResp.setCode("C0016");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+
+
+            }
+        }else {
+            int times = (int)(money%getRuleInfo.getAsk_num_times());
+            if(money<getRuleInfo.getAsk_num_lown()||money<getRuleInfo.getAsk_num_high()||times!=0){
+                helpsOrderResp.setMsg("请求帮助的发单规则不正确，请重新发单！");
+                helpsOrderResp.setCode("C0017");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                }catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
+        }
         if(helpsOrderReq.getHelp_type() ==2) { //请求帮助
             User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
             if (helpsOrderReq.getWallet_type() == 2) { //静态钱包
