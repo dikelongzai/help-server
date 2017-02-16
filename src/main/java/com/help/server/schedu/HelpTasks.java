@@ -1,10 +1,17 @@
 package com.help.server.schedu;
 
+import com.help.server.controller.appcontroller.AppServerController;
+import com.help.server.domain.HelpTasksMapper;
+import com.help.server.domain.tables.User_MemberInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by houlongbin on 2017/2/5.
@@ -18,14 +25,15 @@ import java.util.Date;
  */
 @Component
 public class HelpTasks {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-//    @Scheduled(fixedRate = 5000)
-//    public void reportCurrentTime() {
-//        System.out.println("The time is now " + dateFormat.format(new Date()));
-//    }
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private static final Log log = LogFactory.getLog(HelpTasks.class);
+    @Autowired
+    private HelpTasksMapper helpTasksMapper;
+
     @Scheduled(cron="*/10 * * * * *")
-    public void seconds() {
-        System.out.println("The time is now " + dateFormat.format(new Date()));
+    public void Userlevel_Cal() {
+
+        //System.out.println("The time is now " + dateFormat.format(new Date()));
     }
 }
