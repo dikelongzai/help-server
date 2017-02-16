@@ -697,6 +697,7 @@ public class AppServerController {
             getMaterOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
             getMaterOrderInfo.setFrom_order_num(order.getRecharge_order());
             getMaterOrderInfo.setFrom_st(DateUtil.dateLongToString(order.getFrom_date()));
+            getMaterOrderInfo.setOrder_num(order.getOrder_num());
             String userphone =order.getRecharge_phone();
             getMaterOrderInfo.setFrom_account(userphone);//
             String name = appServerMapper.getUserName(userphone);

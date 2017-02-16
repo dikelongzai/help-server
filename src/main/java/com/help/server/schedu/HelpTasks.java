@@ -34,6 +34,8 @@ public class HelpTasks {
     @Scheduled(cron="*/10 * * * * *")
     public void Userlevel_Cal() {
 
+        List<User_MemberInfo> list =  helpTasksMapper.getAdminInfo("13759889278");
+        log.info("List_count"+list.size());
         //System.out.println("The time is now " + dateFormat.format(new Date()));
     }
 }
