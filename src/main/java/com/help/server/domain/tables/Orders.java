@@ -5,7 +5,7 @@ import com.help.server.domain.responsebean.SendMoneyInfo;
 /**
  * Created by houxianyong on 2017/1/5.
  */
-public class Orders {
+public class   Orders {
 
     public long getCreate_date() {
         return create_date;

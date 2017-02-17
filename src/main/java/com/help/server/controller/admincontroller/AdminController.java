@@ -671,6 +671,25 @@ public class AdminController {
         log.info("param=" + param.toJSONString()+";result="+resultJson.toJSONString());
         return resultJson;
     }
+    /**
+     * ajax订单匹配
+     *@param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/doMatch", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject doMatch(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        // param={"create_date":"2017-02-06 11:05:01","help_type":"0","money_num":"10000","user_id":"3","user_phone":"13759889278","wallet_type":"1"}
+        //b1 正常买入 b2 复投买入 c1 静态提现 c2 动态提现
+        //{"b1":[{"day":"2017-02-04","value":"800"},{"day":"2017-02-03","value":"4200"}],"b2":[{"day":"2017-02-04","value":"1800"},{"day":"2017-02-03","value":"500"}],"c1":[{"day":"2017-02-04","value":"500"},{"day":"2017-02-03","value":"1100"}],"c2":[{"day":"2017-02-04","value":"2600"},{"day":"2017-02-03","value":"1300"}]}
+        JSONObject paramJson=JSON.parseObject(param.getString("param"));
+        log.info("paramJson=" + paramJson.toJSONString());
+        aadminService.doMatchOffer(paramJson);
+        //int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
+        return param;
+    }
 
 
      /* ===========================订单匹配end==================================**/
