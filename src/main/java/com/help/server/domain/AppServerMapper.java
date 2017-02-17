@@ -98,7 +98,7 @@ public interface AppServerMapper {
 
     // 查询更新用户的激活码--减少
     @Update("update user_member set usable_code_num = usable_code_num - #{codenum} where user_phone = #{userphone} ")
-    public int updateUserActiveNum_dec(@Param("codenum") int codenum, @Param("user_phone") String user_phone);
+    public int updateUserActiveNum_dec(@Param("codenum") int codenum, @Param("userphone") String userphone);
 
     @Select("select usable_code_num  from user_member where user_phone = #{username}")
     public int getUserUsableCount(@Param("username") String username);

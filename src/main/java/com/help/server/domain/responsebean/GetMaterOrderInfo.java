@@ -123,6 +123,15 @@ public class GetMaterOrderInfo {
 
     private  String to_order_num;
     private  String from_tname;
+
+    public String getOrder_num() {
+        return order_num;
+    }
+
+    public void setOrder_num(String order_num) {
+        this.order_num = order_num;
+    }
+
     private  String to_tname;
     private float from_money;
     private  float to_money;
@@ -132,4 +141,6 @@ public class GetMaterOrderInfo {
     private  String confirm_st;
     private  String voucher_url;
     private  int  order_type;
+    private  String order_num;
+
 }
