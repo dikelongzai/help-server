@@ -2,6 +2,7 @@ package com.help.server.schedu;
 
 import com.help.server.controller.appcontroller.AppServerController;
 import com.help.server.domain.HelpTasksMapper;
+import com.help.server.domain.tables.Dynamic_Award;
 import com.help.server.domain.tables.User_MemberInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,11 +32,34 @@ public class HelpTasks {
     @Autowired
     private HelpTasksMapper helpTasksMapper;
 
-    @Scheduled(cron="*/10 * * * * *")
+    private long getUserTileID(int nsize){
+        long title_id =1;
+        List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
+        for (int i=0;i<dynamicAwardList.size();i++){
+            Dynamic_Award dynamicAward = dynamicAwardList.get(i);
+            if(nsize>dynamicAward.getTeam_num()){
+                title_id = dynamicAward.getUser_title_id();
+                break;
+            }
+        }
+        return title_id;
+    }
+
+    @Scheduled(cron="*/10000 * * * * *")
     public void Userlevel_Cal() {
 
-        List<User_MemberInfo> list =  helpTasksMapper.getAdminInfo("13759889278");
-        log.info("List_count"+list.size());
-        //System.out.println("The time is now " + dateFormat.format(new Date()));
+        long nMemberCount = helpTasksMapper.getUserMemberCount();
+        List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(1);
+        for (int i =0;i<list.size();i++){
+            User_MemberInfo user_memberInfo = list.get(i);
+            List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+            int nsize = userMemberlist.size()-1;
+            log.info("nsizexxx" +nsize);
+            int title_id = (int)getUserTileID(nsize);
+            if(title_id > user_memberInfo.getTitle_id()){
+                helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
+                log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());
+            }
+        }
     }
 }

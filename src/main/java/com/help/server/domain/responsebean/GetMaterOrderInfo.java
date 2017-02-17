@@ -140,7 +140,17 @@ public class GetMaterOrderInfo {
     private  String match_st;
     private  String confirm_st;
     private  String voucher_url;
+
+    public int getWallet_type() {
+        return wallet_type;
+    }
+
+    public void setWallet_type(int wallet_type) {
+        this.wallet_type = wallet_type;
+    }
+
     private  int  order_type;
     private  String order_num;
+    private  int wallet_type;
 
 }

@@ -704,6 +704,8 @@ public class AppServerController {
             getMaterOrderInfo.setFrom_tname(name);
             getMaterOrderInfo.setMatch_st(DateUtil.dateLongToString(order.getMatch_date()));
             getMaterOrderInfo.setTo_order_num(order.getWithdrawals_order());
+            Offer_Help offerHelp =  appServerMapper.getOfferHelpByHelpOrder(order.getWithdrawals_order());
+            getMaterOrderInfo.setWallet_type(offerHelp.getWallet_type());
             userphone = order.getWithdrawals_phone();
             name = appServerMapper.getUserName(userphone);
             getMaterOrderInfo.setTo_tname(name);
