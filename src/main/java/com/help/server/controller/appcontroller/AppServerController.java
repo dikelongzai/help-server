@@ -160,7 +160,7 @@ public class AppServerController {
                 data.setUid(String.valueOf(user_member.getUser_id()));
                 data.setAccount(user_member.getUser_phone());
                 data.setAccount_type(user_member.getIs_activate());
-                data.setImage_url(user_member.getUser_head_url());
+                data.setImage_url(user_member.getUser_carded_url());
                 data.setName(user_member.getUser_name());
                 data.setStatus(user_member.getIs_activate());
                 long titleid = user_member.getTitle_id();
@@ -591,7 +591,7 @@ public class AppServerController {
         int ncount = appServerMapper.getUserCount(to_phone);
         if (ncount > 0) {
             int usable_code_num = appServerMapper.getUserUsableCount(from_phone);
-            if(usable_code_num>1){
+            if(usable_code_num>=1){
                 appServerMapper.updateValUser(to_phone);
                 appServerMapper.updateUserActiveNum_dec(1,from_phone);
                 commResp.setCode(retCode);
@@ -682,6 +682,7 @@ public class AppServerController {
 
         getMateOrderResp.setCode(retCode);
         getMateOrderResp.setMsg(retMsg);
+        getMateOrderResp.setCurrentTimer(System.currentTimeMillis());
         int ordertype = getMateOrderReq.getOrder_type();
         long rechargeuid = getMateOrderReq.getUid();
         List<Orders> orderList = appServerMapper.getOrderInfo(ordertype,rechargeuid);
@@ -882,7 +883,13 @@ public class AppServerController {
         appServerMapper.id_generator(idname);
         help_id = appServerMapper.get_id_generator(idname);
         offer_helps.setHelp_id(help_id);
-        String ordernum = CommonUtil.genRandomOrder(help_id+"");
+        String ordernum ="";
+        if(helpsOrderReq.getHelp_type() ==1){
+            ordernum = CommonUtil.genRandomOrderEX("T",help_id+"");
+        }else{
+            ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
+        }
+
         offer_helps.setHelp_order(ordernum);
         offer_helps.setMoney_num(helpsOrderReq.getMoney());
         offer_helps.setHelp_status(1);
@@ -909,7 +916,7 @@ public class AppServerController {
                 appServerMapper.id_generator(idname);
                 help_id = appServerMapper.get_id_generator(idname);
                 offer_helps.setHelp_id(help_id);
-                ordernum = CommonUtil.genRandomOrder(help_id+"");
+                ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
                 offer_helps.setHelp_order(ordernum);
                 offer_helps.setMoney_num(helpsOrderReq.getMoney());
                 offer_helps.setHelp_status(1);
@@ -1554,12 +1561,30 @@ public class AppServerController {
             for (int i =0;i<offerHelpList.size();i++){
                 Offer_Help offer_help = offerHelpList.get(i);
                 GetUserOfferHelpInfo getUserOfferHelpInfo = new GetUserOfferHelpInfo();
+                GetUserOfferOrderInfo data1 = new GetUserOfferOrderInfo();
                 getUserOfferHelpInfo.setFrom_date(offer_help.getCreate_date());
                 getUserOfferHelpInfo.setHelp_status(offer_help.getHelp_status());
                 getUserOfferHelpInfo.setMoney(offer_help.getMoney_num());
                 getUserOfferHelpInfo.setOrder_num(offer_help.getHelp_order());
                 getUserOfferHelpInfo.setHelp_type(offer_help.getHelp_type());
                 getUserOfferHelpInfo.setWallet_type(offer_help.getWallet_type());
+                if(offer_help.getHelp_status()==2){ //已完成订单
+                    if(offer_help.getHelp_type()==1){ //提供帮助
+                        Orders orders = appServerMapper.getOrderInfoDetailsT(offer_help.getHelp_order());
+                        data1.setFrom_account(orders.getWithdrawals_phone());
+                        data1.setOrder_num(orders.getOrder_num());
+                        data1.setUnfreeze_date(offer_help.getUnfreeze_date());
+                        float inCome_money = (float) 300.00; //先整收益
+                        data1.setIncome_money(inCome_money);
+                    }else{ //申请帮助没有收益
+                        Orders orders = appServerMapper.getOrderInfoDetailsS(offer_help.getHelp_order());
+                        data1.setFrom_account(orders.getWithdrawals_phone());
+                        data1.setOrder_num(orders.getOrder_num());
+                    }
+
+                }
+                getUserOfferHelpInfo.setData1(data1);
+
                 getUserOfferHelpInfos.add(getUserOfferHelpInfo);
             }
         }
@@ -1576,6 +1601,7 @@ public class AppServerController {
         }
         return retMsg;
     }
+
 
     @RequestMapping(value = "10033")
 

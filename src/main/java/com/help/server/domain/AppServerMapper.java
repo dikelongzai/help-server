@@ -93,7 +93,7 @@ public interface AppServerMapper {
     public int insertActivateCode(Activate_Code activate_code);
 
     // 查询更新用户的激活码
-    @Update("update user_member set is_activate = 2 where user_phone = #{to_phone} ")
+    @Update("update user_member set is_activate = 1 where user_phone = #{to_phone} ")
     public int updateValUser(@Param("to_phone") String to_phone);
 
     // 查询更新用户的激活码--减少
@@ -285,6 +285,12 @@ public interface AppServerMapper {
 
     @Select("select count(1) from offer_help where user_id = #{userid}")
     public int getUserOfferHelpCount(@Param("userid") long userid);
+
+    @Select("SELECT * FROM  orders where recharge_order =#{recharge}")
+    public Orders getOrderInfoDetailsT(@Param("recharge") String recharge);
+
+    @Select("SELECT * FROM  orders where withdrawals_order =#{withdrawals}")
+    public Orders getOrderInfoDetailsS(@Param("withdrawals") String withdrawals);
 
 }
 

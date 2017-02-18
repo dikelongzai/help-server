@@ -7,9 +7,17 @@ import java.util.ArrayList;
  */
 public class GetMateOrderResp {
 
+    public long getCurrentTimer() {
+        return currentTimer;
+    }
+
+    public void setCurrentTimer(long currentTimer) {
+        this.currentTimer = currentTimer;
+    }
 
     private String code;
     private String msg;
+    private  long currentTimer;
     private ArrayList<GetMaterOrderInfo> data;
 
     public String getCode() {

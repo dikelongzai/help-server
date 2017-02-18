@@ -11,8 +11,18 @@ public class Offer_Help {
     private  long last_update;
     private  char state;
     private  long help_id;
+
+    public long getUnfreeze_date() {
+        return unfreeze_date;
+    }
+
+    public void setUnfreeze_date(long unfreeze_date) {
+        this.unfreeze_date = unfreeze_date;
+    }
+
     private  String help_order;
     private  int help_type;
+    private  long unfreeze_date;
 
     public int getIs_admin() {
         return is_admin;

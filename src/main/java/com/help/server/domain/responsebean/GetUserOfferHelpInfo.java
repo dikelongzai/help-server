@@ -5,6 +5,14 @@ package com.help.server.domain.responsebean;
  */
 public class GetUserOfferHelpInfo {
 
+    public GetUserOfferOrderInfo getData1() {
+        return data1;
+    }
+
+    public void setData1(GetUserOfferOrderInfo data1) {
+        this.data1 = data1;
+    }
+
     private String order_num;
     private float money;
 
@@ -60,4 +68,5 @@ public class GetUserOfferHelpInfo {
     private int wallet_type;
     private int help_status;
     private int help_type;
+    private GetUserOfferOrderInfo data1;
 }

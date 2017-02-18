@@ -11,7 +11,6 @@ package com.help.server.util;
 import java.io.IOException;
 
 
-import com.help.server.controller.admincontroller.AdminController;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
@@ -42,8 +41,8 @@ public class SendSmsUtil {
         //String content = new String("您的验证码是：" + mobile_code + "。请不要把验证码泄露给其他人。");
 
         NameValuePair[] data = {//提交短信
-                new NameValuePair("account", "cf_18049442389"),
-                new NameValuePair("password", "gWmCdg"), //查看密码请登录用户中心->验证码、通知短信->帐户及签名设置->APIKEY
+                new NameValuePair("account", "C73557137"),
+                new NameValuePair("password", "339456ede0c229c7920539732be57c99"), //查看密码请登录用户中心->验证码、通知短信->帐户及签名设置->APIKEY
                 new NameValuePair("mobile",mobile_phone),
                 new NameValuePair("content", content),
         };
@@ -89,5 +88,7 @@ public class SendSmsUtil {
         String content = new String("您的验证码是：" + mobile_code + "。请不要把验证码泄露给其他人。");
         return content;
     }
-
+    public static void main(String[] args) {
+        sendSms("",getSmsContent("1278"));
+    }
 }
