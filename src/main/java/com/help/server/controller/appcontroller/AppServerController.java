@@ -795,7 +795,7 @@ public class AppServerController {
         if(helpsOrderReq.getHelp_type() ==1) {
 
             int times = (int) (money % getRuleInfo.getApply_num_times());
-            if (money < getRuleInfo.getApply_num_lown() || money < getRuleInfo.getApply_num_high() || times != 0) {
+            if (money < getRuleInfo.getApply_num_lown() || money > getRuleInfo.getApply_num_high() || times != 0) {
                 helpsOrderResp.setMsg("申请帮助的发单规则不正确，请重新发单！");
                 helpsOrderResp.setCode("C0017");
                 JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
@@ -826,7 +826,7 @@ public class AppServerController {
             }
         }else {
             int times = (int)(money%getRuleInfo.getAsk_num_times());
-            if(money<getRuleInfo.getAsk_num_lown()||money<getRuleInfo.getAsk_num_high()||times!=0){
+            if(money<getRuleInfo.getAsk_num_lown()||money>getRuleInfo.getAsk_num_high()||times!=0){
                 helpsOrderResp.setMsg("请求帮助的发单规则不正确，请重新发单！");
                 helpsOrderResp.setCode("C0017");
                 JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);

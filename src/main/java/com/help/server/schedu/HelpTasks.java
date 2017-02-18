@@ -45,7 +45,7 @@ public class HelpTasks {
         return title_id;
     }
 
-    @Scheduled(cron="*/10000 * * * * *")
+    @Scheduled(cron="0 0 8-10 * * *")
     public void Userlevel_Cal() {
 
         long nMemberCount = helpTasksMapper.getUserMemberCount();
