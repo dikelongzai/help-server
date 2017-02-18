@@ -1571,15 +1571,20 @@ public class AppServerController {
                 if(offer_help.getHelp_status()==2){ //已完成订单
                     if(offer_help.getHelp_type()==1){ //提供帮助
                         Orders orders = appServerMapper.getOrderInfoDetailsT(offer_help.getHelp_order());
-                        data1.setFrom_account(orders.getWithdrawals_phone());
-                        data1.setOrder_num(orders.getOrder_num());
-                        data1.setUnfreeze_date(offer_help.getUnfreeze_date());
-                        float inCome_money = (float) 300.00; //先整收益
-                        data1.setIncome_money(inCome_money);
+                        if(orders!=null){
+                            data1.setFrom_account(orders.getWithdrawals_phone());
+                            data1.setOrder_num(orders.getOrder_num());
+                            data1.setUnfreeze_date(offer_help.getUnfreeze_date());
+                            float inCome_money = (float) 300.00; //先整收益
+                            data1.setIncome_money(inCome_money);
+                        }
+
                     }else{ //申请帮助没有收益
                         Orders orders = appServerMapper.getOrderInfoDetailsS(offer_help.getHelp_order());
-                        data1.setFrom_account(orders.getWithdrawals_phone());
-                        data1.setOrder_num(orders.getOrder_num());
+                        if(orders!=null) {
+                            data1.setFrom_account(orders.getWithdrawals_phone());
+                            data1.setOrder_num(orders.getOrder_num());
+                        }
                     }
 
                 }
