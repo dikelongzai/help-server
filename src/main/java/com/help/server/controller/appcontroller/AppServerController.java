@@ -472,7 +472,7 @@ public class AppServerController {
                         userTeamInfo.setUid(dataInfo.getUser_id());
                         userTeamInfo.setRt(dataInfo.getCreate_date());
                         userTeamInfo.setStatus(dataInfo.getIs_activate());
-                        int titleid = user_memberInfo.getTitle_id();
+                        int titleid = dataInfo.getTitle_id();
                         userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                         Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                         if(offerHelp!=null){
@@ -506,7 +506,7 @@ public class AppServerController {
                             userTeamInfo.setUid(datathreeInfo.getUser_id());
                             userTeamInfo.setRt(datathreeInfo.getCreate_date());
                             userTeamInfo.setStatus(datathreeInfo.getIs_activate());
-                            int titleid = user_memberInfo.getTitle_id();
+                            int titleid = datathreeInfo.getTitle_id();
                             userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                             Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                             if(offerHelp!=null){
@@ -533,9 +533,9 @@ public class AppServerController {
                         User_MemberInfo dataTwoInfo = dataTwoList.get(j);
                         List<User_MemberInfo> datathreeList= appServerMapper.getUserLevel(dataTwoInfo.getUser_id());
                         for (int k=0;k<datathreeList.size();k++){
-                            User_MemberInfo datathreeInfo = dataTwoList.get(k);
+                            User_MemberInfo datathreeInfo = datathreeList.get(k);
                             List<User_MemberInfo> datafourList= appServerMapper.getUserLevel(datathreeInfo.getUser_id());
-                            for (int m=0;m<datathreeList.size();m++){
+                            for (int m=0;m<datafourList.size();m++){
                                 User_MemberInfo datafourInfo = datafourList.get(m);
                                 UserTeamInfo userTeamInfo = new UserTeamInfo();
                                 userTeamInfo.setAccount(datafourInfo.getUser_phone());
@@ -543,7 +543,7 @@ public class AppServerController {
                                 userTeamInfo.setUid(datafourInfo.getUser_id());
                                 userTeamInfo.setRt(datafourInfo.getCreate_date());
                                 userTeamInfo.setStatus(datafourInfo.getIs_activate());
-                                int titleid = user_memberInfo.getTitle_id();
+                                int titleid = datafourInfo.getTitle_id();
                                 userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
                                 Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
                                 if(offerHelp!=null){
