@@ -24,7 +24,7 @@ public class Leaving_Msg {
     private  long last_update;
     private  long leaving_id;
 
-    public Leaving_Msg(long create_date, long last_update, char state, long leaving_id, long user_id, String msg_content, int is_reply, long msg_date) {
+    public Leaving_Msg(long create_date, long last_update, char state, long leaving_id, long user_id, String msg_content, int is_reply, long msg_date,int reply_type) {
         this.create_date = create_date;
         this.last_update = last_update;
         this.leaving_id = leaving_id;
@@ -33,6 +33,7 @@ public class Leaving_Msg {
         this.is_reply = is_reply;
         this.msg_date = msg_date;
         this.state = state;
+        this.reply_type=reply_type;
     }
 
     private  long user_id;
@@ -134,4 +135,13 @@ public class Leaving_Msg {
     private  long reply_date;
     private  long id;
     private  char state;
+    private int reply_type=0;
+
+    public int getReply_type() {
+        return reply_type;
+    }
+
+    public void setReply_type(int reply_type) {
+        this.reply_type = reply_type;
+    }
 }
