@@ -34,7 +34,7 @@ public interface LeaveMsgMapper {
 	 * 留言回复
 	 * @return
 	 */
-	@Update("UPDATE leaving_msg SET state='U',is_reply=1,last_update=(SELECT UNIX_TIMESTAMP()*1000),reply_date=(SELECT UNIX_TIMESTAMP()*1000),reply_content=#{reply_content} WHERE id=#{id} ")
+	@Update("UPDATE leaving_msg SET state='U',is_reply=2,last_update=(SELECT UNIX_TIMESTAMP()*1000),reply_date=(SELECT UNIX_TIMESTAMP()*1000),reply_content=#{reply_content} WHERE id=#{id} ")
 	public boolean updateNew(@Param("id") long id,@Param("reply_content") String reply_content);
 
 }
