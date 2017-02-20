@@ -413,10 +413,19 @@ public class AdminService {
         hasMatchList.put(uuid, ordersList);
     }
 
+    /**
+     * 添加订单时再加一次判断防止发单是同一人
+     * @param uuid
+     * @param orders
+     */
     public static synchronized void addMatchOrder(String uuid, Orders orders) {
-        List<Orders> ordersList = hasMatchList.get(uuid);
-        ordersList.add(orders);
-        hasMatchList.put(uuid, ordersList);
+        if(orders.getWithdrawals_uid()!=orders.getRecharge_uid()){
+            List<Orders> ordersList = hasMatchList.get(uuid);
+            ordersList.add(orders);
+            hasMatchList.put(uuid, ordersList);
+
+        }
+
     }
 
     public static synchronized void saveMatchOrder(String uuid) {
@@ -495,6 +504,44 @@ public class AdminService {
         }
         if (!StringUtil.isEmpty(param.getString("static_times_money"))) {
             sqlBuffer.append(",static_times_money=").append(param.getString("static_times_money"));
+        }
+        /**
+         *   apply_num_first` float(20,3) DEFAULT '5000.000' COMMENT '申请帮助第一次额度限制',
+         `apply_num_lown` float(20,3) DEFAULT '500.000' COMMENT '申请帮助最小金额',
+         `apply_num_high` float(20,3) DEFAULT '1000.000' COMMENT '申请帮助最高金额',
+         `apply_num_times` int(20) DEFAULT '100' COMMENT '申请帮助金额必须是100 的倍数',
+         `apply_num_term` int(4) DEFAULT '12' COMMENT '打款期限   12   小时内',
+         `ask_num_lown` float(20,3) DEFAULT '500.000' COMMENT '请求帮助的最小金额',
+         `ask_num_high` float(20,3) DEFAULT '1000.000' COMMENT '请求帮助的最大金额',
+         `ask_num_times` int(4) DEFAULT '100' COMMENT '请求帮助必现是100的倍数',
+         `ask_num_term` int(4) DEFAULT '12' COMMENT '请求帮助重新匹配  12  小时内'-->
+         */
+        if (!StringUtil.isEmpty(param.getString("apply_num_first"))) {
+            sqlBuffer.append(",apply_num_first=").append(param.getString("apply_num_first"));
+        }
+        if (!StringUtil.isEmpty(param.getString("apply_num_lown"))) {
+            sqlBuffer.append(",apply_num_lown=").append(param.getString("apply_num_lown"));
+        }
+        if (!StringUtil.isEmpty(param.getString("apply_num_high"))) {
+            sqlBuffer.append(",apply_num_high=").append(param.getString("apply_num_high"));
+        }
+        if (!StringUtil.isEmpty(param.getString("apply_num_times"))) {
+            sqlBuffer.append(",apply_num_times=").append(param.getString("apply_num_times"));
+        }
+        if (!StringUtil.isEmpty(param.getString("apply_num_term"))) {
+            sqlBuffer.append(",apply_num_term=").append(param.getString("apply_num_term"));
+        }
+        if (!StringUtil.isEmpty(param.getString("ask_num_lown"))) {
+            sqlBuffer.append(",ask_num_lown=").append(param.getString("ask_num_lown"));
+        }
+        if (!StringUtil.isEmpty(param.getString("ask_num_high"))) {
+            sqlBuffer.append(",ask_num_high=").append(param.getString("ask_num_high"));
+        }
+        if (!StringUtil.isEmpty(param.getString("ask_num_times"))) {
+            sqlBuffer.append(",ask_num_times=").append(param.getString("ask_num_times"));
+        }
+        if (!StringUtil.isEmpty(param.getString("ask_num_term"))) {
+            sqlBuffer.append(",ask_num_term=").append(param.getString("ask_num_term"));
         }
 
         sqlBuffer.append(" WHERE id=").append(param.getString("id"));

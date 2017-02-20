@@ -25,6 +25,100 @@ public class OrderSetting {
     private float dynamic_deduct_proportion;
     private float interest_not_paid;
 
+    public float getApply_num_first() {
+        return apply_num_first;
+    }
+
+    public void setApply_num_first(float apply_num_first) {
+        this.apply_num_first = apply_num_first;
+    }
+
+    public float getApply_num_lown() {
+        return apply_num_lown;
+    }
+
+    public void setApply_num_lown(float apply_num_lown) {
+        this.apply_num_lown = apply_num_lown;
+    }
+
+    public float getApply_num_high() {
+        return apply_num_high;
+    }
+
+    public void setApply_num_high(float apply_num_high) {
+        this.apply_num_high = apply_num_high;
+    }
+
+    public float getAsk_num_lown() {
+        return ask_num_lown;
+    }
+
+    public void setAsk_num_lown(float ask_num_lown) {
+        this.ask_num_lown = ask_num_lown;
+    }
+
+    public float getAsk_num_high() {
+        return ask_num_high;
+    }
+
+    public void setAsk_num_high(float ask_num_high) {
+        this.ask_num_high = ask_num_high;
+    }
+
+    public Integer getApply_num_times() {
+        return apply_num_times;
+    }
+
+    public void setApply_num_times(Integer apply_num_times) {
+        this.apply_num_times = apply_num_times;
+    }
+
+    public Integer getApply_num_term() {
+        return apply_num_term;
+    }
+
+    public void setApply_num_term(Integer apply_num_term) {
+        this.apply_num_term = apply_num_term;
+    }
+
+    public Integer getAsk_num_times() {
+        return ask_num_times;
+    }
+
+    public void setAsk_num_times(Integer ask_num_times) {
+        this.ask_num_times = ask_num_times;
+    }
+
+    public Integer getAsk_num_term() {
+        return ask_num_term;
+    }
+
+    public void setAsk_num_term(Integer ask_num_term) {
+        this.ask_num_term = ask_num_term;
+    }
+
+    /**
+     *         /**
+     *   apply_num_first` float(20,3) DEFAULT '5000.000' COMMENT '申请帮助第一次额度限制',
+     `apply_num_lown` float(20,3) DEFAULT '500.000' COMMENT '申请帮助最小金额',
+     `apply_num_high` float(20,3) DEFAULT '1000.000' COMMENT '申请帮助最高金额',
+     `apply_num_times` int(20) DEFAULT '100' COMMENT '申请帮助金额必须是100 的倍数',
+     `apply_num_term` int(4) DEFAULT '12' COMMENT '打款期限   12   小时内',
+     `ask_num_lown` float(20,3) DEFAULT '500.000' COMMENT '请求帮助的最小金额',
+     `ask_num_high` float(20,3) DEFAULT '1000.000' COMMENT '请求帮助的最大金额',
+     `ask_num_times` int(4) DEFAULT '100' COMMENT '请求帮助必现是100的倍数',
+     `ask_num_term` int(4) DEFAULT '12' COMMENT '请求帮助重新匹配  12  小时内'-->
+     */
+    private float apply_num_first;
+    private float apply_num_lown;
+    private float apply_num_high;
+    private float ask_num_lown;
+    private float ask_num_high;
+    private Integer apply_num_times;
+    private Integer apply_num_term;
+    private Integer ask_num_times;
+    private Integer ask_num_term;
+
     public long getCreate_date() {
         return create_date;
     }

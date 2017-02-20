@@ -33,7 +33,7 @@
                                       type="text"  readonly="readonly" class="dfinput"/><a  th:href="@{'/admin/userDetail/'+ ${news.referee_user_id}}" th:if="${news.referee_user_id > 0}" class="tablelink">推荐人详情</a><i>推荐人</i></li>
         <li><label>身份证</label><input name="user_carded" readonly="readonly" id="user_carded" type="text" class="dfinput"
                                       th:value="${news.user_carded}"/></li>
-        <li><label>身份证照</label><span>  <img src="/images/img01.png" th:src="@{${news.user_carded_url}}" width="168px" height="126px" />  </span></li>
+        <li><label>身份证照</label><span>  <img src="/images/img01.png" th:src="@{${news.user_carded_url}}" width="168px" height="126px" />  </span><a  th:href="@{${news.user_carded_url}}" target="_blank"  class="tablelink">查看原图</a></li>
         <li><label>用户QQ</label><input name="user_qq" id="user_qq" readonly="readonly" type="text" th:value="${news.user_qq}" class="dfinput"/><i>用户QQ</i></li>
         <li><label>银行名称</label><input name="user_bank_name" readonly="readonly" id="user_bank_name" type="text" th:value="${news.user_bank_name}" class="dfinput"/><i>银行名称</i></li>
         <li><label>银行卡号</label><input name="user_bank_account" readonly="readonly"  id="user_bank_account" type="text" th:value="${news.user_bank_account}" class="dfinput"/><i>银行卡号</i></li>
