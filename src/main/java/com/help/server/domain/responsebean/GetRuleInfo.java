@@ -5,6 +5,13 @@ package com.help.server.domain.responsebean;
  * Created by hou on 2017/1/21.
  */
 public class GetRuleInfo {
+    public int getDynamic_times_money() {
+        return dynamic_times_money;
+    }
+
+    public void setDynamic_times_money(int dynamic_times_money) {
+        this.dynamic_times_money = dynamic_times_money;
+    }
 
     public float getOrder_max_money() {
         return order_max_money;
@@ -78,13 +85,7 @@ public class GetRuleInfo {
         this.dynamic_min_money = dynamic_min_money;
     }
 
-    public int getDynamic_times_mone() {
-        return dynamic_times_mone;
-    }
 
-    public void setDynamic_times_mone(int dynamic_times_mone) {
-        this.dynamic_times_mone = dynamic_times_mone;
-    }
 
     public int getDynamic_max_money() {
         return dynamic_max_money;
@@ -147,7 +148,7 @@ public class GetRuleInfo {
     private int static_min_money;
     private int static_times_money;
     private int dynamic_min_money;
-    private int dynamic_times_mone;
+    private int dynamic_times_money;
     private int dynamic_max_money;
     private float dynamic_deduct_proportion;
     private float interest_not_paid;
