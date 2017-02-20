@@ -275,12 +275,12 @@ public interface AppServerMapper {
     @Select("select * from dynamic_award_rules where state<>'D' ")
     public List<Dynamic_Award> findDynmicRules();
 
-    @Update("update orders set order_type = #{ordertype}  where order_num = #{ordernum} ")
-    public int updateOrderStatus(@Param("ordertype") int ordertype, @Param("ordernum") String ordernum);
+    @Update("update orders set order_type = #{ordertype},last_update = #{lastupdate} where order_num = #{ordernum} ")
+    public int updateOrderStatus(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
 
     //更新offer_help 状态
-    @Update("update offer_help set help_status = {helpstatus} where help_order = #{helporder}")
-    public int updateOfferHelp(@Param("helpstatus") int helpstatus,@Param("helporder") String helporder);
+    @Update("update offer_help set help_status = {helpstatus} ,last_update = #{lastupdate}  where help_order = #{helporder}")
+    public int updateOfferHelp(@Param("helpstatus") int helpstatus,@Param("lastupdate") long lastupdate,@Param("helporder") String helporder);
 
     @Select("select count(1) from offer_help where user_id = #{userid}")
     public int getUserOfferHelpCount(@Param("userid") long userid);

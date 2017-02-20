@@ -1009,14 +1009,15 @@ public class AppServerController {
         int complaintstatus =confirmMoneyReq.getType();
         String ordernum = confirmMoneyReq.getOrder_num();
         Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
-        if(complaintstatus==1){ //确认收款
-            appServerMapper.updateOrderStatus(2,ordernum);
-            appServerMapper.updateOfferHelp(2,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(2,orders.getWithdrawals_order());
+        long nCurrentTimer = System.currentTimeMillis();
+        if(complaintstatus==1){ //确认收款,进入冻结期
+            appServerMapper.updateOrderStatus(7,nCurrentTimer,ordernum);
+            appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getWithdrawals_order());
         }else{ //确认未收款
-            appServerMapper.updateOrderStatus(8,ordernum);
-            appServerMapper.updateOfferHelp(8,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(8,orders.getWithdrawals_order());
+            appServerMapper.updateOrderStatus(8,nCurrentTimer,ordernum);
+            appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
         }
         CommResp commResp = new CommResp();
         commResp.setCode(retCode);
@@ -1324,12 +1325,13 @@ public class AppServerController {
         String ordernum = upLoadPayOrderReq.getSn();
         Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
         long ncurrent = System.currentTimeMillis();
+        long nCurrentTimer = System.currentTimeMillis();
         CommResp commResp = new CommResp();
         try {
             appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
-            appServerMapper.updateOrderStatus(6,ordernum);
-            appServerMapper.updateOfferHelp(6,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(6,orders.getWithdrawals_order());
+            appServerMapper.updateOrderStatus(6,nCurrentTimer,ordernum);
+            appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getRecharge_order());
+            appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getWithdrawals_order());
             commResp.setMsg(retMsg);
             commResp.setCode(retCode);
         }catch (Exception ex){
