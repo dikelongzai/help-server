@@ -568,7 +568,14 @@ public class AdminService {
         appServerMappe.id_generator(idname);
         help_id = appServerMappe.get_id_generator(idname);
         offer_helps.setHelp_id(help_id);
-        String ordernum = CommonUtil.genRandomOrder(help_id + "");
+        offer_helps.setHelp_type(help_type);
+        String ordernum ="";
+        if(help_type ==1){
+            ordernum = CommonUtil.genRandomOrderEX("T",help_id+"");
+        }else{
+            ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
+        }
+       // String ordernum = CommonUtil.genRandomOrder(help_id + "");
         offer_helps.setHelp_order(ordernum);
         offer_helps.setMoney_num(money_num);
         offer_helps.setHelp_status(1);
@@ -578,7 +585,7 @@ public class AdminService {
         offer_helps.setWallet_type(wallet_type);
         offer_helps.setState('N');
         offer_helps.setStatus_confirmation(0);
-        offer_helps.setHelp_type(help_type);
+
         offer_helps.setIs_income(1);
         offer_helps.setIs_admin(1);
         appServerMappe.OfferHelp(offer_helps);
@@ -865,7 +872,7 @@ public class AdminService {
         appServerMappe.id_generator(idname);
         long order_id = appServerMappe.get_id_generator(idname);
         long start = System.currentTimeMillis();
-        String ordernum = CommonUtil.genRandomOrder(order_id + "");
+        String ordernum = CommonUtil.genRandomOrderEX("D",order_id + "");
         Orders order = new Orders();
         order.setCreate_date(start);
         order.setLast_date(start);
@@ -1216,7 +1223,13 @@ public class AdminService {
         offer_last.setIs_split(1);
         offer_last.setLast_update(start);
         offer_last.setMoney_num(money_num);
-        String ordernum = CommonUtil.genRandomOrder(help_id + "");
+        String ordernum ="";
+        if(offer_last.getHelp_type() ==1){
+            ordernum = CommonUtil.genRandomOrderEX("T",help_id+"");
+        }else{
+            ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
+        }
+       // String ordernum = CommonUtil.genRandomOrder(help_id + "");
         offer_last.setHelp_order(ordernum);
         appServerMappe.OfferHelp(offer_last);
         jsonSplitResult.put("equelOrderNum", ordernum);
@@ -1227,7 +1240,12 @@ public class AdminService {
         offer_last.setLast_update(start);
         float money_num_split = lastMoney - money_num;
         offer_last.setMoney_num(money_num_split);
-        String ordernum1 = CommonUtil.genRandomOrder(help_id + "");
+        String ordernum1 ="";
+        if(offer_last.getHelp_type() ==1){
+            ordernum1 = CommonUtil.genRandomOrderEX("T",help_id+"");
+        }else{
+            ordernum1 = CommonUtil.genRandomOrderEX("S",help_id+"");
+        }
         offer_last.setHelp_order(ordernum1);
         appServerMappe.OfferHelp(offer_last);
         jsonSplitResult.put("money_num_split", money_num_split);
