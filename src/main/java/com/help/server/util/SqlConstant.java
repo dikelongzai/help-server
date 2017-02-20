@@ -16,4 +16,8 @@ public class SqlConstant {
     //获取下级
     public static final String SQL_GET_LOWER="SELECT user_id FROM `user_member` WHERE referee_user_id=";
     public static  final String COMMON_SELECT_ALL="-1";
+
+
+    public  static final String SQL_GET_OFFER_PAGE=" select create_date,help_order,user_id,money_num,user_phone,help_type,help_status,wallet_type,is_admin,is_income,is_split from offer_help WHERE  1=1  ";
+    public  static final String SQL_GET_ORDER_PAGE=" select * from orders WHERE  1=1  ";
 }

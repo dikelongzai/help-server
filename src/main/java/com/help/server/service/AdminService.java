@@ -40,9 +40,11 @@ public class AdminService {
      * @return
      * @throws Exception
      */
-    public String getSearchLeaveMessageSql(JSONObject param) throws Exception {
+    public String getSearchLeaveMessageSql(JSONObject param,int reply_type ) throws Exception {
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append(SqlConstant.SQL_BASE_LEAVING_MSG);
+        sqlBuffer.append(" and reply_type=").append(reply_type).append(" ");
+        //SQL_BASE_LEAVING_MSG
         int status = Integer.valueOf(param.getString("status"));
         if (!StringUtil.isEmpty(param.getString("st"))) {
             sqlBuffer.append(" and create_date>")
@@ -67,8 +69,8 @@ public class AdminService {
      * @return
      * @throws Exception
      */
-    public JSONObject getLeaveMsg(JSONObject param) throws Exception {
-        String sql = getSearchLeaveMessageSql(param);
+    public JSONObject getLeaveMsg(JSONObject param,int reply_type) throws Exception {
+        String sql = getSearchLeaveMessageSql(param,reply_type);
         int cpage = Integer.valueOf(param.getString("page"));
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
     }
@@ -131,7 +133,105 @@ public class AdminService {
         log.info("getSearchUserSql sql=" + sqlBuffer.toString());
         return sqlBuffer.toString();
     }
-
+    /**
+     * 获取用户发单分页查询sql
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public String getSearchOfferrSql(JSONObject param) throws Exception {
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append(SqlConstant.SQL_GET_OFFER_PAGE);
+        if (!StringUtil.isEmpty(param.getString("user_phone"))) {
+            sqlBuffer.append(" and user_phone like '%")
+                    .append(param.getString("user_phone").trim()).append("%'");
+        }
+        if (!StringUtil.isEmpty(param.getString("st"))) {
+            sqlBuffer.append(" and create_date>")
+                    .append(DateUtil.getLongdate(param.getString("st") + CommonConstant.START_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("et"))) {
+            sqlBuffer.append(" and create_date<=")
+                    .append(DateUtil.getLongdate(param.getString("et") + CommonConstant.END_DAY));
+        }
+        //param={"et":"","help_status":"-1","help_type":"-1","is_admin":"-1","is_income":"-1","is_split":"-1","page":"1","st":"","user_phone":"","wallet_type":"-1"};result=
+        if (!StringUtil.isEmpty(param.getString("help_status")) && !COMMON_SELECT_ALL.equals(param.getString("help_status"))) {
+            sqlBuffer.append(" and help_status=").append(param.getString("help_status"));
+        }
+        if (!StringUtil.isEmpty(param.getString("is_admin")) && !COMMON_SELECT_ALL.equals(param.getString("is_admin"))) {
+            sqlBuffer.append(" and is_admin=").append(param.getString("is_admin"));
+        }
+        if (!StringUtil.isEmpty(param.getString("is_income")) && !COMMON_SELECT_ALL.equals(param.getString("is_income"))) {
+            sqlBuffer.append(" and is_income=").append(param.getString("is_income"));
+        }
+        if (!StringUtil.isEmpty(param.getString("is_split")) && !COMMON_SELECT_ALL.equals(param.getString("is_split"))) {
+            sqlBuffer.append(" and is_split=").append(param.getString("is_split"));
+        }
+        if (!StringUtil.isEmpty(param.getString("help_type")) && !COMMON_SELECT_ALL.equals(param.getString("help_type"))) {
+            sqlBuffer.append(" and help_type=").append(param.getString("help_type"));
+        }
+        if (!StringUtil.isEmpty(param.getString("wallet_type")) && !COMMON_SELECT_ALL.equals(param.getString("wallet_type"))) {
+            sqlBuffer.append(" and wallet_type=").append(param.getString("wallet_type"));
+        }
+        sqlBuffer.append(SqlConstant.SQL_COMMON_DESC);
+        log.info("getSearchOfferrSql sql=" + sqlBuffer.toString());
+        return sqlBuffer.toString();
+    }
+    /**
+     * 获取用户发单分页查询sql
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public String getSearchOrderSql(JSONObject param) throws Exception {
+        //{"cet":"2017-02-16","complaint_status":"1","cst":"2017-01-31","met":"2017-02-16","mst":"2017-02-02","order_type":"5","page":"1","pet":"2017-02-14","pst":"2017-02-08","withdrawals_phone":"153"};result={"data":[{"create_date":1487390599000,"help_order":"P5472fibb3i17j0fe486","help_status":1,"help_type":2,"is_admin":1,"is_income":1,"is_split":0,"money_num":1100,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487390262849,"help_order":"P4930bjbji494c0b8a7f","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":600,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487389771360,"help_order":"P482i4cig1181b01e7dg","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":600,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487389752907,"help_order":"P468bg4h2g21b60h0720","help_status":1,"help_type":1,"is_admin":0,"is_income":0,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":0},{"create_date":1487389752894,"help_order":"P466cb61e6jaiea4393f","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":2},{"create_date":1487385082685,"help_order":"P311f2808b21dj95g7hf","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487384911235,"help_order":"P3101j377j18671f6gh2","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487384899174,"help_order":"P309184b5ihd313b7gbj","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":10000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487379752057,"help_order":"P22696hf347c9d9b35h5","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":5,"user_phone":"15389290468","wallet_type":1},{"create_date":1487347842474,"help_order":"P1898851hf681426eijg","help_status":1,"help_type":1,"is_admin":0,"is_income":0,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":0}],"page":{"beginIndex":0,"count":1,"endIndex":10,"pageSize":10,"total":57,"totalRow":567}}
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append(SqlConstant.SQL_GET_ORDER_PAGE);
+        if (!StringUtil.isEmpty(param.getString("recharge_phone"))) {
+            sqlBuffer.append(" and recharge_phone like '%")
+                    .append(param.getString("recharge_phone").trim()).append("%'");
+        }
+        if (!StringUtil.isEmpty(param.getString("withdrawals_phone"))) {
+            sqlBuffer.append(" and withdrawals_phone like '%")
+                    .append(param.getString("withdrawals_phone").trim()).append("%'");
+        }
+        if (!StringUtil.isEmpty(param.getString("mst"))) {
+            sqlBuffer.append(" and match_date>")
+                    .append(DateUtil.getLongdate(param.getString("mst") + CommonConstant.START_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("met"))) {
+            sqlBuffer.append(" and match_date<=")
+                    .append(DateUtil.getLongdate(param.getString("met") + CommonConstant.END_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("cst"))) {
+            sqlBuffer.append(" and confirm_date>")
+                    .append(DateUtil.getLongdate(param.getString("cst") + CommonConstant.START_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("cet"))) {
+            sqlBuffer.append(" and confirm_date<=")
+                    .append(DateUtil.getLongdate(param.getString("cet") + CommonConstant.END_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("pst"))) {
+            sqlBuffer.append(" and payment_date>")
+                    .append(DateUtil.getLongdate(param.getString("pst") + CommonConstant.START_DAY));
+        }
+        if (!StringUtil.isEmpty(param.getString("pet"))) {
+            sqlBuffer.append(" and payment_date<=")
+                    .append(DateUtil.getLongdate(param.getString("pet") + CommonConstant.END_DAY));
+        }
+        //param={"et":"","help_status":"-1","help_type":"-1","is_admin":"-1","is_income":"-1","is_split":"-1","page":"1","st":"","user_phone":"","wallet_type":"-1"};result=
+        if (!StringUtil.isEmpty(param.getString("complaint_status")) && !COMMON_SELECT_ALL.equals(param.getString("complaint_status"))) {
+            sqlBuffer.append(" and complaint_status=").append(param.getString("complaint_status"));
+        }
+        if (!StringUtil.isEmpty(param.getString("order_type")) && !COMMON_SELECT_ALL.equals(param.getString("order_type"))) {
+            sqlBuffer.append(" and order_type=").append(param.getString("order_type"));
+        }
+        sqlBuffer.append(SqlConstant.SQL_COMMON_DESC);
+        log.info("getSearchOrderSql sql=" + sqlBuffer.toString());
+        return sqlBuffer.toString();
+    }
     /**
      * 获取激活码分页信息
      *
@@ -158,6 +258,31 @@ public class AdminService {
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
     }
 
+    /**
+     * 获取用户发单
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getPageOffer(JSONObject param) throws Exception {
+        String sql = getSearchOfferrSql(param);
+        int cpage = Integer.valueOf(param.getString("page"));
+        return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
+    }
+    /**
+     * 获取订单
+     *
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public JSONObject getOrderOffer(JSONObject param) throws Exception {
+        //{"cet":"2017-02-16","complaint_status":"1","cst":"2017-01-31","met":"2017-02-16","mst":"2017-02-02","order_type":"5","page":"1","pet":"2017-02-14","pst":"2017-02-08","withdrawals_phone":"153"};result={"data":[{"create_date":1487390599000,"help_order":"P5472fibb3i17j0fe486","help_status":1,"help_type":2,"is_admin":1,"is_income":1,"is_split":0,"money_num":1100,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487390262849,"help_order":"P4930bjbji494c0b8a7f","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":600,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487389771360,"help_order":"P482i4cig1181b01e7dg","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":600,"user_id":7,"user_phone":"17709211685","wallet_type":1},{"create_date":1487389752907,"help_order":"P468bg4h2g21b60h0720","help_status":1,"help_type":1,"is_admin":0,"is_income":0,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":0},{"create_date":1487389752894,"help_order":"P466cb61e6jaiea4393f","help_status":1,"help_type":2,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":2},{"create_date":1487385082685,"help_order":"P311f2808b21dj95g7hf","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487384911235,"help_order":"P3101j377j18671f6gh2","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487384899174,"help_order":"P309184b5ihd313b7gbj","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":10000,"user_id":24,"user_phone":"15389290468","wallet_type":1},{"create_date":1487379752057,"help_order":"P22696hf347c9d9b35h5","help_status":1,"help_type":1,"is_admin":0,"is_income":1,"is_split":0,"money_num":1000,"user_id":5,"user_phone":"15389290468","wallet_type":1},{"create_date":1487347842474,"help_order":"P1898851hf681426eijg","help_status":1,"help_type":1,"is_admin":0,"is_income":0,"is_split":0,"money_num":1000,"user_id":7,"user_phone":"17709211685","wallet_type":0}],"page":{"beginIndex":0,"count":1,"endIndex":10,"pageSize":10,"total":57,"totalRow":567}}
+        String sql = getSearchOrderSql(param);
+        int cpage = Integer.valueOf(param.getString("page"));
+        return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
+    }
     /**
      * 获取匹配列表
      *
@@ -511,6 +636,7 @@ public class AdminService {
      * @throws Exception
      */
     public JSONObject doMatchOffer(JSONObject param) throws Exception {
+        long start = System.currentTimeMillis();
         //{"b1":[{"day":"2017-02-04","value":"800"},{"day":"2017-02-03","value":"600"}],"b2":[{"day":"2017-02-04","value":"500"},{"day":"2017-02-03","value":"700"}],"c1":[{"day":"2017-02-04","value":"100"},{"day":"2017-02-03","value":"900"}],"c2":[{"day":"2017-02-04","value":"1000"},{"day":"2017-02-03","value":"200"}]}
         JSONObject jsonReturn = new JSONObject();
         //第一步取当天订单原数据
@@ -534,11 +660,12 @@ public class AdminService {
         log.info("first=" + jsonParams.toJSONString());
         updateMachMap(uuid, jsonParams);
         initMatchList(uuid);
-        doMatchStep1(uuid);
+        jsonReturn = doMatchStep1(uuid);
+        jsonReturn.put("msg", "OK");
         log.info("last=" + JSON.toJSONString(mapCuMathList));
         mapCuMathList.remove(uuid);
         //{"b1":[{"day":"2017-02-04","offer":[{"help_order":"P590d19i951id0hh71ca","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P93bj6fei1022id284bc","lowerIds":[],"money_num":1500,"ruid":5,"user_id":9,"user_phone":"18192023651"},{"help_order":"P95jieig2h53i689cg87","lowerIds":[],"money_num":1600,"ruid":7,"user_id":18,"user_phone":"17792380563"}],"value":"800"},{"day":"2017-02-03","offer":[{"help_order":"P54gc72i00228c32jf7a","lowerIds":[],"money_num":200,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P989ac1ed4idi9cch597","lowerIds":[],"money_num":200,"ruid":7,"user_id":18,"user_phone":"17792380563"},{"help_order":"P55d0697b5949cg5bi10","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P611gi76ji9i1bh78eg7","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P568b61ehgfij3fc24e3","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P37ed9hfhdb7fb9jb69i","lowerIds":[9,10],"money_num":1000,"ruid":0,"user_id":5,"user_phone":"15389290468"},{"help_order":"P383egiha6g1ece88eea","lowerIds":[17,18],"money_num":1000,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"600"}],"b2":[{"day":"2017-02-04","offer":[{"help_order":"P100bbf37i60j1fbj2ca","lowerIds":[],"money_num":300,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P656113i95ai2gi9ie30","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P67j6dc38f9cib9hfj6d","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"}],"value":"500"},{"day":"2017-02-03","offer":[{"help_order":"P63b59fd49b7ef77f1f9","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P912f5a347g2f6i01a3i","lowerIds":[17,18],"money_num":600,"ruid":0,"user_id":7,"user_phone":"17709211685"},{"help_order":"P978b54a570g9005fec9","lowerIds":[],"money_num":800,"ruid":5,"user_id":10,"user_phone":"18192023650"}],"value":"700"}],"c1":[{"day":"2017-02-04","offer":[{"help_order":"P573690gebgiic9e9ij4","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P923jj842efjg1jbg5ii","lowerIds":[17,18],"money_num":500,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"100"},{"day":"2017-02-03","offer":[{"help_order":"P5250ii8e5jha3884fei","lowerIds":[],"money_num":100,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P945e32gf18iagb976i3","lowerIds":[],"money_num":500,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P406g8i280de7j08ddia","lowerIds":[17,18],"money_num":1000,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"900"}],"c2":[{"day":"2017-02-04","offer":[{"help_order":"P991g55d11f7hdja3bi0","lowerIds":[],"money_num":300,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P58g02c7c116ec11je3d","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P6485d7g37adb71i29e2","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P6612cffjd716i2a8iaj","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"}],"value":"1000"},{"day":"2017-02-03","offer":[{"help_order":"P53cagcj0c8dehe9636b","lowerIds":[],"money_num":200,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P62j82a55igh7a71cdbd","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P602cf771dg4cj8dbe73","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P90gf9i60e19affbceg9","lowerIds":[17,18],"money_num":600,"ruid":0,"user_id":7,"user_phone":"17709211685"},{"help_order":"P961fde0hf6g0eiea3e5","lowerIds":[],"money_num":800,"ruid":5,"user_id":10,"user_phone":"18192023650"}],"value":"200"}]}
-
+        log.info("doMatchOffer cost=" + (System.currentTimeMillis() - start) + "ms;result=" + jsonReturn.toJSONString());
         return jsonReturn;
 
     }
@@ -548,35 +675,71 @@ public class AdminService {
      *
      * @return
      */
-    public void doMatchStep1(String uuid) throws Exception {
-        JSONObject jsonParams = mapCuMathList.get(uuid);
+    public JSONObject doMatchStep1(String uuid) throws Exception {
+        JSONObject jsonObject = new JSONObject();
         Map<String, Integer> mapb = getMapB(uuid);
         log.info("buy map=" + JSON.toJSONString(mapb));
         Map<String, Integer> mapc = getMapS(uuid);
         log.info("sell map=" + JSON.toJSONString(mapc));
-        doMatchEqual(mapb,mapc,uuid);
-        List<Map<String, Integer>> list=matchEqualOfferLimit(mapb,mapc,uuid);
-        mapb=list.get(0);mapc=list.get(1);
-        doMatchEqual(mapb,mapc,uuid);
-        List<Map<String, Integer>> listresult=matchEqualOfferLimit(mapb,mapc,uuid);
+        //第一次全匹配
+        doMatchEqual(mapb, mapc, uuid);
+        //第一次全匹配生成订单数
+        int ordersNum = hasMatchList.get(uuid).size();
+        log.info(" doMatchEqual1 hasMatchList=" + ordersNum);
+        //第一次拆分匹配
+        List<Map<String, Integer>> list = matchEqualOfferLimit(mapb, mapc, uuid);
+        ordersNum = hasMatchList.get(uuid).size() - ordersNum;
+        log.info(" doMatchEqual1 matchEqualOfferLimit 1=" + ordersNum);
+        mapb = list.get(0);
+        mapc = list.get(1);
+        //第二此全匹配
+        doMatchEqual(mapb, mapc, uuid);
+        ordersNum = hasMatchList.get(uuid).size() - ordersNum;
+        log.info(" doMatchEqual1 doMatchEqual 2=" + ordersNum);
         log.info("buy map=" + JSON.toJSONString(mapb));
         log.info("sell map=" + JSON.toJSONString(mapc));
-        saveOrder(uuid);
+        //第二次拆分订单
+        List<Map<String, Integer>> listresult = matchEqualOfferLimit(mapb, mapc, uuid);
+        ordersNum = hasMatchList.get(uuid).size() - ordersNum;
+        jsonObject.put("order_sum", hasMatchList.get(uuid).size());
+        log.info(" doMatchEqual1 matchEqualOfferLimit 2=" + ordersNum);
+        log.info("buy map=" + JSON.toJSONString(mapb));
+        log.info("sell map=" + JSON.toJSONString(mapc));
+        float sumnum = saveOrder(uuid);
+        jsonObject.put("summoney", sumnum);
+        log.info(" order sum money==" + sumnum);
         //进行拆分匹配 先权限验证 包含按金额全匹配
         //matchEqualOfferLimit(mapb, mapc, uuid);
         log.info("buy map=" + JSON.toJSONString(mapb));
         log.info("sell map=" + JSON.toJSONString(mapc));
+        return jsonObject;
     }
-    public void  saveOrder(String uuid)throws Exception{
-        List<Orders> list=hasMatchList.get(uuid);
-        for(Orders order:list){
+
+    /**
+     * 持久化订单
+     *
+     * @param uuid
+     * @throws Exception
+     */
+    public float saveOrder(String uuid) throws Exception {
+        List<Orders> list = hasMatchList.get(uuid);
+        float sumnum = 0;
+        for (Orders order : list) {
+            sumnum = sumnum + order.getMoney_num();
             JdbcUtils.getInstatance().updateByPreparedStatement(getSaveOrderSql(order), null);
         }
-
+        return sumnum;
     }
-    public String getSaveOrderSql(Orders order){
-        StringBuffer sql=new StringBuffer();
-        sql.append("INSERT INTO orders(create_date,last_update,state,order_id,order_type," +
+
+    /**
+     * 获取持久化订单sql
+     *
+     * @param order
+     * @return
+     */
+    public String getSaveOrderSql(Orders order) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("INSERT INTO orders(create_date,last_update,state,order_id,order_num,order_type," +
                 "recharge_order,recharge_phone,recharge_uid," +
                 "withdrawals_order,withdrawals_phone,withdrawals_uid," +
                 "money_num,complaint_status,match_date)select ");
@@ -584,6 +747,7 @@ public class AdminService {
         sql.append(order.getLast_date()).append(",");
         sql.append("'").append(order.getState()).append("',");
         sql.append(order.getOrder_id()).append(",");
+        sql.append("'").append(order.getOrder_num()).append("',");
         sql.append(order.getOrder_type()).append(",");
         sql.append("'").append(order.getRecharge_order()).append("',");
         sql.append("'").append(order.getRecharge_phone()).append("',");
@@ -705,7 +869,7 @@ public class AdminService {
         Orders order = new Orders();
         order.setCreate_date(start);
         order.setLast_date(start);
-        order.setOrder_type(0);
+        order.setOrder_type(3);
         order.setMoney_num(fJson.getFloatValue("money_num"));
         order.setState('N');
         order.setOrder_id(order_id);
@@ -749,7 +913,6 @@ public class AdminService {
         order.setCreate_date(start);
         order.setLast_date(start);
         order.setOrder_type(0);
-
         order.setState('N');
 
         order.setOrder_id(order_id);
@@ -770,7 +933,7 @@ public class AdminService {
 
     }
 
-    public boolean checkOrder(JSONObject param, String uuid) {
+    public boolean checkOrder(JSONObject param, String uuid) throws Exception {
         boolean isTrue = false;
         //每天订单余额检测通过  再检测权限
         if (checkOfferForder(param.getString("forder"), param.getIntValue("num"), uuid) == 1 && checkOfferForder(param.getString("torder"), param.getIntValue("num"), uuid) == 1) {
@@ -788,16 +951,26 @@ public class AdminService {
         String tOrderId = param.getString("torder");
         JSONObject fJson = getOfferByMID(fOrderId, uuid);
         JSONObject tJson = getOfferByMID(tOrderId, uuid);
-        //不能和自己成交不能和上级成交 不能和下级成交
-        if (fJson.getIntValue("user_id") != tJson.getIntValue("user_id") && fJson.getIntValue("ruid") != tJson.getIntValue("user_id") &&
-                !fJson.getJSONArray("lowerIds").contains(tJson.getIntValue("user_id"))) {
-            log.info("checklimits true param=" + param + ";fromJson=" + fJson.toJSONString() + ";toJson=" + tJson.toJSONString());
-            return true;
+        try {
+            if (fJson.getIntValue("user_id") != tJson.getIntValue("user_id") && fJson.getIntValue("ruid") != tJson.getIntValue("user_id") &&
+                    !fJson.getJSONArray("lowerIds").contains(tJson.getIntValue("user_id"))) {
+                if (!isContansOffer(uuid, fJson.getString("help_order")) && !isContansOffer(uuid, tJson.getString("help_order"))) {
+                    return true;
+                } else {
+                    log.info("isContansOffer false fhelp_order=" + fJson.getString("help_order") + ";thelp_order=" + tJson.getString("help_order") + ";matchlist=" + JSON.toJSONString(hasMatchList.get(uuid)));
+                    return false;
+                }
 
-        } else {
-            log.info("checklimits false param=" + param + ";fromJson=" + fJson.toJSONString() + ";toJson=" + tJson.toJSONString());
+
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            log.info("checklimits exception param=" + param.toString() + ";fJson=" + fJson.toJSONString() + ";tjson=" + tJson.toJSONString());
             return false;
         }
+        //不能和自己成交不能和上级成交 不能和下级成交
 
 
     }
@@ -899,29 +1072,35 @@ public class AdminService {
         JSONObject jsonParams = mapCuMathList.get(uuid);
         JSONArray jsonArrayb1 = jsonParams.getJSONArray("b1");
         JSONArray jsonArrayb2 = jsonParams.getJSONArray("b2");
-        for (Object object : jsonArrayb1) {
-            JSONObject json = (JSONObject) object;
+        if (!jsonArrayb1.isEmpty()) {
+            for (Object object : jsonArrayb1) {
+                JSONObject json = (JSONObject) object;
 
-            JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-            for (Object offerObject : offersNotMatch) {
-                JSONObject jsonNotMatch = (JSONObject) offerObject;
-                String key = "b1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                for (Object offerObject : offersNotMatch) {
+                    JSONObject jsonNotMatch = (JSONObject) offerObject;
+                    String key = "b1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
 
-            }
-
-        }
-        for (Object object : jsonArrayb2) {
-            JSONObject json = (JSONObject) object;
-            JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-            for (Object offerObject : offersNotMatch) {
-                JSONObject jsonNotMatch = (JSONObject) offerObject;
-                String key = "b2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+                }
 
             }
 
         }
+        if (!jsonArrayb2.isEmpty()) {
+            for (Object object : jsonArrayb2) {
+                JSONObject json = (JSONObject) object;
+                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                for (Object offerObject : offersNotMatch) {
+                    JSONObject jsonNotMatch = (JSONObject) offerObject;
+                    String key = "b2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+
+                }
+
+            }
+        }
+
         return mapb;
 
     }
@@ -931,27 +1110,32 @@ public class AdminService {
         JSONObject jsonParams = mapCuMathList.get(uuid);
         JSONArray jsonArrayb1 = jsonParams.getJSONArray("c1");
         JSONArray jsonArrayb2 = jsonParams.getJSONArray("c2");
-        for (Object object : jsonArrayb1) {
-            JSONObject json = (JSONObject) object;
-            JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-            for (Object offerObject : offersNotMatch) {
-                JSONObject jsonNotMatch = (JSONObject) offerObject;
-                String key = "c1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+        if(!jsonArrayb1.isEmpty()){
+            for (Object object : jsonArrayb1) {
+                JSONObject json = (JSONObject) object;
+                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                for (Object offerObject : offersNotMatch) {
+                    JSONObject jsonNotMatch = (JSONObject) offerObject;
+                    String key = "c1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+
+                }
 
             }
-
         }
-        for (Object object : jsonArrayb2) {
-            JSONObject json = (JSONObject) object;
-            JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-            for (Object offerObject : offersNotMatch) {
-                JSONObject jsonNotMatch = (JSONObject) offerObject;
-                String key = "c2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+        if(!jsonArrayb2.isEmpty()){
+            for (Object object : jsonArrayb2) {
+                JSONObject json = (JSONObject) object;
+                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                for (Object offerObject : offersNotMatch) {
+                    JSONObject jsonNotMatch = (JSONObject) offerObject;
+                    String key = "c2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+                }
+
             }
-
         }
+
         return mapb;
 
     }
@@ -1110,7 +1294,7 @@ public class AdminService {
             json.put("lowerIds", getLowerByUid(mapTmp.get("user_id").toString()));
             returnJson.add(json);
         }
-        log.info("getOfferHelpByWhereSql sql=" + sql + ";result=" + returnJson.toJSONString());
+        //  log.info("getOfferHelpByWhereSql sql=" + sql + ";result=" + returnJson.toJSONString());
         return returnJson;
 
     }
@@ -1132,7 +1316,7 @@ public class AdminService {
 
             }
         }
-        log.info("getLowerByUid sql=" + sql + ";result=" + returnJson.toJSONString());
+        // log.info("getLowerByUid sql=" + sql + ";result=" + returnJson.toJSONString());
         return returnJson;
     }
 
@@ -1140,7 +1324,7 @@ public class AdminService {
      * 权限匹配
      */
     public List<Map<String, Integer>> matchEqualOfferLimit(Map<String, Integer> mapb, Map<String, Integer> mapc, String uuid) throws Exception {
-        List<Map<String, Integer>> matchLast=new LinkedList<Map<String, Integer>>();
+        List<Map<String, Integer>> matchLast = new LinkedList<Map<String, Integer>>();
         Map<String, Integer> mapbClone = new HashMap<String, Integer>();
         mapbClone.putAll(mapb);
         Map<String, Integer> mapcClone = new HashMap<String, Integer>();
@@ -1250,12 +1434,13 @@ public class AdminService {
 
     /**
      * 全匹配
+     *
      * @param mapb
      * @param mapc
      * @param uuid
      * @throws Exception
      */
-    public void  doMatchEqual(Map<String, Integer> mapb, Map<String, Integer> mapc, String uuid)throws Exception{
+    public void doMatchEqual(Map<String, Integer> mapb, Map<String, Integer> mapc, String uuid) throws Exception {
         //拆分匹配完成再对剩余订单进行一次全匹配
         JSONArray jsonArrayMatchAll = MatchUtil.matchEqualOffer(mapb, mapc);
         JSONArray jsonUnmatch = checkMatchAll(jsonArrayMatchAll, uuid);
@@ -1268,6 +1453,7 @@ public class AdminService {
         log.info("sell map=" + JSON.toJSONString(mapc));
 
     }
+
     /**
      * 第一步 生成订单 第2步更新 list 第三步 更新 map
      *

@@ -40,6 +40,10 @@ var leave = {
         });
         //开始匹配
        $("#match").click(function () {
+         var bvalue=0;
+         var svalue=0
+
+       //$("#load-ball").addClass("is-active");
         var url = "/admin/doMatch";
         var paramsObj=new Object();
         var b1valueArr=new Array();
@@ -53,6 +57,7 @@ var leave = {
                 var id = "b1"+cvalue;
                 var value=$("#"+id).val();
                 tmpvalue.value=value;
+                bvalue+=parseInt(value);
                 b1valueArr.push(tmpvalue);
            });
           $("input[type=checkbox][name=bc2]:checked").each(function() {
@@ -62,6 +67,7 @@ var leave = {
                             var id = "b2"+cvalue;
                             var value=$("#"+id).val();
                            tmpvalue.value=value;
+                            bvalue+=parseInt(value);
                            b2valueArr.push(tmpvalue);
            });
           $("input[type=checkbox][name=sc1]:checked").each(function() {
@@ -71,6 +77,7 @@ var leave = {
                              var id = "s1"+cvalue;
                                                       var value=$("#"+id).val();
                            tmpvalue.value=value;
+                            svalue+=parseInt(value);
                            c1valueArr.push(tmpvalue);
            });
           $("input[type=checkbox][name=sc2]:checked").each(function() {
@@ -80,8 +87,16 @@ var leave = {
                            var id = "s2"+cvalue;
                            var value=$("#"+id).val();
                            tmpvalue.value=value;
+                            svalue+=parseInt(value);
                            c2valueArr.push(tmpvalue);
           });
+          if(bvalue==svalue){
+            alert('本次共匹配金额'+bvalue);
+          //  $(".loader loader-ball").addClass("is-active");
+          }else{
+            alert('买入卖出金额必须一致后再进行匹配');
+            return;
+          }
           if(b1valueArr.length>0){
             paramsObj.b1=b1valueArr;
           }
@@ -98,7 +113,12 @@ var leave = {
                 param:JSON.stringify(paramsObj)
             };
                    $.myPostJSON(url, params, function (data) {
-
+                   // $(".loader loader-ball").removeClass("is-active");
+                   //addClass("is-active");
+                        	if(data&&data.msg=='OK'){
+                        	    alert("本次共匹配订单数"+data.order_sum+";订单总额"+data.summoney);
+                        		location.reload();
+                        	}
 
                    }, false);
 

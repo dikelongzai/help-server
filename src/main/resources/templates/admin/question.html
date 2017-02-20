@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>无标题文档</title>
@@ -12,13 +12,14 @@
     <script type="text/javascript" src="/editor/kindeditor.js"></script>
     <script language="javascript" type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
-    <script type="text/javascript" src="/js/leave.js"></script>
+    <script type="text/javascript" src="/js/question.js"></script>
     <script type="text/javascript">
 $(document).ready(function(e) {
     $(".select3").uedSelect({
 		width : 152
 	});
 });
+
 
     </script>
 </head>
@@ -28,8 +29,8 @@ $(document).ready(function(e) {
 <div class="place">
     <span>位置：</span>
     <ul class="placeul">
-        <li><a href="#">用户管理</a></li>
-        <li><a href="#">留言管理</a></li>
+        <li><a href="#">其他设置</a></li>
+        <li><a href="#">常见问题</a></li>
     </ul>
 </div>
 
@@ -38,28 +39,19 @@ $(document).ready(function(e) {
 
     <div id="usual1" class="usual">
         <ul class="seachform1">
-            <li><label>留言时间</label><input name="st" id="st" type="text" class="scinput1"  onClick="WdatePicker()"/></li>
-            <li><label>一</label><input name="et" id="et" type="text" class="scinput1"  onClick="WdatePicker()"/></li>
-            <li><label>是否回复</label>
-                <div class="vocation">
-                    <select class="select3">
-                        <option value="-1">全部</option>
-                        <option value="1">否</option>
-                        <option value="2">是</option>
-                    </select>
-                </div>
-            </li>
+            <li><label>添加时间</label><input name="st" id="st" type="text" class="scinput1" onClick="WdatePicker()"/></li>
+            <li><label>一</label><input name="et" id="et" type="text" class="scinput1" onClick="WdatePicker()"/></li>
 
         </ul>
         <ul class="seachform1">
-            <li class="sarchbtn"><label>&nbsp;</label><input id="searchBt" type="button" class="scbtn" value="查询"/> </li>
+            <li class="sarchbtn"><label>&nbsp;</label><input id="searchBt" type="button" class="scbtn" value="查询"/></li>
+            <li><a th:href="@{/admin/questionAdd}"><span><img src="/images/t01.png"/></span>添加</a></li>
         </ul>
-        <div class="formtitle"><span>留言列表</span></div>
+        <div class="formtitle"><span>常见问题列表</span></div>
         <table class="tablelist">
             <thead>
             <tr>
-                <th>标题</th>
-                <th>是否回复</th>
+                <th>问题</th>
                 <th>回复内容</th>
                 <th>发布时间</th>
                 <th>操作</th>

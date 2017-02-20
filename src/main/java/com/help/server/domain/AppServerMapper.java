@@ -166,11 +166,10 @@ public interface AppServerMapper {
     @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")
     public int getLeavingMsgCount(@Param("uid") long uid);
 
-
     // 提供或接受帮助 10014
-    @Insert("insert into leaving_msg(create_date,last_update,state,leaving_id,user_id,msg_content,is_reply,msg_date)" +
+    @Insert("insert into leaving_msg(create_date,last_update,state,leaving_id,user_id,msg_content,is_reply,msg_date,reply_type,reply_content)" +
             " values(#{create_date}, #{last_update},#{state},#{leaving_id},#{user_id},#{msg_content}" +
-            ",#{is_reply},#{msg_date})")
+            ",#{is_reply},#{msg_date},#{reply_type},#{reply_content})")
     public int InsertLeavingMsg(Leaving_Msg leaving_msg);
 
     //  根据titleid获取 title name

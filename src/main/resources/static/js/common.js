@@ -18,6 +18,7 @@ var common ={
 
 		return year + "-" + month + "-" + day;
 	},
+
 	 getDateStrSec:function (date) {
 		 var mydate = new Date();
 		 if (date != "" && date != null && date != undefined) {

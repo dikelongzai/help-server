@@ -30,7 +30,7 @@
         <li><label>用户手机</label><input name="user_phone" id="user_phone" type="text" class="dfinput"
                                         th:value="${news.user_phone} " readonly="readonly"/></li>
         <li><label>推荐人手机</label><input name="user_referee_phone" id="user_referee_phone" th:value="${news.user_referee_phone}"
-                                      type="text"  readonly="readonly" class="dfinput"/><a  href="@{'/admin/userDetail/'+ ${news.referee_user_id}}" class="tablelink">推荐人详情</a><i>推荐人</i></li>
+                                      type="text"  readonly="readonly" class="dfinput"/><a  th:href="@{'/admin/userDetail/'+ ${news.referee_user_id}}" th:if="${news.referee_user_id > 0}" class="tablelink">推荐人详情</a><i>推荐人</i></li>
         <li><label>身份证</label><input name="user_carded" readonly="readonly" id="user_carded" type="text" class="dfinput"
                                       th:value="${news.user_carded}"/></li>
         <li><label>身份证照</label><span>  <img src="/images/img01.png" th:src="@{${news.user_carded_url}}" width="168px" height="126px" />  </span></li>

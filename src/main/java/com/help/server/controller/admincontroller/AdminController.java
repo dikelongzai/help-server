@@ -279,7 +279,8 @@ public class AdminController {
     public JSONObject getLeaveMessage(HttpServletRequest request) throws Exception {
         JSONObject param = ServletUtil.getAppRequestParameters(request, null);
         log.info("param=" + param.toJSONString());
-        JSONObject resultJson = aadminService.getLeaveMsg(param);
+        // 'reply_type 0 普通用户留言 1 管理员问题解答'
+        JSONObject resultJson = aadminService.getLeaveMsg(param,0);
         log.info(resultJson.toJSONString());
         return resultJson;
     }
@@ -686,12 +687,122 @@ public class AdminController {
         //{"b1":[{"day":"2017-02-04","value":"800"},{"day":"2017-02-03","value":"4200"}],"b2":[{"day":"2017-02-04","value":"1800"},{"day":"2017-02-03","value":"500"}],"c1":[{"day":"2017-02-04","value":"500"},{"day":"2017-02-03","value":"1100"}],"c2":[{"day":"2017-02-04","value":"2600"},{"day":"2017-02-03","value":"1300"}]}
         JSONObject paramJson=JSON.parseObject(param.getString("param"));
         log.info("paramJson=" + paramJson.toJSONString());
-        aadminService.doMatchOffer(paramJson);
         //int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
-        return param;
+        return aadminService.doMatchOffer(paramJson);
     }
 
 
      /* ===========================订单匹配end==================================**/
+    /* ===========================常见问题start==================================**/
+    /**
+     * 常见问题
+     *
+     * @param map
+     * @param request
+     * @return
+     */
+    @RequestMapping("/question")
+    public String question(Map<String, Object> map, HttpServletRequest request) {
+        return "admin/question";
+    }
+
+    /**
+     * 添加问题
+     *
+     * @return
+     */
+    @RequestMapping(value = "/questionAdd", method = RequestMethod.GET)
+    public String questionAdd() {
+        return "admin/questionAdd";
+    }
+
+    /**
+     * ajax获取留言信息及分页信息
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getQuestionMessage", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getQuestionMessage(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        log.info("param=" + param.toJSONString());
+        // 'reply_type 0 普通用户留言 1 管理员问题解答'
+        JSONObject resultJson = aadminService.getLeaveMsg(param, 1);
+        log.info(resultJson.toJSONString());
+        return resultJson;
+    }
+    /**
+     * 常见问题添加
+     *
+     * @param news
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = "/doAddQquest", method = RequestMethod.POST)
+    public String doAddQquest(@ModelAttribute Leaving_Msg leaving_msg, BindingResult result) {
+        log.info("success addAward parm=" + JSON.toJSON(leaving_msg));
+        long ncurrent = System.currentTimeMillis();
+        leaving_msg.setCreate_date(ncurrent);
+        leaving_msg.setLast_update(ncurrent);
+        leaving_msg.setMsg_date(ncurrent);
+        leaving_msg.setIs_reply(2);
+        leaving_msg.setUser_id(0);
+        leaving_msg.setState('N');
+        leaving_msg.setReply_type(1);
+        long leaving_id = 0;
+        String leaving_name = "leaving_id";
+        appServerMapper.id_generator(leaving_name);
+        leaving_id = appServerMapper.get_id_generator(leaving_name);
+        leaving_msg.setLeaving_id(leaving_id);
+        appServerMapper.InsertLeavingMsg(leaving_msg);
+        return "redirect:/admin/question";
+    }
+    /* ===========================常见问题end==================================**/
+    /* ===========================用户发单start==================================**/
+    @RequestMapping("/offer")
+    public String offer(Map<String, Object> map, HttpServletRequest request) {
+        return "admin/offer";
+    }
+    /**
+     * ajax获取getOfferList
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getOfferList", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getOfferList(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        //param={"et":"","help_status":"-1","help_type":"-1","is_admin":"-1","is_income":"-1","is_split":"-1","page":"1","st":"","user_phone":"","wallet_type":"-1"};result=
+        JSONObject resultJson = aadminService.getPageOffer(param);
+        log.info("param=" + param.toJSONString()+";result="+resultJson.toJSONString());
+        return resultJson;
+    }
+    /* ===========================用户发单end==================================**/
+        /* ===========================订单start==================================**/
+    @RequestMapping("/order")
+    public String order(Map<String, Object> map, HttpServletRequest request) {
+        return "admin/order";
+    }
+    /**
+     * ajax获取getOfferList
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getOrderList", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getOrderList(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        //param={"et":"","help_status":"-1","help_type":"-1","is_admin":"-1","is_income":"-1","is_split":"-1","page":"1","st":"","user_phone":"","wallet_type":"-1"};result=
+        JSONObject resultJson = aadminService.getOrderOffer(param);
+        log.info("param=" + param.toJSONString()+";result="+resultJson.toJSONString());
+        return resultJson;
+    }
+    /* ===========================用户发单end==================================**/
 
 }
