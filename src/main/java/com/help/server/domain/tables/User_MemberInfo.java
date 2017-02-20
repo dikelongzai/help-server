@@ -133,6 +133,16 @@ public class User_MemberInfo {
     private String user_name;
     //用户id
     private Long user_id;
+
+    public Long getReferee_user_id() {
+        return referee_user_id;
+    }
+
+    public void setReferee_user_id(Long referee_user_id) {
+        this.referee_user_id = referee_user_id;
+    }
+
+    private Long referee_user_id=0L;
     //是账号是否激活
     private Integer is_activate;
     //用户电话
