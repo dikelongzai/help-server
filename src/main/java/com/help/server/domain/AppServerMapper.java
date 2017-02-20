@@ -291,6 +291,13 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  orders where withdrawals_order =#{withdrawals}")
     public Orders getOrderInfoDetailsS(@Param("withdrawals") String withdrawals);
 
+    @Update("update user_member set used_code_num = used_code_num - #{codenum} where user_phone = #{userphone} ")
+    public int updateUserUnActiveNum_dec(@Param("codenum") int codenum, @Param("userphone") String userphone);
+
+    @Select("SELECT * FROM  income_calcul_log where user_id =#{userid} AND income_type = #{incometype}")
+    public List<Income_calcul_log>  getincome_calcul_Log(@Param("userid") long userid,@Param("incometype") int incometype);
+
+
 }
 
 

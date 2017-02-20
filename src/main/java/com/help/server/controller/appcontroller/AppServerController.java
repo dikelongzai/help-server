@@ -594,6 +594,7 @@ public class AppServerController {
             if(usable_code_num>=1){
                 appServerMapper.updateValUser(to_phone);
                 appServerMapper.updateUserActiveNum_dec(1,from_phone);
+                appServerMapper.updateUserUnActiveNum_dec(1,from_phone);
                 commResp.setCode(retCode);
                 commResp.setMsg(retMsg);
             }else{
@@ -1632,6 +1633,48 @@ public class AppServerController {
         getUserCommonQuestResp.setCode(retCode);
 
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserCommonQuestResp);
+        String retMsg = Base64Util.encode(jsonObject.toString());
+        try {
+            retMsg = URLEncoder.encode(retMsg, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return retMsg;
+    }
+
+    @RequestMapping(value = "10031")
+
+    @ResponseBody
+    public String getUserInCome(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
+
+        String inputInt = request.getParameter("p");
+        String msgBody = Base64Util.decode(inputInt);
+        GetUserInComeReq getUserInComeReq = JSON.parseObject(msgBody, GetUserInComeReq.class);
+        GetUserInComeResp getUserInComeResp = new GetUserInComeResp();
+        List<Income_calcul_log> incomeCalculLogList = appServerMapper.getincome_calcul_Log(getUserInComeReq.getUid()
+                ,getUserInComeReq.getIncome_type());
+
+        ArrayList<GetUserInComeInfo> getUserInComeInfoArrayList = new ArrayList<>();
+        for(int i =0;i<incomeCalculLogList.size();i++){
+            Income_calcul_log incomeCalculLog = incomeCalculLogList.get(i);
+            GetUserInComeInfo getUserInComeInfo = new GetUserInComeInfo();
+            getUserInComeInfo.setIncome_date(incomeCalculLog.getCreate_date());
+            getUserInComeInfo.setMoney_num(incomeCalculLog.getMoney_num());
+            getUserInComeInfo.setOrg_money_num(incomeCalculLog.getOrg_money_num());
+            getUserInComeInfo.setOrder_num(incomeCalculLog.getHelporder());
+            if(getUserInComeReq.getIncome_type() == 1){
+                User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(incomeCalculLog.getFuser_id());
+                if(user_memberInfo!=null){
+                    getUserInComeInfo.setUser_name(user_memberInfo.getUser_name());
+                    getUserInComeInfo.setUser_phone(user_memberInfo.getUser_phone());
+                }
+            }
+            getUserInComeInfoArrayList.add(getUserInComeInfo);
+        }
+        getUserInComeResp.setCode(retCode);
+        getUserInComeResp.setMsg(retMsg);
+
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserInComeResp);
         String retMsg = Base64Util.encode(jsonObject.toString());
         try {
             retMsg = URLEncoder.encode(retMsg, "UTF-8");

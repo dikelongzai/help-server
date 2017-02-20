@@ -54,33 +54,178 @@ public class HelpTasks {
     //计算每个用户的级别
     @Scheduled(cron="0 0 1 * * *")
     public void Userlevel_Cal() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        log.error("Userlevel_Cal:"+df.format(new Date()));// new Date()为获取当前系统时间
 
         long nMemberCount = helpTasksMapper.getUserMemberCount();
-        List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(1);
-        for (int i =0;i<list.size();i++){
-            User_MemberInfo user_memberInfo = list.get(i);
-            List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
-            int nsize = userMemberlist.size()-1;
-            int title_id = (int)getUserTileID(nsize);
-            if(title_id > user_memberInfo.getTitle_id()){
-                helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
-                log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());
+        long ncount = nMemberCount / 100;
+        if(ncount>0){
+            long ncurrent = 0;
+            for (int i = 0; i <= ncount; i++) {
+                long ndexcurrent = helpTasksMapper.getUserMemberLimit(ncurrent);
+                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
+                for (int j =0;j<list.size();j++){
+                    User_MemberInfo user_memberInfo = list.get(j);
+                    List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+                    int nsize = userMemberlist.size()-1;
+                    int title_id = (int)getUserTileID(nsize);
+                    if(title_id > user_memberInfo.getTitle_id()){
+                        helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
+                        log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());
+                    }
+                }
+                ncurrent = ndexcurrent;
             }
+        }else{
+            List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(1);
+            for (int i =0;i<list.size();i++){
+                User_MemberInfo user_memberInfo = list.get(i);
+                List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+                int nsize = userMemberlist.size()-1;
+                int title_id = (int)getUserTileID(nsize);
+                if(title_id > user_memberInfo.getTitle_id()){
+                    helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
+                    log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());
+                }
+            }
+        }
+
+    }
+    //计算收入第一级
+    void calLeader_Income_one(User_MemberInfo user_memberInfo,User_MemberInfo user_memberInfo1,long nCurrentTimer, List<Dynamic_Award> dynamicAwardList,int generation){
+
+        List<Offer_Help> offerHelpList = helpTasksMapper.getUserCompleOfferHelp(user_memberInfo1.getUser_id());
+        float generation_one = 0;
+        long nTitle_id = user_memberInfo.getTitle_id();
+        for (int i =0;i<dynamicAwardList.size();i++){
+            Dynamic_Award dynamicAward = dynamicAwardList.get(i);
+            if(dynamicAward.getUser_title_id()==nTitle_id){
+                if(generation ==0){
+                    generation_one = dynamicAward.getOne_generation();
+                }else if(generation ==1){
+                    generation_one = dynamicAward.getTwo_generation();
+                }else if(generation ==2){
+                    generation_one = dynamicAward.getThree_generation();
+                }else{
+                    generation_one = dynamicAward.getFour_generation();
+                }
+                break;
+            }
+        }
+        if(generation_one ==0.0){
+            return;
+        }
+        for (int m =0;m<offerHelpList.size();m++){
+            Offer_Help offerHelp= offerHelpList.get(m);
+            Income_calcul_log incomeCalculLog = new Income_calcul_log();
+            incomeCalculLog.setCreate_date(nCurrentTimer);
+            incomeCalculLog.setLast_update(nCurrentTimer);
+            incomeCalculLog.setHelporder(offerHelp.getHelp_order());
+            String idname = "income_id";
+            appServerMapper.id_generator(idname);
+            incomeCalculLog.setIncome_id(appServerMapper.get_id_generator(idname));
+            incomeCalculLog.setIncome_type(1);
+            incomeCalculLog.setOrg_money_num(offerHelp.getMoney_num());
+
+            float money = offerHelp.getMoney_num()*generation_one;
+            incomeCalculLog.setMoney_num(money);
+            incomeCalculLog.setUser_id(user_memberInfo.getUser_id());
+            incomeCalculLog.setFuser_id(offerHelp.getUser_id());
+             //添加到用户领导奖领导奖和更新
+            helpTasksMapper.updateUserDynamic_Wallet(money,user_memberInfo1.getUser_id());
+            helpTasksMapper.updateOffer_help_income(offerHelp.getHelp_order());
+            //插入收入表
+            helpTasksMapper.insertInComCalcul(incomeCalculLog);
         }
     }
     //领导动态奖计算
     @Scheduled(cron="0 0 2 * * *")
     public void CalLeader_Money(){
 
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        log.error("CalLeader_Money:"+df.format(new Date()));// new Date()为获取当前系统时间
+
+        List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
+
+        long nMemberCount = helpTasksMapper.getUserMemberCount();
+        long ncount = nMemberCount / 100;
+        long nCurrentTimer = System.currentTimeMillis();
+        if(ncount>0){
+            long ncurrent = 0;
+            for (int i = 0; i <= ncount; i++) {
+                long ndexcurrent = helpTasksMapper.getUserMemberLimit(ncurrent);
+                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
+                for (int j =0;j<list.size();j++){
+                    User_MemberInfo user_memberInfo = list.get(j);
+                    List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+                    int nsize = userMemberlist.size()-1;
+                    if(nsize>5){
+                        List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
+                        for (int k =0;k<oneList.size();k++){//一级
+                            User_MemberInfo user_memberInfo1 = oneList.get(k);
+                            calLeader_Income_one(user_memberInfo,user_memberInfo1,nCurrentTimer,dynamicAwardList,0);
+                            List<User_MemberInfo> twoList= appServerMapper.getUserLevel(user_memberInfo1.getUser_id());
+                            for (int m =0;m<twoList.size();m++){ //二级
+                                User_MemberInfo user_memberInfo2 = twoList.get(m);
+                                calLeader_Income_one(user_memberInfo,user_memberInfo2,nCurrentTimer,dynamicAwardList,1);
+                                List<User_MemberInfo> threeList= appServerMapper.getUserLevel(user_memberInfo2.getUser_id());
+                                for (int n =0;n<threeList.size();n++){ //三级
+                                    User_MemberInfo user_memberInfo3 = threeList.get(n);
+                                    calLeader_Income_one(user_memberInfo,user_memberInfo3,nCurrentTimer,dynamicAwardList,2);
+                                    List<User_MemberInfo> fourList= appServerMapper.getUserLevel(user_memberInfo3.getUser_id());
+                                    for (int l =0;l<fourList.size();l++){ //四级
+                                        User_MemberInfo user_memberInfo4 = threeList.get(l);
+                                        calLeader_Income_one(user_memberInfo,user_memberInfo4,nCurrentTimer,dynamicAwardList,3);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                ncurrent = ndexcurrent;
+            }
+        }else{
+            List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(1);
+            for(int i=0;i<list.size();i++){
+                User_MemberInfo user_memberInfo = list.get(i);
+                List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+                if(userMemberlist.size()>5){
+                    List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
+                    for (int k =0;k<oneList.size();k++){//一级
+                        User_MemberInfo user_memberInfo1 = oneList.get(k);
+                        calLeader_Income_one(user_memberInfo,user_memberInfo1,nCurrentTimer,dynamicAwardList,0);
+                        List<User_MemberInfo> twoList= appServerMapper.getUserLevel(user_memberInfo1.getUser_id());
+                        for (int m =0;m<twoList.size();m++){ //二级
+                            User_MemberInfo user_memberInfo2 = twoList.get(m);
+                            calLeader_Income_one(user_memberInfo,user_memberInfo2,nCurrentTimer,dynamicAwardList,1);
+                            List<User_MemberInfo> threeList= appServerMapper.getUserLevel(user_memberInfo2.getUser_id());
+                            for (int n =0;n<threeList.size();n++){ //三级
+                                User_MemberInfo user_memberInfo3 = threeList.get(n);
+                                calLeader_Income_one(user_memberInfo,user_memberInfo3,nCurrentTimer,dynamicAwardList,2);
+                                List<User_MemberInfo> fourList= appServerMapper.getUserLevel(user_memberInfo3.getUser_id());
+                                for (int l =0;l<fourList.size();l++){ //四级
+                                    User_MemberInfo user_memberInfo4 = threeList.get(l);
+                                    calLeader_Income_one(user_memberInfo,user_memberInfo4,nCurrentTimer,dynamicAwardList,3);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
-//冻结奖计算
-
+    //冻结奖计算
     @Scheduled(cron="0 0 3 * * *")
     public void CalIncome_Money(){
 
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        log.error("CalIncome_Money:"+df.format(new Date()));// new Date()为获取当前系统时间
+
         GetRuleInfo getRuleInfo = helpTasksMapper.getTaskRuleInfo();
-//未匹配
+        //未匹配
         List<Offer_Help> offer_helpListUnMatch = helpTasksMapper.getOfferCalUnMatch();
         for (int i =0;i<offer_helpListUnMatch.size();i++){
             long nCurrentTimer = System.currentTimeMillis();
@@ -104,7 +249,7 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-//已匹配
+        //已匹配
         List<Offer_Help> offer_helpListMatch = helpTasksMapper.getOfferCalMatch();
         for (int i =0;i<offer_helpListMatch.size();i++){
             long nCurrentTimer = System.currentTimeMillis();
@@ -129,6 +274,5 @@ public class HelpTasks {
             }
         }
     }
-
-
 }
+

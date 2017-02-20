@@ -40,8 +40,24 @@ public interface HelpTasksMapper {
     @Update("update offer_help set last_update = #{lastupdate} where help_order = #{helporder}")
     public int updateLastOfferHelp(@Param("lastupdate") long lastupdate,@Param("helporder") String helporder);
     // 生成验证码
-    @Insert("insert into income_calcul_log(create_date,last_update,income_id,income_type,user_id,money_num,org_money_num,helporder)" +
-            " values(#{create_date}, #{last_update},#{income_id},#{income_type},#{user_id},#{money_num},#{org_money_num},#{helporder})")
+    @Insert("insert into income_calcul_log(create_date,last_update,income_id,income_type,user_id,money_num,org_money_num,helporder,fuser_id)" +
+            " values(#{create_date}, #{last_update},#{income_id},#{income_type},#{user_id},#{money_num},#{org_money_num},#{helporder},#{fuser_id})")
     public int insertInComCalcul(Income_calcul_log inComCalcul);
 
+    @Select("select max(user_id) from (select user_id from user_member where user_id > #{ncurrent} and state <> 'D' order by user_id asc limit 100) a")
+    public long getUserMemberLimit(long ncurrent);
+
+    @Select("select * from offer_help where user_id = #{userid} AND help_type = 1 AND help_status =2 AND is_leader_income = 0")
+    public List<Offer_Help> getUserCompleOfferHelp(long userid);
+
+    // 查询更新用户的激活码--添加
+    @Update("update user_member set udynamic_wallet = udynamic_wallet + #{udynamicwallet} where user_id = #{uid} ")
+    public int updateUserDynamic_Wallet(@Param("udynamicwallet") float udynamicwallet, @Param("uid") long uid);
+
+    // 查询更新用户的激活码--添加
+    @Update("update offer_help set is_leader_income = 1 where help_order = #{helporder} ")
+    public int updateOffer_help_income(@Param("helporder") String helporder);
 }
+
+
+

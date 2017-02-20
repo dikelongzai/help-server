@@ -9,7 +9,7 @@ public class Income_calcul_log {
 
     }
     public Income_calcul_log(long create_date,long last_update,long income_id
-            ,long income_type,long user_id,float money_num,float org_money_num,String helporder){
+            ,long income_type,long user_id,float money_num,float org_money_num,String helporder,long fuser_id){
         this.create_date = create_date;
         this.last_update = last_update;
         this.income_id = income_id;
@@ -18,6 +18,7 @@ public class Income_calcul_log {
         this.money_num = money_num;
         this.org_money_num = org_money_num;
         this.helporder = helporder;
+        this.fuser_id = fuser_id;
 
     }
     private long id;
@@ -27,9 +28,19 @@ public class Income_calcul_log {
     private long income_type;
     private long user_id;
     private float money_num;
+
+    public long getFuser_id() {
+        return fuser_id;
+    }
+
+    public void setFuser_id(long fuser_id) {
+        this.fuser_id = fuser_id;
+    }
+
     private float org_money_num;
     private String helporder;
     private String income_explain;
+    private long fuser_id =0;
     public long getId() {
         return id;
     }
