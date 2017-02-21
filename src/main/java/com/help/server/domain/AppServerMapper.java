@@ -164,10 +164,10 @@ public interface AppServerMapper {
     public List<Rotate_News> getRotateNews();
 //
     // 获取新闻信息数量Count
-    @Select("select * from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type = 0")
+    @Select("select * from leaving_msg  where user_id = #{uid} AND state <> 'D' AND reply_type = 0")
     public List<Leaving_Msg> getLeavingMsg(@Param("uid") long uid);
 
-    @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state = 'N' AND reply_type =0")
+    @Select("select count(1) from leaving_msg  where user_id = #{uid} AND state <> 'D' AND reply_type =0")
     public int getLeavingMsgCount(@Param("uid") long uid);
 
     // 提供或接受帮助 10014
