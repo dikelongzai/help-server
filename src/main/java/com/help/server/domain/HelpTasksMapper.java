@@ -57,6 +57,18 @@ public interface HelpTasksMapper {
     // 查询更新用户的激活码--添加
     @Update("update offer_help set is_leader_income = 1 where help_order = #{helporder} ")
     public int updateOffer_help_income(@Param("helporder") String helporder);
+
+    @Select("select * from orders where order_type = #{ordertype}")
+    public List<Orders> getOrderInfoList(@Param("ordertype") int ordertype);
+
+    @Select("select * from income_calcul_log where income_type = #{incometype} AND helporder = #{helporder} AND user_id = #{userid}")
+    public List<Income_calcul_log> getInCome_calcul_log(@Param("incometype") int incometype,@Param("helporder") String helporder
+            ,@Param("userid") long userid);
+
+    //更新静态钱包
+    @Update("update user_member set ustatic_wallet = ustatic_wallet + #{num} where user_id = #{userid}")
+    public int updateUserstatic_Add(@Param("userid") long userid,@Param("num") float num);
+
 }
 
 

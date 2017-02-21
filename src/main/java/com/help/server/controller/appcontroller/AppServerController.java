@@ -670,9 +670,9 @@ public class AppServerController {
 
     }
     @RequestMapping(value = "10023")
-    /**
-     * 已匹配成功订单
-     */
+/**
+ * 已匹配成功订单
+ */
     @ResponseBody
     public String GetMaterOrder(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
@@ -686,7 +686,13 @@ public class AppServerController {
         getMateOrderResp.setCurrentTimer(System.currentTimeMillis());
         int ordertype = getMateOrderReq.getOrder_type();
         long rechargeuid = getMateOrderReq.getUid();
-        List<Orders> orderList = appServerMapper.getOrderInfo(ordertype,rechargeuid);
+        List<Orders> orderList =null;
+        if(ordertype ==0){
+            orderList = appServerMapper.getOrderInfo_noOrderType(rechargeuid);
+        }else{
+            orderList = appServerMapper.getOrderInfo(ordertype,rechargeuid);
+        }
+
         ArrayList<GetMaterOrderInfo> getMaterOrderList = new  ArrayList<GetMaterOrderInfo>();
 
         for(int i =0;i<orderList.size();i++){
@@ -696,15 +702,15 @@ public class AppServerController {
 
             getMaterOrderInfo.setFrom_money(order.getMoney_num());
             getMaterOrderInfo.setTo_money(order.getMoney_num());
-            getMaterOrderInfo.setConfirm_st(DateUtil.dateLongToString(order.getConfirm_date()));
+            getMaterOrderInfo.setConfirm_st(order.getConfirm_date());
             getMaterOrderInfo.setFrom_order_num(order.getRecharge_order());
-            getMaterOrderInfo.setFrom_st(DateUtil.dateLongToString(order.getFrom_date()));
+            getMaterOrderInfo.setFrom_st(order.getFrom_date());
             getMaterOrderInfo.setOrder_num(order.getOrder_num());
             String userphone =order.getRecharge_phone();
             getMaterOrderInfo.setFrom_account(userphone);//
             String name = appServerMapper.getUserName(userphone);
             getMaterOrderInfo.setFrom_tname(name);
-            getMaterOrderInfo.setMatch_st(DateUtil.dateLongToString(order.getMatch_date()));
+            getMaterOrderInfo.setMatch_st(order.getMatch_date());
             getMaterOrderInfo.setTo_order_num(order.getWithdrawals_order());
             Offer_Help offerHelp =  appServerMapper.getOfferHelpByHelpOrder(order.getWithdrawals_order());
             getMaterOrderInfo.setWallet_type(offerHelp.getWallet_type());
@@ -712,7 +718,7 @@ public class AppServerController {
             name = appServerMapper.getUserName(userphone);
             getMaterOrderInfo.setTo_tname(name);
             getMaterOrderInfo.setVoucher_url(order.getRemittance_url());
-            getMaterOrderInfo.setTo_st(DateUtil.dateLongToString(order.getTo_date()));
+            getMaterOrderInfo.setTo_st(order.getTo_date());
             getMaterOrderInfo.setTo_account(userphone);
             getMaterOrderInfo.setOrder_type(order.getOrder_type());
             getMaterOrderList.add(getMaterOrderInfo);
@@ -1011,11 +1017,13 @@ public class AppServerController {
         Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
         long nCurrentTimer = System.currentTimeMillis();
         if(complaintstatus==1){ //确认收款,进入冻结期
-            appServerMapper.updateOrderStatus(7,nCurrentTimer,ordernum);
+
+            appServerMapper.updateOrderStatusQueren(7,nCurrentTimer,ordernum);
             appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getRecharge_order());
             appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getWithdrawals_order());
+
         }else{ //确认未收款
-            appServerMapper.updateOrderStatus(8,nCurrentTimer,ordernum);
+            appServerMapper.updateOrderStatusQueren(8,nCurrentTimer,ordernum);
             appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
             appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
         }

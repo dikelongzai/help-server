@@ -4,10 +4,7 @@ import com.help.server.controller.appcontroller.AppServerController;
 import com.help.server.domain.AppServerMapper;
 import com.help.server.domain.HelpTasksMapper;
 import com.help.server.domain.responsebean.GetRuleInfo;
-import com.help.server.domain.tables.Dynamic_Award;
-import com.help.server.domain.tables.Income_calcul_log;
-import com.help.server.domain.tables.Offer_Help;
-import com.help.server.domain.tables.User_MemberInfo;
+import com.help.server.domain.tables.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,8 +215,8 @@ public class HelpTasks {
     }
 
     //冻结奖计算
-    @Scheduled(cron="0 0 3 * * *")
-    public void CalIncome_Money(){
+     @Scheduled(cron="0 0 0-23 * * *")
+    public void CalIncome_Money() {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         log.error("CalIncome_Money:"+df.format(new Date()));// new Date()为获取当前系统时间
@@ -227,13 +224,13 @@ public class HelpTasks {
         GetRuleInfo getRuleInfo = helpTasksMapper.getTaskRuleInfo();
         //未匹配
         List<Offer_Help> offer_helpListUnMatch = helpTasksMapper.getOfferCalUnMatch();
-        for (int i =0;i<offer_helpListUnMatch.size();i++){
+        for (int i = 0; i < offer_helpListUnMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListUnMatch.get(i);
             long updateLong = offerHelp.getLast_update();
-            long nHour = (nCurrentTimer-updateLong)/3600000/24;
-            if(nHour>1){
-                helpTasksMapper.updateLastOfferHelp(nCurrentTimer,offerHelp.getHelp_order());
+            long nHour = (nCurrentTimer - updateLong) / 3600000 / 24;
+            if (nHour > 1) {
+                helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
                 incomeCalculLog.setLast_update(nCurrentTimer);
@@ -243,21 +240,21 @@ public class HelpTasks {
                 incomeCalculLog.setIncome_id(appServerMapper.get_id_generator(idname));
                 incomeCalculLog.setIncome_type(2);
                 incomeCalculLog.setOrg_money_num(offerHelp.getMoney_num());
-                float money = offerHelp.getMoney_num()*getRuleInfo.getInterest_not_paid();
+                float money = offerHelp.getMoney_num() * getRuleInfo.getInterest_not_paid();
                 incomeCalculLog.setMoney_num(money);
                 incomeCalculLog.setUser_id(offerHelp.getUser_id());
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-        //已匹配
+     //已匹配
         List<Offer_Help> offer_helpListMatch = helpTasksMapper.getOfferCalMatch();
-        for (int i =0;i<offer_helpListMatch.size();i++){
+        for (int i = 0; i < offer_helpListMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListMatch.get(i);
             long updateLong = offerHelp.getLast_update();
-            long nHour = (nCurrentTimer-updateLong)/3600000/24;
-            if(nHour>1){
-                helpTasksMapper.updateLastOfferHelp(nCurrentTimer,offerHelp.getHelp_order());
+            long nHour = (nCurrentTimer - updateLong) / 3600000 / 24;
+            if (nHour > 1) {
+                helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
                 incomeCalculLog.setLast_update(nCurrentTimer);
@@ -273,6 +270,29 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
+       // 冻结期
+        List<Orders> orderInfoList = helpTasksMapper.getOrderInfoList(7);
+        long nCurrentTimer = System.currentTimeMillis();
+        for (int i = 0; i < orderInfoList.size(); i++) {
+            Orders orders = orderInfoList.get(i);
+            long nTimerBetw = nCurrentTimer - orders.getConfirm_date();
+            if (nTimerBetw > (getRuleInfo.getFreezing_time() * 3600000)) { //订单冻结期，结束，订单完成
+                appServerMapper.updateOrderStatus(2, nCurrentTimer, orders.getOrder_num());
+                appServerMapper.updateOfferHelp(2, nCurrentTimer, orders.getRecharge_order());
+                appServerMapper.updateOfferHelp(2, nCurrentTimer, orders.getWithdrawals_order());
+                long recharge_uid = appServerMapper.getUserIDByaccount(orders.getRecharge_phone());
+                float fCountMoney = 0;
+                List<Income_calcul_log> calculLogList = helpTasksMapper.getInCome_calcul_log(2, orders.getRecharge_order(), recharge_uid);
+                for (int j =0;j<calculLogList.size();j++){
+                    Income_calcul_log incomeCalculLog = calculLogList.get(j);
+                    fCountMoney = fCountMoney+incomeCalculLog.getMoney_num();
+                }
+			//冻结钱包+利息 =
+                appServerMapper.updateUserdynamic(recharge_uid,orders.getMoney_num());
+                helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
+            }
+        }
     }
+
 }
 

@@ -73,35 +73,35 @@ public class GetMaterOrderInfo {
         this.to_money = to_money;
     }
 
-    public String getFrom_st() {
+    public long getFrom_st() {
         return from_st;
     }
 
-    public void setFrom_st(String from_st) {
+    public void setFrom_st(long from_st) {
         this.from_st = from_st;
     }
 
-    public String getTo_st() {
+    public long getTo_st() {
         return to_st;
     }
 
-    public void setTo_st(String to_st) {
+    public void setTo_st(long to_st) {
         this.to_st = to_st;
     }
 
-    public String getMatch_st() {
+    public long getMatch_st() {
         return match_st;
     }
 
-    public void setMatch_st(String match_st) {
+    public void setMatch_st(long match_st) {
         this.match_st = match_st;
     }
 
-    public String getConfirm_st() {
+    public long getConfirm_st() {
         return confirm_st;
     }
 
-    public void setConfirm_st(String confirm_st) {
+    public void setConfirm_st(long confirm_st) {
         this.confirm_st = confirm_st;
     }
 
@@ -135,10 +135,10 @@ public class GetMaterOrderInfo {
     private  String to_tname;
     private float from_money;
     private  float to_money;
-    private  String from_st;
-    private  String to_st;
-    private  String match_st;
-    private  String confirm_st;
+    private  long from_st;
+    private  long to_st;
+    private  long match_st;
+    private  long confirm_st;
     private  String voucher_url;
 
     public int getWallet_type() {

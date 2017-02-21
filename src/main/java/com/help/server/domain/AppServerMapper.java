@@ -124,6 +124,10 @@ public interface AppServerMapper {
             ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid}")
     public List<Orders> getOrderInfo(@Param("ordertype") int ordertype, @Param("rechargeuid") Long rechargeuid);
 
+    @Select("select create_date,last_update,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid}")
+    public List<Orders> getOrderInfo_noOrderType(@Param("rechargeuid") Long rechargeuid);
+
     /**
      * 获取用户名称 100023 orders
      *
@@ -148,11 +152,11 @@ public interface AppServerMapper {
     public Orders getOrderInfoDetails(@Param("ordernum") String ordernum);
 
     // 获取新闻信息
-    @Select("select * from news  where type = #{type} AND state = 'N' order by create_date asc LIMIT 1")
+    @Select("select * from news  where type = #{type} AND state <> 'D' order by create_date asc LIMIT 1")
     public News getNews(@Param("type") int type);
 
     // 获取新闻信息数量Count
-    @Select("select count(1) from news  where type = #{type} AND state = 'N'")
+    @Select("select count(1) from news  where type = #{type} AND state <> 'D'")
     public int getNewsCount(@Param("type") int type);
 
     // 获取轮播图
@@ -199,7 +203,7 @@ public interface AppServerMapper {
     public UserPayInfo getUserPayInfo(@Param("userphone") String userphone);
 
     // 更新订单的支付信息
-    @Update("update orders set payment_date = #{paymentdate}, remittance_url = #{remittanceurl},order_type = 3  where order_num = #{ordernum}")
+    @Update("update orders set payment_date = #{paymentdate}, remittance_url = #{remittanceurl},order_type = 6  where order_num = #{ordernum}")
     public int updateUserOrderInfo(@Param("paymentdate") long paymentdate, @Param("remittanceurl") String remittanceurl, @Param("ordernum") String ordernum);
 
     // 认证用户信息
@@ -279,7 +283,7 @@ public interface AppServerMapper {
     public int updateOrderStatus(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
 
     //更新offer_help 状态
-    @Update("update offer_help set help_status = {helpstatus} ,last_update = #{lastupdate}  where help_order = #{helporder}")
+    @Update("update offer_help set help_status = #{helpstatus} ,last_update = #{lastupdate}  where help_order = #{helporder}")
     public int updateOfferHelp(@Param("helpstatus") int helpstatus,@Param("lastupdate") long lastupdate,@Param("helporder") String helporder);
 
     @Select("select count(1) from offer_help where user_id = #{userid}")
@@ -297,6 +301,8 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  income_calcul_log where user_id =#{userid} AND income_type = #{incometype}")
     public List<Income_calcul_log>  getincome_calcul_Log(@Param("userid") long userid,@Param("incometype") int incometype);
 
+    @Update("update orders set order_type = #{ordertype},confirm_date = #{lastupdate} where order_num = #{ordernum} ")
+    public int updateOrderStatusQueren(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
 
 }
 
