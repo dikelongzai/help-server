@@ -785,11 +785,10 @@ public class AppServerController {
         }
         return retMsg;
     }
-
     @RequestMapping(value = "10014")
-   /**
-    * 接受和提供帮助订单
-    */
+    /**
+     * 接受和提供帮助订单
+     */
     @ResponseBody
     public String AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
@@ -800,7 +799,21 @@ public class AppServerController {
         GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
         float money = helpsOrderReq.getMoney();
         //申请帮助，出钱
-        if(helpsOrderReq.getHelp_type() ==1) {
+        if(helpsOrderReq.getHelp_type() ==2) {
+            //只运行有一个单子运行
+            int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),2);
+            if(noIncome>=getRuleInfo.getMax_order_num()){
+                helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
+                helpsOrderResp.setCode("C0018");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
 
             int times = (int) (money % getRuleInfo.getApply_num_times());
             if (money < getRuleInfo.getApply_num_lown() || money > getRuleInfo.getApply_num_high() || times != 0) {
@@ -835,7 +848,7 @@ public class AppServerController {
         }else {
             int times = (int)(money%getRuleInfo.getAsk_num_times());
             if(money<getRuleInfo.getAsk_num_lown()||money>getRuleInfo.getAsk_num_high()||times!=0){
-                helpsOrderResp.setMsg("请求帮助的发单规则不正确，请重新发单！");
+                helpsOrderResp.setMsg("提供帮助的发单规则不正确，请重新发单！");
                 helpsOrderResp.setCode("C0017");
                 JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
                 String retMsg = Base64Util.encode(jsonObject.toString());
@@ -847,9 +860,22 @@ public class AppServerController {
                 return retMsg;
             }
         }
-        if(helpsOrderReq.getHelp_type() ==2) { //请求帮助
+        if(helpsOrderReq.getHelp_type() ==2) { //申请帮助
             User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
-            if (helpsOrderReq.getWallet_type() == 2) { //静态钱包
+            if (helpsOrderReq.getWallet_type() == 2) { //动态钱包
+                int Income  = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),2);
+                if(Income>=getRuleInfo.getMax_order_num()){
+                    helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
+                    helpsOrderResp.setCode("C0018");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
                 if (userMemberInfo.getUdynamic_wallet() < helpsOrderReq.getMoney()) {
                     helpsOrderResp.setMsg("余额不足，不能发单！");
                     helpsOrderResp.setCode("C0015");
@@ -884,7 +910,7 @@ public class AppServerController {
         offer_helps.setCreate_date(ncurTimer);
         offer_helps.setLast_update(ncurTimer);
         //提供帮助 100 天加到冻结钱包
-       //请求帮助 100 相应钱包减100，其中动态钱包时同时提供帮助生成订单同样金额订单。
+        //请求帮助 100 相应钱包减100，其中动态钱包时同时提供帮助生成订单同样金额订单。
         long help_id = 0;
         String idname = "help_id";
         appServerMapper.id_generator(idname);
@@ -957,7 +983,6 @@ public class AppServerController {
         }
         return retMsg;
     }
-
     @RequestMapping(value = "10015")
     /**
      * 获取订单详情
@@ -1020,7 +1045,7 @@ public class AppServerController {
 
             appServerMapper.updateOrderStatusQueren(7,nCurrentTimer,ordernum);
             appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getWithdrawals_order());
+            appServerMapper.updateOfferHelp(2,nCurrentTimer,orders.getWithdrawals_order());
 
         }else{ //确认未收款
             appServerMapper.updateOrderStatusQueren(8,nCurrentTimer,ordernum);

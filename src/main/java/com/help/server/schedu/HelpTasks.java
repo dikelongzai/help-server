@@ -215,7 +215,7 @@ public class HelpTasks {
     }
 
     //冻结奖计算
-     @Scheduled(cron="0 0 0-23 * * *")
+     @Scheduled(cron="0 0/30 0-23 * * *")
     public void CalIncome_Money() {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
@@ -287,7 +287,25 @@ public class HelpTasks {
                     Income_calcul_log incomeCalculLog = calculLogList.get(j);
                     fCountMoney = fCountMoney+incomeCalculLog.getMoney_num();
                 }
-			//冻结钱包+利息 =
+              // 抽成 金额计算
+                double desc = orders.getMoney_num() * getRuleInfo.getDynamic_deduct_proportion();
+                int nZAdmin = helpTasksMapper.getUserMember_Admin(2);
+                if(nZAdmin>0){ //添加到主管理员账户
+                    List<User_MemberInfo> list = helpTasksMapper.getUserMember_Admin_list(2);
+                    if(list.size()>0){
+                        User_MemberInfo userMemberInfo = list.get(0);
+                        helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
+                    }
+                }else{
+                    int nCAdmin = helpTasksMapper.getUserMember_Admin(1);
+                    List<User_MemberInfo> list = helpTasksMapper.getUserMember_Admin_list(1);
+                    if(list.size()>0){
+                        User_MemberInfo userMemberInfo = list.get(0);
+                        helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
+                    }
+                }
+
+			    //冻结钱包+利息 =
                 appServerMapper.updateUserdynamic(recharge_uid,orders.getMoney_num());
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
             }

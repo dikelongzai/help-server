@@ -121,7 +121,7 @@ public interface AppServerMapper {
      * @return user_name, is_activate, user_phone
      */
     @Select("select create_date,last_update,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
-            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid}")
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type = #{ordertype} AND (recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid})")
     public List<Orders> getOrderInfo(@Param("ordertype") int ordertype, @Param("rechargeuid") Long rechargeuid);
 
     @Select("select create_date,last_update,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
@@ -210,7 +210,7 @@ public interface AppServerMapper {
     @Update("update user_member set user_carded_url = #{carded_url}, user_carded = #{usercarded},user_name = #{username}  where user_phone = #{userphone}")
     public int updateUserAuthInfo(@Param("carded_url") String carded_url, @Param("usercarded") String usercarded, @Param("username") String username, @Param("userphone") String userphone);
 
-    @Select("select state,from_uid,to_uid,code_num,is_from_admin,create_date,last_update from activate_code where to_uid = #{touid} or from_uid = #{fromuid} ")
+    @Select("select state,from_uid,to_uid,code_num,is_from_admin,create_date,last_update from activate_code where to_uid = #{touid} OR from_uid = #{fromuid} ")
     public List<Activate_Code> getActivateInfo(@Param("touid") long touid,@Param("fromuid") long fromuid);
 
     // 获取规则表
@@ -295,7 +295,7 @@ public interface AppServerMapper {
     @Select("SELECT * FROM  orders where withdrawals_order =#{withdrawals}")
     public Orders getOrderInfoDetailsS(@Param("withdrawals") String withdrawals);
 
-    @Update("update user_member set used_code_num = used_code_num - #{codenum} where user_phone = #{userphone} ")
+    @Update("update user_member set used_code_num = used_code_num + #{codenum} where user_phone = #{userphone} ")
     public int updateUserUnActiveNum_dec(@Param("codenum") int codenum, @Param("userphone") String userphone);
 
     @Select("SELECT * FROM  income_calcul_log where user_id =#{userid} AND income_type = #{incometype}")
@@ -303,6 +303,12 @@ public interface AppServerMapper {
 
     @Update("update orders set order_type = #{ordertype},confirm_date = #{lastupdate} where order_num = #{ordernum} ")
     public int updateOrderStatusQueren(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
+
+    @Select("SELECT count(1) FROM  offer_help where user_id =#{uid} and help_type = #{helptype} and help_status <>2 and is_income=1")
+    public int getOfferHelpCountNoIncome(@Param("uid") long uid,@Param("helptype") int helptype);
+
+    @Select("SELECT count(1) FROM  offer_help where user_id =#{uid} and help_type = #{helptype} and help_status <>2 and is_income=0")
+    public int getOfferHelpCountIncome(@Param("uid") long uid,@Param("helptype") int helptype);
 
 }
 

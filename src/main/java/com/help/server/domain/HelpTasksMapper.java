@@ -69,6 +69,12 @@ public interface HelpTasksMapper {
     @Update("update user_member set ustatic_wallet = ustatic_wallet + #{num} where user_id = #{userid}")
     public int updateUserstatic_Add(@Param("userid") long userid,@Param("num") float num);
 
+    @Select("select count(1) from user_member where is_admin = #{isadmin}")
+    public int getUserMember_Admin(@Param("isadmin") int isadmin);
+
+    @Select("select * from user_member where is_admin = #{isadmin}")
+    public List<User_MemberInfo> getUserMember_Admin_list(@Param("isadmin") int isadmin);
+
 }
 
 
