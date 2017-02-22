@@ -251,7 +251,7 @@ public class JdbcUtils {
         if(cpage==1){
              sqlPage=sql+" LIMIT "+page.getPageSize();
         }else{
-             sqlPage=sql+" LIMIT "+page.getBeginIndex()+","+page.getEndIndex();
+             sqlPage=sql+" LIMIT "+page.getBeginIndex()+",10";
         }
       //  String sqlPage=sql+" LIMIT "+page.getBeginIndex()+","+page.getEndIndex();
         System.out.println("sql = [" + sql + "], cpage = [" + cpage + "],sqlPage="+sqlPage);
