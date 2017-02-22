@@ -800,20 +800,6 @@ public class AppServerController {
         float money = helpsOrderReq.getMoney();
         //申请帮助，出钱
         if(helpsOrderReq.getHelp_type() ==2) {
-            //只运行有一个单子运行
-            int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),2);
-            if(noIncome>=getRuleInfo.getMax_order_num()){
-                helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
-                helpsOrderResp.setCode("C0018");
-                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                String retMsg = Base64Util.encode(jsonObject.toString());
-                try {
-                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error(e);
-                }
-                return retMsg;
-            }
 
             int times = (int) (money % getRuleInfo.getApply_num_times());
             if (money < getRuleInfo.getApply_num_lown() || money > getRuleInfo.getApply_num_high() || times != 0) {
@@ -828,9 +814,25 @@ public class AppServerController {
                 }
                 return retMsg;
             }
+
+        }else {
+            //只运行有一个单子运行
+            int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),2);
+            if(noIncome>=getRuleInfo.getMax_order_num()){
+                helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
+                helpsOrderResp.setCode("C0018");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
             int nCount = appServerMapper.getUserOfferHelpCount(helpsOrderReq.getUid());
             if (nCount == 0) {
-                if (helpsOrderReq.getMoney() < getRuleInfo.getApply_num_first()) {
+                if (helpsOrderReq.getMoney() > getRuleInfo.getApply_num_first()) {
                     helpsOrderResp.setMsg("首次发单申请帮助金额大于" + getRuleInfo.getApply_num_first());
                     helpsOrderResp.setCode("C0016");
                     JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
@@ -842,10 +844,7 @@ public class AppServerController {
                     }
                     return retMsg;
                 }
-
-
             }
-        }else {
             int times = (int)(money%getRuleInfo.getAsk_num_times());
             if(money<getRuleInfo.getAsk_num_lown()||money>getRuleInfo.getAsk_num_high()||times!=0){
                 helpsOrderResp.setMsg("提供帮助的发单规则不正确，请重新发单！");
