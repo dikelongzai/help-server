@@ -147,7 +147,10 @@ var leave = {
         if (leaveInfo.is_activate == 0) {
             html += "<td>未激活</td><td><a href='/admin/userDetail/" + leaveInfo.user_id + "' class=\"tablelink\">详情</a>";
             if (leaveInfo.is_admin == 0) {
-                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理账户</a>";
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理</a>";
+            }
+            if (leaveInfo.is_admin == 1) {
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/undoAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">取消管理</a>";
             }
 
             html += "</td>";
@@ -155,25 +158,31 @@ var leave = {
             html += "<td>未审批</td>";
             html += " <td><a href='/admin/appro/" + leaveInfo.user_id + "' class=\"tablelink\">审批</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/userDetail/" + leaveInfo.user_id + "' class=\"tablelink\">详情</a>";
             if (leaveInfo.is_admin == 0) {
-                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理账户</a>";
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理</a>";
             }
-
+            if (leaveInfo.is_admin == 1) {
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/undoAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">取消管理</a>";
+            }
             html += "</td>";
         } else if (leaveInfo.is_activate == 2) {
             html += "<td>已审批</td>";
             html += " <td><a href='/admin/frozen/" + leaveInfo.user_id + "' class=\"tablelink\">冻结</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/userDetail/" + leaveInfo.user_id + "' class=\"tablelink\">详情</a>"
             if (leaveInfo.is_admin == 0) {
-                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理账户</a>";
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理</a>";
             }
-
+            if (leaveInfo.is_admin == 1) {
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/undoAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">取消管理</a>";
+            }
             html += "</td>";
         } else if (leaveInfo.is_activate == 3) {
             html += "<td>冻结</td>";
             html += " <td><a  href='/admin/appro/" + leaveInfo.user_id + "' class=\"tablelink\">解冻</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/userDetail/" + leaveInfo.user_id + "' class=\"tablelink\">详情</a>"
             if (leaveInfo.is_admin == 0) {
-                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理账户</a>";
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/doAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">设置管理</a>";
             }
-
+            if (leaveInfo.is_admin == 1) {
+                html += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/undoAdminUser/" + leaveInfo.user_id + "' class=\"tablelink\">取消管理</a>";
+            }
             html += "</td>";
         }
         html += "</tr>"

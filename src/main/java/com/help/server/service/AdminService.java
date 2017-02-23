@@ -577,8 +577,10 @@ public class AdminService {
         log.info("updateAward sql=" + sqlBuffer.toString());
         return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
     }
+
     /**
      * 修改用户信息
+     *
      * @param param
      * @return
      * @throws Exception
@@ -588,7 +590,7 @@ public class AdminService {
         sqlBuffer.append("UPDATE user_member SET state='U',last_update=(SELECT UNIX_TIMESTAMP()*1000)");
         //{"direct_num":1,"four_generation":0.1,"id":7,"one_generation":0.2,"team_num":1,"three_generation":0.3,"two_generation":0.2,"user_title":"教授"}
         for (Map.Entry<String, Object> entry : param.entrySet()) {
-            if ("ustatic_wallet".equals(entry.getKey())||"udynamic_wallet".equals(entry.getKey())) {
+            if ("ustatic_wallet".equals(entry.getKey()) || "udynamic_wallet".equals(entry.getKey())) {
                 sqlBuffer.append(",").append(entry.getKey()).append("=").append(entry.getValue());
 
             } else {
@@ -1156,36 +1158,49 @@ public class AdminService {
     public Map<String, Integer> getMapB(String uuid) {
         Map<String, Integer> mapb = new HashMap<String, Integer>();
         JSONObject jsonParams = mapCuMathList.get(uuid);
-        JSONArray jsonArrayb1 = jsonParams.getJSONArray("b1");
-        JSONArray jsonArrayb2 = jsonParams.getJSONArray("b2");
-        if (!jsonArrayb1.isEmpty()) {
-            for (Object object : jsonArrayb1) {
-                JSONObject json = (JSONObject) object;
 
-                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-                for (Object offerObject : offersNotMatch) {
-                    JSONObject jsonNotMatch = (JSONObject) offerObject;
-                    String key = "b1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+
+        if (jsonParams.containsKey("b1")) {
+            JSONArray jsonArrayb1 = jsonParams.getJSONArray("b1");
+            if (jsonArrayb1 != null) {
+                if (!jsonArrayb1.isEmpty()) {
+                    for (Object object : jsonArrayb1) {
+                        JSONObject json = (JSONObject) object;
+
+                        JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                        for (Object offerObject : offersNotMatch) {
+                            JSONObject jsonNotMatch = (JSONObject) offerObject;
+                            String key = "b1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                            mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+
+                        }
+
+                    }
 
                 }
-
             }
 
         }
-        if (!jsonArrayb2.isEmpty()) {
-            for (Object object : jsonArrayb2) {
-                JSONObject json = (JSONObject) object;
-                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-                for (Object offerObject : offersNotMatch) {
-                    JSONObject jsonNotMatch = (JSONObject) offerObject;
-                    String key = "b2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+        if (jsonParams.containsKey("b2")) {
+            JSONArray jsonArrayb2 = jsonParams.getJSONArray("b2");
+            if (jsonArrayb2 != null) {
+                if (!jsonArrayb2.isEmpty()) {
+                    for (Object object : jsonArrayb2) {
+                        JSONObject json = (JSONObject) object;
+                        JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                        for (Object offerObject : offersNotMatch) {
+                            JSONObject jsonNotMatch = (JSONObject) offerObject;
+                            String key = "b2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                            mapb.put(key, jsonNotMatch.getIntValue("money_num"));
 
+                        }
+
+                    }
                 }
-
             }
+
         }
+
 
         return mapb;
 
@@ -1194,33 +1209,43 @@ public class AdminService {
     public Map<String, Integer> getMapS(String uuid) {
         Map<String, Integer> mapb = new HashMap<String, Integer>();
         JSONObject jsonParams = mapCuMathList.get(uuid);
-        JSONArray jsonArrayb1 = jsonParams.getJSONArray("c1");
-        JSONArray jsonArrayb2 = jsonParams.getJSONArray("c2");
-        if (!jsonArrayb1.isEmpty()) {
-            for (Object object : jsonArrayb1) {
-                JSONObject json = (JSONObject) object;
-                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-                for (Object offerObject : offersNotMatch) {
-                    JSONObject jsonNotMatch = (JSONObject) offerObject;
-                    String key = "c1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+        if (jsonParams.containsKey("c1")) {
+            JSONArray jsonArrayb1 = jsonParams.getJSONArray("c1");
+            if (jsonArrayb1 != null) {
+                if (!jsonArrayb1.isEmpty()) {
+                    for (Object object : jsonArrayb1) {
+                        JSONObject json = (JSONObject) object;
+                        JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                        for (Object offerObject : offersNotMatch) {
+                            JSONObject jsonNotMatch = (JSONObject) offerObject;
+                            String key = "c1" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                            mapb.put(key, jsonNotMatch.getIntValue("money_num"));
 
+                        }
+
+                    }
                 }
+            }
 
+        }
+        if (jsonParams.containsKey("c1")) {
+            JSONArray jsonArrayb2 = jsonParams.getJSONArray("c2");
+            if (jsonArrayb2 != null) {
+                if (!jsonArrayb2.isEmpty()) {
+                    for (Object object : jsonArrayb2) {
+                        JSONObject json = (JSONObject) object;
+                        JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
+                        for (Object offerObject : offersNotMatch) {
+                            JSONObject jsonNotMatch = (JSONObject) offerObject;
+                            String key = "c2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
+                            mapb.put(key, jsonNotMatch.getIntValue("money_num"));
+                        }
+
+                    }
+                }
             }
         }
-        if (!jsonArrayb2.isEmpty()) {
-            for (Object object : jsonArrayb2) {
-                JSONObject json = (JSONObject) object;
-                JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
-                for (Object offerObject : offersNotMatch) {
-                    JSONObject jsonNotMatch = (JSONObject) offerObject;
-                    String key = "c2" + "_" + json.getString("day") + "_" + jsonNotMatch.getString("help_order");
-                    mapb.put(key, jsonNotMatch.getIntValue("money_num"));
-                }
 
-            }
-        }
 
         return mapb;
 

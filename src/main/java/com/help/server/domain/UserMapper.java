@@ -39,6 +39,13 @@ public interface UserMapper {
 	 */
 	@Update("UPDATE user_member SET is_admin=1 WHERE user_id=#{user_id}")
 	public boolean  updateUserRoleAdmin( @Param("user_id") long user_id);
+
+	/**
+	 * 客户分布
+	 * @return
+	 */
+	@Update("UPDATE user_member SET is_admin=0 WHERE user_id=#{user_id}")
+	public boolean  updateUndoUserRoleAdmin( @Param("user_id") long user_id);
 	/**
 	 * 获取用户信息 10001 user_member
 	 *

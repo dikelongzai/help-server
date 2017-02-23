@@ -559,6 +559,16 @@ public class AdminController {
         return "redirect:/admin/user";
     }
     /**
+     * 取消管理账户
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/undoAdminUser/{user_id}", method = RequestMethod.GET)
+    public String undoAdminUser(@PathVariable("user_id") long user_id, Map<String, Object> map) throws Exception {
+        userMapper.updateUndoUserRoleAdmin(user_id);
+        return "redirect:/admin/user";
+    }
+    /**
      * 冻结
      * @return
      * @throws Exception
