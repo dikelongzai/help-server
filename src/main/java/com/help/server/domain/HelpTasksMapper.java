@@ -75,6 +75,13 @@ public interface HelpTasksMapper {
     @Select("select * from user_member where is_admin = #{isadmin}")
     public List<User_MemberInfo> getUserMember_Admin_list(@Param("isadmin") int isadmin);
 
+    @Update("update user_member set is_activate = 3 where user_id = #{uid} ")
+    public int updateUserActivate(@Param("uid") long uid);
+    @Delete("delete  from income_calcul_log where helporder = #{helporder}")
+    public  void deleteInCome_log(@Param("helporder") String helporder);
+
+    @Update("update user_member set ufrozen_wallet = ufrozen_wallet - #{num} where user_id = #{userid}")
+    public int updateUserFrozen(@Param("userid") long userid,@Param("num") float num);
 }
 
 

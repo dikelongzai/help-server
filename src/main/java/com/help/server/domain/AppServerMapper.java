@@ -125,7 +125,7 @@ public interface AppServerMapper {
     public List<Orders> getOrderInfo(@Param("ordertype") int ordertype, @Param("rechargeuid") Long rechargeuid);
 
     @Select("select create_date,last_update,state,order_id,order_type,recharge_order,recharge_phone,recharge_uid,withdrawals_order" +
-            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid}")
+            ",withdrawals_phone,withdrawals_uid,money_num,complaint_status,remittance_url,from_date,to_date,match_date,confirm_date,order_num,payment_date from orders where order_type <> 2 AND (recharge_uid = #{rechargeuid} OR withdrawals_uid =#{rechargeuid})")
     public List<Orders> getOrderInfo_noOrderType(@Param("rechargeuid") Long rechargeuid);
 
     /**
@@ -309,6 +309,9 @@ public interface AppServerMapper {
 
     @Select("SELECT count(1) FROM  offer_help where user_id =#{uid} and help_type = #{helptype} and help_status <>2 and is_income=0")
     public int getOfferHelpCountIncome(@Param("uid") long uid,@Param("helptype") int helptype);
+
+    @Select("select SUM(money_num) from offer_help where create_date > #{tdate} AND help_type = 1")
+    public float getCurrentTimerMoney_num(@Param("tdate") long tdate);
 
 }
 

@@ -24,7 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -786,9 +789,9 @@ public class AppServerController {
         return retMsg;
     }
     @RequestMapping(value = "10014")
-    /**
-     * 接受和提供帮助订单
-     */
+/**
+ * 接受和提供帮助订单
+ */
     @ResponseBody
     public String AddOrderHelps(@RequestParam(value = "p") String inputStr, HttpServletRequest request) {
 
@@ -797,9 +800,101 @@ public class AppServerController {
         HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
         HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
         GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
+        float fmoney = helpsOrderReq.getMoney();
+        //账户信息判断
+        User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
+        if(userMemberInfo!=null){
+            if(userMemberInfo.getIs_activate()==3){
+                helpsOrderResp.setMsg("账户被冻结，无法发单，请联系管理员！");
+                helpsOrderResp.setCode("C0017");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
+        }
+
         float money = helpsOrderReq.getMoney();
-        //申请帮助，出钱
+         //申请帮助，出钱
         if(helpsOrderReq.getHelp_type() ==2) {
+
+            if (helpsOrderReq.getWallet_type() == 2) { //动态钱包
+
+                int times = (int) (fmoney % getRuleInfo.getDynamic_times_money());
+                int nfmoney = (int)fmoney;
+                if(nfmoney<getRuleInfo.getDynamic_min_money()||nfmoney>getRuleInfo.getDynamic_max_money()|| times != 0){
+
+                    helpsOrderResp.setMsg("动态钱包发单规则不正确，请调整金额重新发单！");
+                    helpsOrderResp.setCode("C0019");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+
+                int Income = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
+                if(Income>=getRuleInfo.getMax_order_num()){
+                    helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
+                    helpsOrderResp.setCode("C0018");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+                if (userMemberInfo.getUdynamic_wallet() < helpsOrderReq.getMoney()) {
+                    helpsOrderResp.setMsg("余额不足，不能发单！");
+                    helpsOrderResp.setCode("C0015");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    }catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+            }
+            if (helpsOrderReq.getWallet_type() == 1) { //静态钱包
+
+                int times = (int) (fmoney % getRuleInfo.getStatic_times_money());
+                int nfmoney = (int)fmoney;
+                if(nfmoney<getRuleInfo.getStatic_min_money()||times!=0){
+                    helpsOrderResp.setMsg("静态钱包发单规则不正确，请调整金额重新发单！");
+                    helpsOrderResp.setCode("C0020");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+                if (userMemberInfo.getUstatic_wallet() < helpsOrderReq.getMoney()) {
+                    helpsOrderResp.setMsg("余额不足，不能发单！");
+                    helpsOrderResp.setCode("C0015");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    }catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+            }
 
             int times = (int) (money % getRuleInfo.getApply_num_times());
             if (money < getRuleInfo.getApply_num_lown() || money > getRuleInfo.getApply_num_high() || times != 0) {
@@ -815,9 +910,32 @@ public class AppServerController {
                 return retMsg;
             }
 
-        }else {
-            //只运行有一个单子运行
-            int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),2);
+        }else { //提供帮助版本
+
+            String res = DateUtil.getDateFormatter1().format(new Date());
+            String dataStr = res+" 00:00:00";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = null;
+            try {
+                date = simpleDateFormat.parse(dataStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long tdate = date.getTime();
+            float sumMoney = appServerMapper.getCurrentTimerMoney_num(tdate);
+            if(sumMoney>=getRuleInfo.getOrder_max_money()){
+                helpsOrderResp.setMsg("提供帮助单子的金额超过最大值，联系管理员！");
+                helpsOrderResp.setCode("C0020");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
+            int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
             if(noIncome>=getRuleInfo.getMax_order_num()){
                 helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
                 helpsOrderResp.setCode("C0018");
@@ -859,51 +977,6 @@ public class AppServerController {
                 return retMsg;
             }
         }
-        if(helpsOrderReq.getHelp_type() ==2) { //申请帮助
-            User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
-            if (helpsOrderReq.getWallet_type() == 2) { //动态钱包
-                int Income  = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),2);
-                if(Income>=getRuleInfo.getMax_order_num()){
-                    helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
-                    helpsOrderResp.setCode("C0018");
-                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                    String retMsg = Base64Util.encode(jsonObject.toString());
-                    try {
-                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        log.error(e);
-                    }
-                    return retMsg;
-                }
-                if (userMemberInfo.getUdynamic_wallet() < helpsOrderReq.getMoney()) {
-                    helpsOrderResp.setMsg("余额不足，不能发单！");
-                    helpsOrderResp.setCode("C0015");
-                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                    String retMsg = Base64Util.encode(jsonObject.toString());
-                    try {
-                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                    }catch (UnsupportedEncodingException e) {
-                        log.error(e);
-                    }
-                    return retMsg;
-                }
-            }
-            if (helpsOrderReq.getWallet_type() == 1) {
-
-                if (userMemberInfo.getUstatic_wallet() < helpsOrderReq.getMoney()) {
-                    helpsOrderResp.setMsg("余额不足，不能发单！");
-                    helpsOrderResp.setCode("C0015");
-                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                    String retMsg = Base64Util.encode(jsonObject.toString());
-                    try {
-                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                    }catch (UnsupportedEncodingException e) {
-                        log.error(e);
-                    }
-                    return retMsg;
-                }
-            }
-        }
         long ncurTimer = System.currentTimeMillis();
         Offer_Help offer_helps = new Offer_Help();
         offer_helps.setCreate_date(ncurTimer);
@@ -938,7 +1011,6 @@ public class AppServerController {
             appServerMapper.updateUserFrozen(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
         }
         if(helpsOrderReq.getHelp_type() ==2){ //请求帮助
-            User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
             if(helpsOrderReq.getWallet_type()==2){ //动态钱包
                 appServerMapper.updateUserdynamic(helpsOrderReq.getUid(),helpsOrderReq.getMoney());
 //提供帮助
@@ -982,6 +1054,7 @@ public class AppServerController {
         }
         return retMsg;
     }
+
     @RequestMapping(value = "10015")
     /**
      * 获取订单详情
@@ -1545,10 +1618,18 @@ public class AppServerController {
         weixin.setAccount(userPayInfo.getUser_weixin());
 
         LeaderInfo leader = new LeaderInfo();
-        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(getUserPayInfoSnReq.getUid());
-        String name = appServerMapper.getUserName(user_memberInfo.getUser_referee_phone());
-        leader.setName(name);
-        leader.setTel(user_memberInfo.getUser_referee_phone());
+
+
+        long uid = appServerMapper.getUserIDByaccount(account);
+        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
+        int userCount = appServerMapper.getUserCount(user_memberInfo.getUser_referee_phone());
+        if(userCount>0){
+            String name = appServerMapper.getUserName(user_memberInfo.getUser_referee_phone());
+            leader.setName(name);
+        }else{
+            leader.setName("");
+            leader.setTel(user_memberInfo.getUser_referee_phone());
+        }
         getPayInfoBySnResp.setLeader(leader);
         getPayInfoBySnResp.setRemittance_url(orders.getRemittance_url());
         getPayInfoBySnResp.setMsg(retMsg);
@@ -1562,6 +1643,7 @@ public class AppServerController {
         }
         return retMsg;
     }
+
     @RequestMapping(value = "10030")
 
     @ResponseBody
@@ -1603,26 +1685,25 @@ public class AppServerController {
                 getUserOfferHelpInfo.setOrder_num(offer_help.getHelp_order());
                 getUserOfferHelpInfo.setHelp_type(offer_help.getHelp_type());
                 getUserOfferHelpInfo.setWallet_type(offer_help.getWallet_type());
-                if(offer_help.getHelp_status()==2){ //已完成订单
-                    if(offer_help.getHelp_type()==1){ //提供帮助
-                        Orders orders = appServerMapper.getOrderInfoDetailsT(offer_help.getHelp_order());
-                        if(orders!=null){
-                            data1.setFrom_account(orders.getWithdrawals_phone());
-                            data1.setOrder_num(orders.getOrder_num());
-                            data1.setUnfreeze_date(offer_help.getUnfreeze_date());
-                            float inCome_money = (float) 300.00; //先整收益
-                            data1.setIncome_money(inCome_money);
-                        }
 
-                    }else{ //申请帮助没有收益
-                        Orders orders = appServerMapper.getOrderInfoDetailsS(offer_help.getHelp_order());
-                        if(orders!=null) {
-                            data1.setFrom_account(orders.getWithdrawals_phone());
-                            data1.setOrder_num(orders.getOrder_num());
-                        }
+                if(offer_help.getHelp_type()==1){ //提供帮助
+                    Orders orders = appServerMapper.getOrderInfoDetailsT(offer_help.getHelp_order());
+                    if(orders!=null){
+                        data1.setFrom_account(orders.getWithdrawals_phone());
+                        data1.setOrder_num(orders.getOrder_num());
+                        data1.setUnfreeze_date(offer_help.getUnfreeze_date());
+                        float inCome_money = (float) 300.00; //先整收益
+                        data1.setIncome_money(inCome_money);
                     }
 
+                }else{ //申请帮助没有收益
+                    Orders orders = appServerMapper.getOrderInfoDetailsS(offer_help.getHelp_order());
+                    if(orders!=null) {
+                        data1.setFrom_account(orders.getWithdrawals_phone());
+                        data1.setOrder_num(orders.getOrder_num());
+                    }
                 }
+
                 getUserOfferHelpInfo.setData1(data1);
 
                 getUserOfferHelpInfos.add(getUserOfferHelpInfo);
@@ -1705,6 +1786,7 @@ public class AppServerController {
             }
             getUserInComeInfoArrayList.add(getUserInComeInfo);
         }
+        getUserInComeResp.setData(getUserInComeInfoArrayList);
         getUserInComeResp.setCode(retCode);
         getUserInComeResp.setMsg(retMsg);
 

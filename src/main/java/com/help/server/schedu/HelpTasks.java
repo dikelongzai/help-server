@@ -129,7 +129,7 @@ public class HelpTasks {
             incomeCalculLog.setUser_id(user_memberInfo.getUser_id());
             incomeCalculLog.setFuser_id(offerHelp.getUser_id());
              //添加到用户领导奖领导奖和更新
-            helpTasksMapper.updateUserDynamic_Wallet(money,user_memberInfo1.getUser_id());
+            helpTasksMapper.updateUserDynamic_Wallet(money,user_memberInfo.getUser_id());
             helpTasksMapper.updateOffer_help_income(offerHelp.getHelp_order());
             //插入收入表
             helpTasksMapper.insertInComCalcul(incomeCalculLog);
@@ -215,14 +215,14 @@ public class HelpTasks {
     }
 
     //冻结奖计算
-     @Scheduled(cron="0 0/30 0-23 * * *")
+    @Scheduled(cron="0 0/30 0-23 * * *")
     public void CalIncome_Money() {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         log.error("CalIncome_Money:"+df.format(new Date()));// new Date()为获取当前系统时间
-
+/////////////////////利息记录/////////////////////////////////////////////////////////
         GetRuleInfo getRuleInfo = helpTasksMapper.getTaskRuleInfo();
-        //未匹配
+//未匹配
         List<Offer_Help> offer_helpListUnMatch = helpTasksMapper.getOfferCalUnMatch();
         for (int i = 0; i < offer_helpListUnMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
@@ -246,7 +246,7 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-     //已匹配
+//已匹配
         List<Offer_Help> offer_helpListMatch = helpTasksMapper.getOfferCalMatch();
         for (int i = 0; i < offer_helpListMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
@@ -270,7 +270,8 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-       // 冻结期
+/////////////////////冻结期结束 ，/////////////////////////////////////////////////////////
+     // 冻结期
         List<Orders> orderInfoList = helpTasksMapper.getOrderInfoList(7);
         long nCurrentTimer = System.currentTimeMillis();
         for (int i = 0; i < orderInfoList.size(); i++) {
@@ -287,7 +288,7 @@ public class HelpTasks {
                     Income_calcul_log incomeCalculLog = calculLogList.get(j);
                     fCountMoney = fCountMoney+incomeCalculLog.getMoney_num();
                 }
-              // 抽成 金额计算
+              // 抽成 计算，计算后，添加到管理员账户
                 double desc = orders.getMoney_num() * getRuleInfo.getDynamic_deduct_proportion();
                 int nZAdmin = helpTasksMapper.getUserMember_Admin(2);
                 if(nZAdmin>0){ //添加到主管理员账户
@@ -304,13 +305,52 @@ public class HelpTasks {
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
                     }
                 }
-
-			    //冻结钱包+利息 =
-                appServerMapper.updateUserdynamic(recharge_uid,orders.getMoney_num());
+              //冻结钱包+利息 =
+                log.info("recharge_uid:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
+                appServerMapper.updateUserFrozen(recharge_uid,orders.getMoney_num());
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
             }
         }
+///////////////////////////匹配后超期未打款///////////////////////////////////////////////
+        nCurrentTimer = System.currentTimeMillis();
+        // 打款方冻结帐户，单子状态超期。冻结钱包扣除对应单子的金额
+        List<Orders> InfoList = helpTasksMapper.getOrderInfoList(3);
+        for (int i = 0; i < InfoList.size(); i++) {
+            Orders orders = InfoList.get(i);
+            long match_date = orders.getMatch_date();
+            long nbetwon = nCurrentTimer-match_date;
+            if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
+                appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
+                appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
+                appServerMapper.updateUserFrozen(orders.getRecharge_uid(),orders.getMoney_num());
+                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+                helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
+                appServerMapper.updateOfferHelp(1,nCurrentTimer,orders.getWithdrawals_order());
+                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+
+            }
+        }
+      //已打款但超期未确认收款，冻结双方账号。扣除打款方冻结钱包对应金额，收款方已经扣过静态钱包了。
+       /////////////////////////////////打款后未确认////////////////////////////////////////////////////////
+        List<Orders> InfoListorder = helpTasksMapper.getOrderInfoList(7);
+        for (int i = 0; i < InfoListorder.size(); i++) {
+            Orders orders = InfoListorder.get(i);
+            long pay_date = orders.getPayment_date();
+            long nbetwon = nCurrentTimer-pay_date;
+            if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
+                helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
+                helpTasksMapper.updateUserActivate(orders.getWithdrawals_uid());
+                appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
+                appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
+                appServerMapper.updateUserFrozen(orders.getRecharge_uid(),orders.getMoney_num());
+                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+                appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
+                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+
+            }
+        }
     }
+
 
 }
 
