@@ -40,7 +40,7 @@ public class AdminService {
      * @return
      * @throws Exception
      */
-    public String getSearchLeaveMessageSql(JSONObject param,int reply_type ) throws Exception {
+    public String getSearchLeaveMessageSql(JSONObject param, int reply_type) throws Exception {
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append(SqlConstant.SQL_BASE_LEAVING_MSG);
         sqlBuffer.append(" and reply_type=").append(reply_type).append(" ");
@@ -69,8 +69,8 @@ public class AdminService {
      * @return
      * @throws Exception
      */
-    public JSONObject getLeaveMsg(JSONObject param,int reply_type) throws Exception {
-        String sql = getSearchLeaveMessageSql(param,reply_type);
+    public JSONObject getLeaveMsg(JSONObject param, int reply_type) throws Exception {
+        String sql = getSearchLeaveMessageSql(param, reply_type);
         int cpage = Integer.valueOf(param.getString("page"));
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
     }
@@ -133,6 +133,7 @@ public class AdminService {
         log.info("getSearchUserSql sql=" + sqlBuffer.toString());
         return sqlBuffer.toString();
     }
+
     /**
      * 获取用户发单分页查询sql
      *
@@ -178,6 +179,7 @@ public class AdminService {
         log.info("getSearchOfferrSql sql=" + sqlBuffer.toString());
         return sqlBuffer.toString();
     }
+
     /**
      * 获取用户发单分页查询sql
      *
@@ -232,6 +234,7 @@ public class AdminService {
         log.info("getSearchOrderSql sql=" + sqlBuffer.toString());
         return sqlBuffer.toString();
     }
+
     /**
      * 获取激活码分页信息
      *
@@ -270,6 +273,7 @@ public class AdminService {
         int cpage = Integer.valueOf(param.getString("page"));
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
     }
+
     /**
      * 获取订单
      *
@@ -283,6 +287,7 @@ public class AdminService {
         int cpage = Integer.valueOf(param.getString("page"));
         return JdbcUtils.getInstatance().getPageBySql(sql, cpage);
     }
+
     /**
      * 获取匹配列表
      *
@@ -415,11 +420,12 @@ public class AdminService {
 
     /**
      * 添加订单时再加一次判断防止发单是同一人
+     *
      * @param uuid
      * @param orders
      */
     public static synchronized void addMatchOrder(String uuid, Orders orders) {
-        if(orders.getWithdrawals_uid()!=orders.getRecharge_uid()){
+        if (orders.getWithdrawals_uid() != orders.getRecharge_uid()) {
             List<Orders> ordersList = hasMatchList.get(uuid);
             ordersList.add(orders);
             hasMatchList.put(uuid, ordersList);
@@ -571,6 +577,31 @@ public class AdminService {
         log.info("updateAward sql=" + sqlBuffer.toString());
         return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
     }
+    /**
+     * 修改用户信息
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public boolean updateUser(JSONObject param) throws Exception {
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append("UPDATE user_member SET state='U',last_update=(SELECT UNIX_TIMESTAMP()*1000)");
+        //{"direct_num":1,"four_generation":0.1,"id":7,"one_generation":0.2,"team_num":1,"three_generation":0.3,"two_generation":0.2,"user_title":"教授"}
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+            if ("ustatic_wallet".equals(entry.getKey())||"udynamic_wallet".equals(entry.getKey())) {
+                sqlBuffer.append(",").append(entry.getKey()).append("=").append(entry.getValue());
+
+            } else {
+                if (!entry.getKey().equals("user_id")) {
+                    sqlBuffer.append(",").append(entry.getKey()).append("='").append(entry.getValue().toString()).append("'");
+                }
+            }
+            //System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
+        sqlBuffer.append(" WHERE user_id=").append(param.getString("user_id"));
+        log.info("updateUser sql=" + sqlBuffer.toString());
+        return JdbcUtils.getInstatance().updateByPreparedStatement(sqlBuffer.toString(), null);
+    }
 
     /**
      * 添加订单
@@ -616,13 +647,13 @@ public class AdminService {
         help_id = appServerMappe.get_id_generator(idname);
         offer_helps.setHelp_id(help_id);
         offer_helps.setHelp_type(help_type);
-        String ordernum ="";
-        if(help_type ==1){
-            ordernum = CommonUtil.genRandomOrderEX("T",help_id+"");
-        }else{
-            ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
+        String ordernum = "";
+        if (help_type == 1) {
+            ordernum = CommonUtil.genRandomOrderEX("T", help_id + "");
+        } else {
+            ordernum = CommonUtil.genRandomOrderEX("S", help_id + "");
         }
-       // String ordernum = CommonUtil.genRandomOrder(help_id + "");
+        // String ordernum = CommonUtil.genRandomOrder(help_id + "");
         offer_helps.setHelp_order(ordernum);
         offer_helps.setMoney_num(money_num);
         offer_helps.setHelp_status(1);
@@ -718,6 +749,7 @@ public class AdminService {
         jsonReturn.put("msg", "OK");
         log.info("last=" + JSON.toJSONString(mapCuMathList));
         mapCuMathList.remove(uuid);
+        hasMatchList.remove(uuid);
         //{"b1":[{"day":"2017-02-04","offer":[{"help_order":"P590d19i951id0hh71ca","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P93bj6fei1022id284bc","lowerIds":[],"money_num":1500,"ruid":5,"user_id":9,"user_phone":"18192023651"},{"help_order":"P95jieig2h53i689cg87","lowerIds":[],"money_num":1600,"ruid":7,"user_id":18,"user_phone":"17792380563"}],"value":"800"},{"day":"2017-02-03","offer":[{"help_order":"P54gc72i00228c32jf7a","lowerIds":[],"money_num":200,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P989ac1ed4idi9cch597","lowerIds":[],"money_num":200,"ruid":7,"user_id":18,"user_phone":"17792380563"},{"help_order":"P55d0697b5949cg5bi10","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P611gi76ji9i1bh78eg7","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P568b61ehgfij3fc24e3","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P37ed9hfhdb7fb9jb69i","lowerIds":[9,10],"money_num":1000,"ruid":0,"user_id":5,"user_phone":"15389290468"},{"help_order":"P383egiha6g1ece88eea","lowerIds":[17,18],"money_num":1000,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"600"}],"b2":[{"day":"2017-02-04","offer":[{"help_order":"P100bbf37i60j1fbj2ca","lowerIds":[],"money_num":300,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P656113i95ai2gi9ie30","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P67j6dc38f9cib9hfj6d","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"}],"value":"500"},{"day":"2017-02-03","offer":[{"help_order":"P63b59fd49b7ef77f1f9","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P912f5a347g2f6i01a3i","lowerIds":[17,18],"money_num":600,"ruid":0,"user_id":7,"user_phone":"17709211685"},{"help_order":"P978b54a570g9005fec9","lowerIds":[],"money_num":800,"ruid":5,"user_id":10,"user_phone":"18192023650"}],"value":"700"}],"c1":[{"day":"2017-02-04","offer":[{"help_order":"P573690gebgiic9e9ij4","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P923jj842efjg1jbg5ii","lowerIds":[17,18],"money_num":500,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"100"},{"day":"2017-02-03","offer":[{"help_order":"P5250ii8e5jha3884fei","lowerIds":[],"money_num":100,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P945e32gf18iagb976i3","lowerIds":[],"money_num":500,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P406g8i280de7j08ddia","lowerIds":[17,18],"money_num":1000,"ruid":0,"user_id":7,"user_phone":"17709211685"}],"value":"900"}],"c2":[{"day":"2017-02-04","offer":[{"help_order":"P991g55d11f7hdja3bi0","lowerIds":[],"money_num":300,"ruid":5,"user_id":10,"user_phone":"18192023650"},{"help_order":"P58g02c7c116ec11je3d","lowerIds":[],"money_num":800,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P6485d7g37adb71i29e2","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P6612cffjd716i2a8iaj","lowerIds":[],"money_num":900,"ruid":0,"user_id":3,"user_phone":"13759889278"}],"value":"1000"},{"day":"2017-02-03","offer":[{"help_order":"P53cagcj0c8dehe9636b","lowerIds":[],"money_num":200,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P62j82a55igh7a71cdbd","lowerIds":[],"money_num":500,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P602cf771dg4cj8dbe73","lowerIds":[],"money_num":600,"ruid":0,"user_id":3,"user_phone":"13759889278"},{"help_order":"P90gf9i60e19affbceg9","lowerIds":[17,18],"money_num":600,"ruid":0,"user_id":7,"user_phone":"17709211685"},{"help_order":"P961fde0hf6g0eiea3e5","lowerIds":[],"money_num":800,"ruid":5,"user_id":10,"user_phone":"18192023650"}],"value":"200"}]}
         log.info("doMatchOffer cost=" + (System.currentTimeMillis() - start) + "ms;result=" + jsonReturn.toJSONString());
         return jsonReturn;
@@ -919,7 +951,7 @@ public class AdminService {
         appServerMappe.id_generator(idname);
         long order_id = appServerMappe.get_id_generator(idname);
         long start = System.currentTimeMillis();
-        String ordernum = CommonUtil.genRandomOrderEX("D",order_id + "");
+        String ordernum = CommonUtil.genRandomOrderEX("D", order_id + "");
         Orders order = new Orders();
         order.setCreate_date(start);
         order.setLast_date(start);
@@ -961,12 +993,12 @@ public class AdminService {
         appServerMappe.id_generator(idname);
         long order_id = appServerMappe.get_id_generator(idname);
         long start = System.currentTimeMillis();
-        String ordernum = CommonUtil.genRandomOrder(order_id + "");
+        String ordernum = CommonUtil.genRandomOrderEX("D", order_id + "");
         Orders order = new Orders();
 
         order.setCreate_date(start);
         order.setLast_date(start);
-        order.setOrder_type(0);
+        order.setOrder_type(3);
         order.setState('N');
 
         order.setOrder_id(order_id);
@@ -1164,7 +1196,7 @@ public class AdminService {
         JSONObject jsonParams = mapCuMathList.get(uuid);
         JSONArray jsonArrayb1 = jsonParams.getJSONArray("c1");
         JSONArray jsonArrayb2 = jsonParams.getJSONArray("c2");
-        if(!jsonArrayb1.isEmpty()){
+        if (!jsonArrayb1.isEmpty()) {
             for (Object object : jsonArrayb1) {
                 JSONObject json = (JSONObject) object;
                 JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
@@ -1177,7 +1209,7 @@ public class AdminService {
 
             }
         }
-        if(!jsonArrayb2.isEmpty()){
+        if (!jsonArrayb2.isEmpty()) {
             for (Object object : jsonArrayb2) {
                 JSONObject json = (JSONObject) object;
                 JSONArray offersNotMatch = getHasNotMathList(uuid, json.getJSONArray("offer"));
@@ -1270,13 +1302,13 @@ public class AdminService {
         offer_last.setIs_split(1);
         offer_last.setLast_update(start);
         offer_last.setMoney_num(money_num);
-        String ordernum ="";
-        if(offer_last.getHelp_type() ==1){
-            ordernum = CommonUtil.genRandomOrderEX("T",help_id+"");
-        }else{
-            ordernum = CommonUtil.genRandomOrderEX("S",help_id+"");
+        String ordernum = "";
+        if (offer_last.getHelp_type() == 1) {
+            ordernum = CommonUtil.genRandomOrderEX("T", help_id + "");
+        } else {
+            ordernum = CommonUtil.genRandomOrderEX("S", help_id + "");
         }
-       // String ordernum = CommonUtil.genRandomOrder(help_id + "");
+        // String ordernum = CommonUtil.genRandomOrder(help_id + "");
         offer_last.setHelp_order(ordernum);
         appServerMappe.OfferHelp(offer_last);
         jsonSplitResult.put("equelOrderNum", ordernum);
@@ -1287,11 +1319,11 @@ public class AdminService {
         offer_last.setLast_update(start);
         float money_num_split = lastMoney - money_num;
         offer_last.setMoney_num(money_num_split);
-        String ordernum1 ="";
-        if(offer_last.getHelp_type() ==1){
-            ordernum1 = CommonUtil.genRandomOrderEX("T",help_id+"");
-        }else{
-            ordernum1 = CommonUtil.genRandomOrderEX("S",help_id+"");
+        String ordernum1 = "";
+        if (offer_last.getHelp_type() == 1) {
+            ordernum1 = CommonUtil.genRandomOrderEX("T", help_id + "");
+        } else {
+            ordernum1 = CommonUtil.genRandomOrderEX("S", help_id + "");
         }
         offer_last.setHelp_order(ordernum1);
         appServerMappe.OfferHelp(offer_last);

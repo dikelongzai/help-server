@@ -600,6 +600,22 @@ public class AdminController {
         map.put("news", news);
         return "/admin/userdetail";
     }
+    /**
+     * ajax修改用户信息
+     *@param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/doEditUser", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject doEditUser(HttpServletRequest request) throws Exception {
+        JSONObject param = ServletUtil.getAppRequestParameters(request, null);
+        //param={"udynamic_wallet":"6000","user_bank_account":"65182364588569426","user_bank_name":"测试仔仔","user_payment":"东边6","ustatic_wallet":"5000"}
+        log.info("param=" + param.toJSONString());
+        aadminService.updateUser(param);
+        //int num = appServerMapper.updateUserCodeNum_add(Integer.parseInt(param.getString("addNum")),Long.valueOf(param.getString("user_id")));
+        return ResultStatusCode.OK.toJson();
+    }
     /* ===========================用户管理end==================================**/
     /* ===========================添加订单start==================================**/
     /**
@@ -736,7 +752,6 @@ public class AdminController {
     /**
      * 常见问题添加
      *
-     * @param news
      * @param result
      * @return
      */
