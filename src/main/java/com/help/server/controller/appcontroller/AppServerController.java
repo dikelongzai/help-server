@@ -922,18 +922,21 @@ public class AppServerController {
                 e.printStackTrace();
             }
             long tdate = date.getTime();
-            float sumMoney = appServerMapper.getCurrentTimerMoney_num(tdate);
-            if(sumMoney>=getRuleInfo.getOrder_max_money()){
-                helpsOrderResp.setMsg("提供帮助单子的金额超过最大值，联系管理员！");
-                helpsOrderResp.setCode("C0020");
-                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                String retMsg = Base64Util.encode(jsonObject.toString());
-                try {
-                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error(e);
+            int sumMoneyCount = appServerMapper.getCurrentTimerMoney_count(tdate);
+            if(sumMoneyCount>0){
+                float sumMoney = appServerMapper.getCurrentTimerMoney_num(tdate);
+                if(sumMoney>=getRuleInfo.getOrder_max_money()){
+                    helpsOrderResp.setMsg("提供帮助单子的金额超过最大值，联系管理员！");
+                    helpsOrderResp.setCode("C0020");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
                 }
-                return retMsg;
             }
             int noIncome = appServerMapper.getOfferHelpCountNoIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
             if(noIncome>=getRuleInfo.getMax_order_num()){

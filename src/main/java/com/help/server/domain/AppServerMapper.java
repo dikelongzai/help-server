@@ -313,6 +313,9 @@ public interface AppServerMapper {
     @Select("select SUM(money_num) from offer_help where create_date > #{tdate} AND help_type = 1")
     public float getCurrentTimerMoney_num(@Param("tdate") long tdate);
 
+    @Select("select count(1) from offer_help where create_date > #{tdate} AND help_type = 1")
+    public int getCurrentTimerMoney_count(@Param("tdate") long tdate);
+
 }
 
 
