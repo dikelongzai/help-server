@@ -40,7 +40,7 @@ public class HelpTasks {
         List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
         for(Dynamic_Award info : dynamicAwardList){
 
-            if(info.getTeam_num() < nsize){
+            if(info.getTeam_num() <= nsize){
                 title_id = info.getUser_title_id();
                 continue;
             }
@@ -228,8 +228,8 @@ public class HelpTasks {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListUnMatch.get(i);
             long updateLong = offerHelp.getLast_update();
-            long nHour = (nCurrentTimer - updateLong) / 3600000 / 24;
-            if (nHour > 1) {
+            long nHour = (nCurrentTimer - updateLong);
+            if (nHour >= (3600000 * 24)) {
                 helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
@@ -252,8 +252,8 @@ public class HelpTasks {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListMatch.get(i);
             long updateLong = offerHelp.getLast_update();
-            long nHour = (nCurrentTimer - updateLong) / 3600000 / 24;
-            if (nHour > 1) {
+            long nHour = (nCurrentTimer - updateLong);
+            if (nHour >= (3600000 * 24)) {
                 helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
@@ -307,7 +307,7 @@ public class HelpTasks {
                 }
               //冻结钱包+利息 =
                 log.info("recharge_uid:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
-                appServerMapper.updateUserFrozen(recharge_uid,orders.getMoney_num());
+                helpTasksMapper.updateUserFrozen_task(recharge_uid,orders.getMoney_num());
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
             }
         }
@@ -322,7 +322,7 @@ public class HelpTasks {
             if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
                 appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
-                appServerMapper.updateUserFrozen(orders.getRecharge_uid(),orders.getMoney_num());
+                helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
                 appServerMapper.updateOfferHelp(1,nCurrentTimer,orders.getWithdrawals_order());
@@ -330,9 +330,9 @@ public class HelpTasks {
 
             }
         }
-      //已打款但超期未确认收款，冻结双方账号。扣除打款方冻结钱包对应金额，收款方已经扣过静态钱包了。
-       /////////////////////////////////打款后未确认////////////////////////////////////////////////////////
-        List<Orders> InfoListorder = helpTasksMapper.getOrderInfoList(7);
+       //已打款但超期未确认收款，冻结双方账号。扣除打款方冻结钱包对应金额，收款方已经扣过静态钱包了。
+        /////////////////////////////////打款后未确认////////////////////////////////////////////////////////
+        List<Orders> InfoListorder = helpTasksMapper.getOrderInfoList(6);
         for (int i = 0; i < InfoListorder.size(); i++) {
             Orders orders = InfoListorder.get(i);
             long pay_date = orders.getPayment_date();
@@ -342,7 +342,7 @@ public class HelpTasks {
                 helpTasksMapper.updateUserActivate(orders.getWithdrawals_uid());
                 appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
-                appServerMapper.updateUserFrozen(orders.getRecharge_uid(),orders.getMoney_num());
+                helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());

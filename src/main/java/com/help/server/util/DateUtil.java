@@ -184,7 +184,7 @@ public class DateUtil {
     }
 
     public static String dateLongToString(Long dateLong) {
-        String res = getDateFormatter8().format(dateLong);
+        String res = getDateFormatter6().format(dateLong);
         return res;
     }
 

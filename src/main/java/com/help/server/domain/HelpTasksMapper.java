@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface HelpTasksMapper {
 
-    @Select("SELECT * FROM user_member WHERE FIND_IN_SET(user_phone,queryChildrenAreaInfo(#{userphone}))")
+    @Select("SELECT * FROM user_member WHERE FIND_IN_SET(user_phone,queryChildrenAreaInfo(#{userphone})) AND is_activate =2")
     public List<User_MemberInfo> getUserMemberInfo(@Param("userphone") String userphone);
 
     @Select("SELECT count(1) FROM user_member")
@@ -81,7 +81,7 @@ public interface HelpTasksMapper {
     public  void deleteInCome_log(@Param("helporder") String helporder);
 
     @Update("update user_member set ufrozen_wallet = ufrozen_wallet - #{num} where user_id = #{userid}")
-    public int updateUserFrozen(@Param("userid") long userid,@Param("num") float num);
+    public int updateUserFrozen_task(@Param("userid") long userid,@Param("num") float num);
 }
 
 

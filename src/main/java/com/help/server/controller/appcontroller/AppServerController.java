@@ -824,6 +824,20 @@ public class AppServerController {
 
             if (helpsOrderReq.getWallet_type() == 2) { //动态钱包
 
+                int Income = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
+                if(Income>=getRuleInfo.getMax_order_num()){
+                    helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
+                    helpsOrderResp.setCode("C0018");
+                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                    String retMsg = Base64Util.encode(jsonObject.toString());
+                    try {
+                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.error(e);
+                    }
+                    return retMsg;
+                }
+
                 int times = (int) (fmoney % getRuleInfo.getDynamic_times_money());
                 int nfmoney = (int)fmoney;
                 if(nfmoney<getRuleInfo.getDynamic_min_money()||nfmoney>getRuleInfo.getDynamic_max_money()|| times != 0){
@@ -840,19 +854,7 @@ public class AppServerController {
                     return retMsg;
                 }
 
-                int Income = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
-                if(Income>=getRuleInfo.getMax_order_num()){
-                    helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
-                    helpsOrderResp.setCode("C0018");
-                    JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                    String retMsg = Base64Util.encode(jsonObject.toString());
-                    try {
-                        retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        log.error(e);
-                    }
-                    return retMsg;
-                }
+
                 if (userMemberInfo.getUdynamic_wallet() < helpsOrderReq.getMoney()) {
                     helpsOrderResp.setMsg("余额不足，不能发单！");
                     helpsOrderResp.setCode("C0015");
@@ -1440,6 +1442,7 @@ public class AppServerController {
             appServerMapper.updateOrderStatus(6,nCurrentTimer,ordernum);
             appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getRecharge_order());
             appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getWithdrawals_order());
+            SendSmsUtil.sendSms(orders.getWithdrawals_phone(),"您的申请帮助订单已经收到对方打款，请您注意查收，并在规定时间内确认收款！");
             commResp.setMsg(retMsg);
             commResp.setCode(retCode);
         }catch (Exception ex){
@@ -1629,6 +1632,7 @@ public class AppServerController {
         if(userCount>0){
             String name = appServerMapper.getUserName(user_memberInfo.getUser_referee_phone());
             leader.setName(name);
+            leader.setTel(user_memberInfo.getUser_referee_phone());
         }else{
             leader.setName("");
             leader.setTel(user_memberInfo.getUser_referee_phone());
