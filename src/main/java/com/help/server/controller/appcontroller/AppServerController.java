@@ -4,6 +4,7 @@ package com.help.server.controller.appcontroller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.help.server.domain.AppServerMapper;
+import com.help.server.domain.HelpTasksMapper;
 import com.help.server.domain.requestbean.*;
 import com.help.server.domain.responsebean.*;
 import com.help.server.domain.tables.*;
@@ -49,6 +50,9 @@ public class AppServerController {
     private FileUploadService fileUploadService;
     @Autowired
     private AppServerMapper appServerMapper;
+
+    @Autowired
+    private HelpTasksMapper helpTasksMapper;
 
     @RequestMapping(value = "10001")
 
@@ -138,6 +142,18 @@ public class AppServerController {
         return retMsg;
     }
 
+    private long getUserTileID(int nsize){
+        long title_id =1;
+        List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
+        for(Dynamic_Award info : dynamicAwardList){
+
+            if(info.getTeam_num() <= nsize){
+                title_id = info.getUser_title_id();
+                continue;
+            }
+        }
+        return title_id;
+    }
     @RequestMapping(value = "10003")
     /**
      * 获取用户登录
@@ -154,6 +170,11 @@ public class AppServerController {
         UserMberInfo data = new UserMberInfo();
         if (isok == 1) { //登录成功
             long userId = appServerMapper.getUserIDByaccount(username);
+            List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(username);
+            int nsize = userMemberlist.size()-1;
+            int title_id = (int)getUserTileID(nsize);
+            helpTasksMapper.updateUserTitleId(title_id,userId);
+
             User_MemberInfo user_member = appServerMapper.getUserInfo(userId);
 
             getUserInfoResp.setCode(retCode);
