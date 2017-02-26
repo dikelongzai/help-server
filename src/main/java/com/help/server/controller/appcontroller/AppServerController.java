@@ -1740,6 +1740,7 @@ public class AppServerController {
                     if(orders!=null) {
                         long uid = appServerMapper.getUserIDByaccount(orders.getRecharge_phone());
                         User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
+                        data1.setFrom_uname(user_memberInfo.getUser_name());
                         data1.setFrom_account(orders.getRecharge_phone());
                         data1.setOrder_num(orders.getOrder_num());
                         data1.setMatch_date(orders.getMatch_date());
