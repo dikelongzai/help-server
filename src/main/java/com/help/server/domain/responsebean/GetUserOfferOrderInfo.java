@@ -27,6 +27,14 @@ public class GetUserOfferOrderInfo {
         return from_account;
     }
 
+    public String getFrom_uname() {
+        return from_uname;
+    }
+
+    public void setFrom_uname(String from_uname) {
+        this.from_uname = from_uname;
+    }
+
     public void setFrom_account(String from_account) {
         this.from_account = from_account;
     }
@@ -50,5 +58,6 @@ public class GetUserOfferOrderInfo {
     private  float income_money;
     private  long unfreeze_date;
     private  long match_date;
+    private  String from_uname="";
 }
 

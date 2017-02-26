@@ -1628,6 +1628,14 @@ public class AppServerController {
         }else{
             account = orders.getRecharge_phone();
         }
+        User user = new User();
+
+        long uid = appServerMapper.getUserIDByaccount(account);
+        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
+        user.setTel(account);
+        user.setName(user_memberInfo.getUser_name());
+        getPayInfoBySnResp.setUser(user);
+
         userPayInfo = appServerMapper.getUserPayInfo(account);
         BankInfo bank = new BankInfo();
         bank.setName(userPayInfo.getUser_bank_name());
@@ -1646,9 +1654,6 @@ public class AppServerController {
 
         LeaderInfo leader = new LeaderInfo();
 
-
-        long uid = appServerMapper.getUserIDByaccount(account);
-        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
         int userCount = appServerMapper.getUserCount(user_memberInfo.getUser_referee_phone());
         if(userCount>0){
             String name = appServerMapper.getUserName(user_memberInfo.getUser_referee_phone());
@@ -1660,6 +1665,8 @@ public class AppServerController {
         }
         getPayInfoBySnResp.setLeader(leader);
         getPayInfoBySnResp.setRemittance_url(orders.getRemittance_url());
+
+
         getPayInfoBySnResp.setMsg(retMsg);
         getPayInfoBySnResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);
@@ -1718,6 +1725,9 @@ public class AppServerController {
                     Orders orders = appServerMapper.getOrderInfoDetailsT(offer_help.getHelp_order());
                     if(orders!=null){
                         data1.setFrom_account(orders.getWithdrawals_phone());
+                        long uid = appServerMapper.getUserIDByaccount(orders.getWithdrawals_phone());
+                        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
+                        data1.setFrom_uname(user_memberInfo.getUser_name());
                         data1.setOrder_num(orders.getOrder_num());
                         data1.setUnfreeze_date(offer_help.getUnfreeze_date());
                         float inCome_money = (float) 300.00; //先整收益
@@ -1728,7 +1738,9 @@ public class AppServerController {
                 }else{ //申请帮助没有收益
                     Orders orders = appServerMapper.getOrderInfoDetailsS(offer_help.getHelp_order());
                     if(orders!=null) {
-                        data1.setFrom_account(orders.getWithdrawals_phone());
+                        long uid = appServerMapper.getUserIDByaccount(orders.getRecharge_phone());
+                        User_MemberInfo user_memberInfo = appServerMapper.getUserInfo(uid);
+                        data1.setFrom_account(orders.getRecharge_phone());
                         data1.setOrder_num(orders.getOrder_num());
                         data1.setMatch_date(orders.getMatch_date());
                     }

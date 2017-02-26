@@ -128,7 +128,7 @@ public class HelpTasks {
             incomeCalculLog.setMoney_num(money);
             incomeCalculLog.setUser_id(user_memberInfo.getUser_id());
             incomeCalculLog.setFuser_id(offerHelp.getUser_id());
-             //添加到用户领导奖领导奖和更新
+            //添加到用户领导奖领导奖和更新
             helpTasksMapper.updateUserDynamic_Wallet(money,user_memberInfo.getUser_id());
             helpTasksMapper.updateOffer_help_income(offerHelp.getHelp_order());
             //插入收入表
@@ -271,7 +271,7 @@ public class HelpTasks {
             }
         }
 /////////////////////冻结期结束 ，/////////////////////////////////////////////////////////
-     // 冻结期
+        // 冻结期
         List<Orders> orderInfoList = helpTasksMapper.getOrderInfoList(7);
         long nCurrentTimer = System.currentTimeMillis();
         for (int i = 0; i < orderInfoList.size(); i++) {
@@ -288,7 +288,7 @@ public class HelpTasks {
                     Income_calcul_log incomeCalculLog = calculLogList.get(j);
                     fCountMoney = fCountMoney+incomeCalculLog.getMoney_num();
                 }
-              // 抽成 计算，计算后，添加到管理员账户
+                // 抽成 计算，计算后，添加到管理员账户
                 double desc = orders.getMoney_num() * getRuleInfo.getDynamic_deduct_proportion();
                 int nZAdmin = helpTasksMapper.getUserMember_Admin(2);
                 if(nZAdmin>0){ //添加到主管理员账户
@@ -305,7 +305,7 @@ public class HelpTasks {
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
                     }
                 }
-              //冻结钱包+利息 =
+                //冻结钱包+利息 =
                 log.info("recharge_uid:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(recharge_uid,orders.getMoney_num());
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
@@ -320,7 +320,7 @@ public class HelpTasks {
             long match_date = orders.getMatch_date();
             long nbetwon = nCurrentTimer-match_date;
             if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
-                appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
+                helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
@@ -330,7 +330,7 @@ public class HelpTasks {
 
             }
         }
-       //已打款但超期未确认收款，冻结双方账号。扣除打款方冻结钱包对应金额，收款方已经扣过静态钱包了。
+        //已打款但超期未确认收款，冻结双方账号。扣除打款方冻结钱包对应金额，收款方已经扣过静态钱包了。
         /////////////////////////////////打款后未确认////////////////////////////////////////////////////////
         List<Orders> InfoListorder = helpTasksMapper.getOrderInfoList(6);
         for (int i = 0; i < InfoListorder.size(); i++) {
@@ -340,7 +340,7 @@ public class HelpTasks {
             if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
                 helpTasksMapper.updateUserActivate(orders.getWithdrawals_uid());
-                appServerMapper.updateOrderStatus(8,nCurrentTimer,orders.getOrder_num());
+                helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
@@ -353,4 +353,5 @@ public class HelpTasks {
 
 
 }
+
 

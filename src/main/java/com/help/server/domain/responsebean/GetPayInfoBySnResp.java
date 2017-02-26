@@ -44,6 +44,14 @@ public class GetPayInfoBySnResp {
         this.remittance_url = remittance_url;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void setBank(BankInfo bank) {
         this.bank = bank;
     }
@@ -69,5 +77,6 @@ public class GetPayInfoBySnResp {
     private WeixinInfo weixin;
     private LeaderInfo leader;
     private  String remittance_url;
+    private  User user;
 
 }

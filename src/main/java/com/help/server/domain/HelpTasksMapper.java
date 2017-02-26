@@ -82,7 +82,11 @@ public interface HelpTasksMapper {
 
     @Update("update user_member set ufrozen_wallet = ufrozen_wallet - #{num} where user_id = #{userid}")
     public int updateUserFrozen_task(@Param("userid") long userid,@Param("num") float num);
+
+    @Update("update orders set order_type = #{ordertype},last_update = #{lastupdate},state = 'D'  where order_num = #{ordernum} ")
+    public int updateOrderStatus_task(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
 }
+
 
 
 
