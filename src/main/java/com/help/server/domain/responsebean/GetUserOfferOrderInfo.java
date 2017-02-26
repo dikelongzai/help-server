@@ -4,6 +4,13 @@ package com.help.server.domain.responsebean;
  * Created by houxianyong on 2017/2/18.
  */
 public class GetUserOfferOrderInfo {
+    public long getMatch_date() {
+        return match_date;
+    }
+
+    public void setMatch_date(long match_date) {
+        this.match_date = match_date;
+    }
 
     private  String order_num = "";
     private  String from_account ="";
@@ -42,5 +49,6 @@ public class GetUserOfferOrderInfo {
 
     private  float income_money;
     private  long unfreeze_date;
+    private  long match_date;
 }
 

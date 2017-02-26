@@ -498,7 +498,7 @@ public class AppServerController {
                         userTeamInfo.setStatus(dataInfo.getIs_activate());
                         int titleid = dataInfo.getTitle_id();
                         userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
-                        Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                        Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(dataInfo.getUser_id());
                         if(offerHelp!=null){
                             if(offerHelp.getHelp_type()==1){
                                 userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
@@ -532,7 +532,7 @@ public class AppServerController {
                             userTeamInfo.setStatus(datathreeInfo.getIs_activate());
                             int titleid = datathreeInfo.getTitle_id();
                             userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
-                            Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                            Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(datathreeInfo.getUser_id());
                             if(offerHelp!=null){
                                 if(offerHelp.getHelp_type()==1){
                                     userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
@@ -569,7 +569,7 @@ public class AppServerController {
                                 userTeamInfo.setStatus(datafourInfo.getIs_activate());
                                 int titleid = datafourInfo.getTitle_id();
                                 userTeamInfo.setTile_name(appServerMapper.getTitleName(titleid));
-                                Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(user_memberInfo.getUser_id());
+                                Offer_Help offerHelp = appServerMapper.getOfferHelpInfoByDesc(datafourInfo.getUser_id());
                                 if(offerHelp!=null){
                                     if(offerHelp.getHelp_type()==1){
                                         userTeamInfo.setCsale(-(offerHelp.getMoney_num()));
@@ -1722,6 +1722,7 @@ public class AppServerController {
                         data1.setUnfreeze_date(offer_help.getUnfreeze_date());
                         float inCome_money = (float) 300.00; //先整收益
                         data1.setIncome_money(inCome_money);
+                        data1.setMatch_date(orders.getMatch_date());
                     }
 
                 }else{ //申请帮助没有收益
@@ -1729,6 +1730,7 @@ public class AppServerController {
                     if(orders!=null) {
                         data1.setFrom_account(orders.getWithdrawals_phone());
                         data1.setOrder_num(orders.getOrder_num());
+                        data1.setMatch_date(orders.getMatch_date());
                     }
                 }
 
