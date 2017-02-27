@@ -48,11 +48,11 @@ public class HelpTasks {
 
         return title_id;
     }
-    //¼ÆËãÃ¿¸öÓÃ»§µÄ¼¶±ğ
+    //è®¡ç®—æ¯ä¸ªç”¨æˆ·çš„çº§åˆ«
     @Scheduled(cron="0 0 1 * * *")
     public void Userlevel_Cal() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//ÉèÖÃÈÕÆÚ¸ñÊ½
-        log.error("Userlevel_Cal:"+df.format(new Date()));// new Date()Îª»ñÈ¡µ±Ç°ÏµÍ³Ê±¼ä
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//è®¾ç½®æ—¥æœŸæ ¼å¼
+        log.error("Userlevel_Cal:"+df.format(new Date()));// new Date()ä¸ºè·å–å½“å‰ç³»ç»Ÿæ—¶é—´
 
         long nMemberCount = helpTasksMapper.getUserMemberCount();
         long ncount = nMemberCount / 100;
@@ -88,7 +88,7 @@ public class HelpTasks {
         }
 
     }
-    //¼ÆËãÊÕÈëµÚÒ»¼¶
+    //è®¡ç®—æ”¶å…¥ç¬¬ä¸€çº§
     void calLeader_Income_one(User_MemberInfo user_memberInfo,User_MemberInfo user_memberInfo1,long nCurrentTimer, List<Dynamic_Award> dynamicAwardList,int generation){
 
         List<Offer_Help> offerHelpList = helpTasksMapper.getUserCompleOfferHelp(user_memberInfo1.getUser_id());
@@ -128,19 +128,19 @@ public class HelpTasks {
             incomeCalculLog.setMoney_num(money);
             incomeCalculLog.setUser_id(user_memberInfo.getUser_id());
             incomeCalculLog.setFuser_id(offerHelp.getUser_id());
-            //Ìí¼Óµ½ÓÃ»§Áìµ¼½±Áìµ¼½±ºÍ¸üĞÂ
+            //æ·»åŠ åˆ°ç”¨æˆ·é¢†å¯¼å¥–é¢†å¯¼å¥–å’Œæ›´æ–°
             helpTasksMapper.updateUserDynamic_Wallet(money,user_memberInfo.getUser_id());
             helpTasksMapper.updateOffer_help_income(offerHelp.getHelp_order());
-            //²åÈëÊÕÈë±í
+            //æ’å…¥æ”¶å…¥è¡¨
             helpTasksMapper.insertInComCalcul(incomeCalculLog);
         }
     }
-    //Áìµ¼¶¯Ì¬½±¼ÆËã
+    //é¢†å¯¼åŠ¨æ€å¥–è®¡ç®—
     @Scheduled(cron="0 0 2 * * *")
     public void CalLeader_Money(){
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//ÉèÖÃÈÕÆÚ¸ñÊ½
-        log.error("CalLeader_Money:"+df.format(new Date()));// new Date()Îª»ñÈ¡µ±Ç°ÏµÍ³Ê±¼ä
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//è®¾ç½®æ—¥æœŸæ ¼å¼
+        log.error("CalLeader_Money:"+df.format(new Date()));// new Date()ä¸ºè·å–å½“å‰ç³»ç»Ÿæ—¶é—´
 
         List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
 
@@ -158,20 +158,20 @@ public class HelpTasks {
                     int nsize = userMemberlist.size()-1;
                     if(nsize>5){
                         List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
-                        for (int k =0;k<oneList.size();k++){//Ò»¼¶
+                        for (int k =0;k<oneList.size();k++){//ä¸€çº§
                             User_MemberInfo user_memberInfo1 = oneList.get(k);
                             calLeader_Income_one(user_memberInfo,user_memberInfo1,nCurrentTimer,dynamicAwardList,0);
                             List<User_MemberInfo> twoList= appServerMapper.getUserLevel(user_memberInfo1.getUser_id());
-                            for (int m =0;m<twoList.size();m++){ //¶ş¼¶
+                            for (int m =0;m<twoList.size();m++){ //äºŒçº§
                                 User_MemberInfo user_memberInfo2 = twoList.get(m);
                                 calLeader_Income_one(user_memberInfo,user_memberInfo2,nCurrentTimer,dynamicAwardList,1);
                                 List<User_MemberInfo> threeList= appServerMapper.getUserLevel(user_memberInfo2.getUser_id());
-                                for (int n =0;n<threeList.size();n++){ //Èı¼¶
+                                for (int n =0;n<threeList.size();n++){ //ä¸‰çº§
                                     User_MemberInfo user_memberInfo3 = threeList.get(n);
                                     calLeader_Income_one(user_memberInfo,user_memberInfo3,nCurrentTimer,dynamicAwardList,2);
                                     List<User_MemberInfo> fourList= appServerMapper.getUserLevel(user_memberInfo3.getUser_id());
-                                    for (int l =0;l<fourList.size();l++){ //ËÄ¼¶
-                                        User_MemberInfo user_memberInfo4 = threeList.get(l);
+                                    for (int l =0;l<fourList.size();l++){ //ï¿½Ä¼ï¿½
+                                        User_MemberInfo user_memberInfo4 = fourList.get(l);
                                         calLeader_Income_one(user_memberInfo,user_memberInfo4,nCurrentTimer,dynamicAwardList,3);
                                     }
                                 }
@@ -189,20 +189,20 @@ public class HelpTasks {
                 List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
                 if(userMemberlist.size()>5){
                     List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
-                    for (int k =0;k<oneList.size();k++){//Ò»¼¶
+                    for (int k =0;k<oneList.size();k++){//ä¸€çº§
                         User_MemberInfo user_memberInfo1 = oneList.get(k);
                         calLeader_Income_one(user_memberInfo,user_memberInfo1,nCurrentTimer,dynamicAwardList,0);
                         List<User_MemberInfo> twoList= appServerMapper.getUserLevel(user_memberInfo1.getUser_id());
-                        for (int m =0;m<twoList.size();m++){ //¶ş¼¶
+                        for (int m =0;m<twoList.size();m++){ //äºŒçº§
                             User_MemberInfo user_memberInfo2 = twoList.get(m);
                             calLeader_Income_one(user_memberInfo,user_memberInfo2,nCurrentTimer,dynamicAwardList,1);
                             List<User_MemberInfo> threeList= appServerMapper.getUserLevel(user_memberInfo2.getUser_id());
-                            for (int n =0;n<threeList.size();n++){ //Èı¼¶
+                            for (int n =0;n<threeList.size();n++){ //ä¸‰çº§
                                 User_MemberInfo user_memberInfo3 = threeList.get(n);
                                 calLeader_Income_one(user_memberInfo,user_memberInfo3,nCurrentTimer,dynamicAwardList,2);
                                 List<User_MemberInfo> fourList= appServerMapper.getUserLevel(user_memberInfo3.getUser_id());
-                                for (int l =0;l<fourList.size();l++){ //ËÄ¼¶
-                                    User_MemberInfo user_memberInfo4 = threeList.get(l);
+                                for (int l =0;l<fourList.size();l++){ //ï¿½Ä¼ï¿½
+                                    User_MemberInfo user_memberInfo4 = fourList.get(l);
                                     calLeader_Income_one(user_memberInfo,user_memberInfo4,nCurrentTimer,dynamicAwardList,3);
                                 }
                             }
@@ -214,15 +214,15 @@ public class HelpTasks {
         }
     }
 
-    //¶³½á½±¼ÆËã
+    //å†»ç»“å¥–è®¡ç®—
     @Scheduled(cron="0 0/30 0-23 * * *")
     public void CalIncome_Money() {
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//ÉèÖÃÈÕÆÚ¸ñÊ½
-        log.error("CalIncome_Money:"+df.format(new Date()));// new Date()Îª»ñÈ¡µ±Ç°ÏµÍ³Ê±¼ä
-/////////////////////ÀûÏ¢¼ÇÂ¼/////////////////////////////////////////////////////////
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//è®¾ç½®æ—¥æœŸæ ¼å¼
+        log.error("CalIncome_Money:"+df.format(new Date()));// new Date()ä¸ºè·å–å½“å‰ç³»ç»Ÿæ—¶é—´
+/////////////////////åˆ©æ¯è®°å½•/////////////////////////////////////////////////////////
         GetRuleInfo getRuleInfo = helpTasksMapper.getTaskRuleInfo();
-//Î´Æ¥Åä
+//æœªåŒ¹é…
         List<Offer_Help> offer_helpListUnMatch = helpTasksMapper.getOfferCalUnMatch();
         for (int i = 0; i < offer_helpListUnMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
@@ -246,7 +246,7 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-//ÒÑÆ¥Åä
+//å·²åŒ¹é…
         List<Offer_Help> offer_helpListMatch = helpTasksMapper.getOfferCalMatch();
         for (int i = 0; i < offer_helpListMatch.size(); i++) {
             long nCurrentTimer = System.currentTimeMillis();
@@ -270,14 +270,14 @@ public class HelpTasks {
                 helpTasksMapper.insertInComCalcul(incomeCalculLog);
             }
         }
-/////////////////////¶³½áÆÚ½áÊø £¬/////////////////////////////////////////////////////////
-        // ¶³½áÆÚ
+/////////////////////å†»ç»“æœŸç»“æŸ ï¼Œ/////////////////////////////////////////////////////////
+        // å†»ç»“æœŸ
         List<Orders> orderInfoList = helpTasksMapper.getOrderInfoList(7);
         long nCurrentTimer = System.currentTimeMillis();
         for (int i = 0; i < orderInfoList.size(); i++) {
             Orders orders = orderInfoList.get(i);
             long nTimerBetw = nCurrentTimer - orders.getConfirm_date();
-            if (nTimerBetw > (getRuleInfo.getFreezing_time() * 3600000)) { //¶©µ¥¶³½áÆÚ£¬½áÊø£¬¶©µ¥Íê³É
+            if (nTimerBetw > (getRuleInfo.getFreezing_time() * 3600000)) { //è®¢å•å†»ç»“æœŸï¼Œç»“æŸï¼Œè®¢å•å®Œæˆ
                 appServerMapper.updateOrderStatus(2, nCurrentTimer, orders.getOrder_num());
                 appServerMapper.updateOfferHelp(2, nCurrentTimer, orders.getRecharge_order());
                 appServerMapper.updateOfferHelp(2, nCurrentTimer, orders.getWithdrawals_order());
@@ -288,10 +288,10 @@ public class HelpTasks {
                     Income_calcul_log incomeCalculLog = calculLogList.get(j);
                     fCountMoney = fCountMoney+incomeCalculLog.getMoney_num();
                 }
-                // ³é³É ¼ÆËã£¬¼ÆËãºó£¬Ìí¼Óµ½¹ÜÀíÔ±ÕË»§
+                // æŠ½æˆ è®¡ç®—ï¼Œè®¡ç®—åï¼Œæ·»åŠ åˆ°ç®¡ç†å‘˜è´¦æˆ·
                 double desc = orders.getMoney_num() * getRuleInfo.getDynamic_deduct_proportion();
                 int nZAdmin = helpTasksMapper.getUserMember_Admin(2);
-                if(nZAdmin>0){ //Ìí¼Óµ½Ö÷¹ÜÀíÔ±ÕË»§
+                if(nZAdmin>0){ //æ·»åŠ åˆ°ä¸»ç®¡ç†å‘˜è´¦æˆ·
                     List<User_MemberInfo> list = helpTasksMapper.getUserMember_Admin_list(2);
                     if(list.size()>0){
                         User_MemberInfo userMemberInfo = list.get(0);
@@ -305,30 +305,30 @@ public class HelpTasks {
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
                     }
                 }
-             //¶³½áÇ®°ü+ÀûÏ¢ =
-                log.info("¶³½áÆÚ£ºupdateUserFrozen_task:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
+             //å†»ç»“é’±åŒ…+åˆ©æ¯ =
+                log.info("å†»ç»“æœŸï¼šupdateUserFrozen_task:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(recharge_uid,orders.getMoney_num());
-                log.info("¶³½áÆÚ£ºupdateUserstatic_Add_uid:"+recharge_uid +"getMoney_num: "+(orders.getMoney_num()+fCountMoney-(float) desc));
+                log.info("å†»ç»“æœŸï¼šupdateUserstatic_Add_uid:"+recharge_uid +"getMoney_num: "+(orders.getMoney_num()+fCountMoney-(float) desc));
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,(orders.getMoney_num()+fCountMoney-(float) desc));
                 float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
                 User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
                 if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
-                    log.info("¶³½áÆÚufrozen£º"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                    log.info("å†»ç»“æœŸufrozenï¼š"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
                 }
             }
         }
-///////////////////////////Æ¥Åäºó³¬ÆÚÎ´´ò¿î///////////////////////////////////////////////
+///////////////////////////åŒ¹é…åè¶…æœŸæœªæ‰“æ¬¾///////////////////////////////////////////////
         nCurrentTimer = System.currentTimeMillis();
-        // ´ò¿î·½¶³½áÕÊ»§£¬µ¥×Ó×´Ì¬³¬ÆÚ¡£¶³½áÇ®°ü¿Û³ı¶ÔÓ¦µ¥×ÓµÄ½ğ¶î
+        // æ‰“æ¬¾æ–¹å†»ç»“å¸æˆ·ï¼Œå•å­çŠ¶æ€è¶…æœŸã€‚å†»ç»“é’±åŒ…æ‰£é™¤å¯¹åº”å•å­çš„é‡‘é¢
         List<Orders> InfoList = helpTasksMapper.getOrderInfoList(3);
         for (int i = 0; i < InfoList.size(); i++) {
             Orders orders = InfoList.get(i);
             long match_date = orders.getMatch_date();
             long nbetwon = nCurrentTimer-match_date;
-            if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //³¬ÆÚÎ´´ò¿î
+            if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //è¶…æœŸæœªæ‰“æ¬¾
                 helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
-                log.info("Æ¥Åä³¬ÆÚÎ´´ò¿î£º"+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
+                log.info("åŒ¹é…è¶…æœŸæœªæ‰“æ¬¾ï¼š"+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
@@ -336,24 +336,24 @@ public class HelpTasks {
                 float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
                 User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
                 if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
-                    log.info("Æ¥Åä³¬ÆÚÎ´´ò¿îufrozen£º"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                    log.info("åŒ¹é…è¶…æœŸæœªæ‰“æ¬¾ufrozenï¼š"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
                 }
 
             }
         }
-        //ÒÑ´ò¿îµ«³¬ÆÚÎ´È·ÈÏÊÕ¿î£¬¶³½áË«·½ÕËºÅ¡£¿Û³ı´ò¿î·½¶³½áÇ®°ü¶ÔÓ¦½ğ¶î£¬ÊÕ¿î·½ÒÑ¾­¿Û¹ı¾²Ì¬Ç®°üÁË¡£
-        /////////////////////////////////´ò¿îºóÎ´È·ÈÏ////////////////////////////////////////////////////////
+        //å·²æ‰“æ¬¾ä½†è¶…æœŸæœªç¡®è®¤æ”¶æ¬¾ï¼Œå†»ç»“åŒæ–¹è´¦å·ã€‚æ‰£é™¤æ‰“æ¬¾æ–¹å†»ç»“é’±åŒ…å¯¹åº”é‡‘é¢ï¼Œæ”¶æ¬¾æ–¹å·²ç»æ‰£è¿‡é™æ€é’±åŒ…äº†ã€‚
+        /////////////////////////////////æ‰“æ¬¾åæœªç¡®è®¤////////////////////////////////////////////////////////
         List<Orders> InfoListorder = helpTasksMapper.getOrderInfoList(6);
         for (int i = 0; i < InfoListorder.size(); i++) {
             Orders orders = InfoListorder.get(i);
             long pay_date = orders.getPayment_date();
             long nbetwon = nCurrentTimer-pay_date;
-            if(nbetwon>(3600000*getRuleInfo.getAsk_num_term())) { //È·ÈÏÎ´´ò¿î
+            if(nbetwon>(3600000*getRuleInfo.getAsk_num_term())) { //ç¡®è®¤æœªæ‰“æ¬¾
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
                 helpTasksMapper.updateUserActivate(orders.getWithdrawals_uid());
                 helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
-                log.info("´ò¿î³¬ÆÚÈ·ÈÏ£º"+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
+                log.info("æ‰“æ¬¾è¶…æœŸç¡®è®¤ï¼š"+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
@@ -361,7 +361,7 @@ public class HelpTasks {
                 float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
                 User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
                 if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
-                    log.info("´ò¿î³¬ÆÚÈ·ÈÏufrozen£º"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                    log.info("æ‰“æ¬¾è¶…æœŸç¡®è®¤ufrozenï¼š"+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
                 }
 
             }
