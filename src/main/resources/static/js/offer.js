@@ -187,6 +187,13 @@ var leave = {
                         html += "<td>未拆分</td>";
                   }
         html += "<td>" + common.UnixToDate(leaveInfo.create_date, false) + "</td>";
+        if (leaveInfo.help_status == 1) {
+            html += "<td><a href='/admin/deleteOffer/" + leaveInfo.help_order + "' class=\"tablelink\">删除</a></td>";
+        }else{
+            html += "<td></td>";
+        }
+
+
         html += "</tr>"
         return html;
     },

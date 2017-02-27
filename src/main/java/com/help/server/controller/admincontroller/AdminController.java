@@ -790,6 +790,17 @@ public class AdminController {
     public String offer(Map<String, Object> map, HttpServletRequest request) {
         return "admin/offer";
     }
+
+    /**
+     * 删除发单
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/deleteOffer/{help_order}", method = RequestMethod.GET)
+    public String undoAdminUser(@PathVariable("help_order") String help_order, Map<String, Object> map) throws Exception {
+        aadminService.deleteOfferHelp(help_order);
+        return "redirect:/admin/offer";
+    }
     /**
      * ajax获取getOfferList
      *

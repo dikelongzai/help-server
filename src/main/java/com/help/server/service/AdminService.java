@@ -1003,7 +1003,12 @@ public class AdminService {
         JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
 
     }
+    public void deleteOfferHelp( String help_order) throws Exception {
+        String sql = "delete from offer_help  where help_order ='" + help_order + "'";
+        log.info("deleteOfferHelp sql=" + sql.toString());
+        JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
 
+    }
     /**
      * 订单生成
      *
