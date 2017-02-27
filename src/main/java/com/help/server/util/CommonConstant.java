@@ -15,4 +15,7 @@ public class CommonConstant {
     public static final String START_DAY = " 00:00:00";
     public static final String END_DAY = " 23:59:59";
     public static final String BASE_IMAGE_URL = "http://103.66.217.73:8080/upload/";
+    public  static  final String SEND_CONTENT_RECHARGE="恭喜您！您的提供帮助订单已成功匹配，请在规定时间内付款！";
+    public  static  final String SEND_CONTENT_WITH="恭喜您！您的申请帮助订单已成功匹配，请注意查收对方付款信息，随时关注订单状态！";
+
 }

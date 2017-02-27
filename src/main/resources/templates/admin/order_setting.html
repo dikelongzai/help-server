@@ -28,8 +28,8 @@
         <ul class="forminfo">
             <li><label>创建时间</label><input name="id"  th:value="${news.id}" type="hidden" class="dfinput"/><input name="create_date" th:value="${#dates.format(news.create_date,'yyyy-MM-dd HH:mm:ss')} "  type="text" class="dfinput" readonly="readonly"/><i>创建规则时间</i></li>
             <li><label>是否启用</label><input name="is_order_timer" id="is_order_timer" th:value="${news.is_order_timer}"  type="text" class="dfinput"/><i>排单时间限制是否启用0表示不启用1启用</i></li>
-            <li><label>配置生效时间</label><input name="start_date" id="start_date" type="text" class="dfinput" th:value="${#dates.format(news.start_date,'yyyy-MM-dd HH:mm:ss')} "  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
-                <input name="end_date" id="end_date" type="text" th:value="${#dates.format(news.end_date,'yyyy-MM-dd HH:mm:ss')} " class="dfinput"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/></li>
+            <li><label>配置生效时间</label><input name="start_date" id="start_date" type="text" class="dfinput" th:value="${news.start_date}" />
+                <input name="end_date" id="end_date" type="text" th:value="${news.end_date} " class="dfinput" /><i>配置生效时间例如0-23点</i></li>
             <li><label>排单金额</label><input name="order_max_money" id="order_max_money" th:value="${news.order_max_money}"  type="text" class="dfinput"/><i>每天最大的排单金额</i></li>
             <li><label>匹配期从</label><input name="match_date_min" id="match_date_min" type="text" class="dfinput" th:value="${news.match_date_min}" />
                <input name="match_date_max" id="match_date_max" type="text" th:value="${news.match_date_max}" class="dfinput"/><i>匹配期天数从n-m天</i></li>
@@ -41,7 +41,7 @@
             <li><label>动态提现最小金额</label><input name="dynamic_min_money" id="dynamic_min_money" type="text" th:value="${news.dynamic_min_money}" class="dfinput"/><i>动态提现最小金额</i></li>
             <li><label>动态提现倍数</label><input name="dynamic_times_money" id="dynamic_times_money" type="text" th:value="${news.dynamic_times_money}" class="dfinput"/><i>动态提现倍数</i></li>
             <li><label>动态提现最大金额</label><input name="dynamic_max_money" id="dynamic_max_money" type="text" th:value="${news.dynamic_max_money}" class="dfinput"/><i>动态提现最大金额</i></li>
-            <li><label>动态提现扣除比例</label><input name="dynamic_deduct_proportion" id="dynamic_deduct_proportion" type="text" th:value="${news.dynamic_deduct_proportion}" class="dfinput"/><i>动态提现扣除比例</i></li>
+            <li><label> 抽成比例 </label><input name="dynamic_deduct_proportion" id="dynamic_deduct_proportion" type="text" th:value="${news.dynamic_deduct_proportion}" class="dfinput"/><i>冻结钱包抽成比例</i></li>
             <li><label>未打款利息</label><input name="interest_not_paid" id="interest_not_paid" type="text" th:value="${news.interest_not_paid}" class="dfinput"/><i>未打款利息</i></li>
             <li><label>已打款利息</label><input name="interest_paid" id="interest_paid" type="text" th:value="${news.interest_paid}" class="dfinput"/><i>已打款利息</i></li>
 
@@ -54,7 +54,7 @@
             <li><label>得到帮助的最小金额</label><input name="ask_num_lown" id="ask_num_lown" type="text" th:value="${news.ask_num_lown}" class="dfinput"/><i>得到帮助的最小金额</i></li>
             <li><label>得到帮助的最大金额</label><input name="ask_num_high" id="ask_num_high" type="text" th:value="${news.ask_num_high}" class="dfinput"/><i>得到帮助最高金额</i></li>
             <li><label>得到帮助倍数</label><input name="ask_num_times" id="ask_num_times" type="text" th:value="${news.ask_num_times}" class="dfinput"/><i>得到帮助金额必须是100 的倍数</i></li>
-            <li><label>得到帮助重新匹配X小时内</label><input name="ask_num_term" id="ask_num_term" type="text" th:value="${news.ask_num_term}" class="dfinput"/><i>请求帮助重新匹配  12  小时内</i></li>
+            <li><label>确认收款期限</label><input name="ask_num_term" id="ask_num_term" type="text" th:value="${news.ask_num_term}" class="dfinput"/><i>确认收款期限  12  小时内</i></li>
 
             <li><label>&nbsp;</label><input  type="submit" class="btn" value="确认保存"/></li>
         </ul>

@@ -154,6 +154,7 @@ var leave = {
             }
 
             html += "</td>";
+            
         } else if (leaveInfo.is_activate == 1) {
             html += "<td>未审批</td>";
             html += " <td><a href='/admin/appro/" + leaveInfo.user_id + "' class=\"tablelink\">审批</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='/admin/userDetail/" + leaveInfo.user_id + "' class=\"tablelink\">详情</a>";

@@ -88,6 +88,7 @@ public class SendSmsUtil {
         String content = new String("您的验证码是：" + mobile_code + "。请不要把验证码泄露给其他人。");
         return content;
     }
+
     public static void main(String[] args) {
         sendSms("",getSmsContent("1278"));
     }

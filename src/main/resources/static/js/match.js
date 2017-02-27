@@ -129,6 +129,7 @@ var leave = {
     },
 
     getIncAndAct: function () {
+        $('.pagin').html();
         var tbody = '';
         var url = "/admin/getMatchList";
         var st = $("#st").val();
@@ -160,35 +161,35 @@ var leave = {
         //{"data":[{"buy_1":800,"buy_2":0,"day":"2017-02-04","sell_1":500,"sell_2":800},{"buy_1":3600,"buy_2":0,"day":"2017-02-03","sell_1":1100,"sell_2":200}]}
         var html = "<tr>";
         //正常买入部分
-        html += "<td><input type=\"checkbox\" name=\"bc1\" value=\""+leaveInfo.day+"\"/></td>";
+        html += "<td><input type=\"checkbox\" name=\"bc1\" onclick=\"leave.changeText()\"  value=\""+leaveInfo.day+"\"/></td>";
         html += "<td>" + leaveInfo.day + "</td>";
         html += "<td>正常买入</td>";
         html += "<td>" + leaveInfo.buy_1 + "</td>";
-        html += "<td><input name=\"b1"+leaveInfo.day+"\" id=\"b1"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.buy_1+"\" onchange=\"leave.changeText()\"/></td>";
+        html += "<td><input name=\"b1"+leaveInfo.day+"\" id=\"b1"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.buy_1+"\" onblur=\"leave.changeText()\"/></td>";
         //空栏目区分
         html += "<td></td>";
         //静态提现部分
-        html += "<td><input type=\"checkbox\" name=\"sc1\" value=\""+leaveInfo.day+"\"/></td>";
+        html += "<td><input type=\"checkbox\" name=\"sc1\" onclick=\"leave.changeText()\"  value=\""+leaveInfo.day+"\"/></td>";
         html += "<td>" + leaveInfo.day + "</td>";
         html += "<td>静态提现</td>";
         html += "<td>" + leaveInfo.sell_1 + "</td>";
-        html += "<td><input name=\"s1"+leaveInfo.day+"\" id=\"s1"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.sell_1+"\" onchange=\"leave.changeText()\"/></td>";
+        html += "<td><input name=\"s1"+leaveInfo.day+"\" id=\"s1"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.sell_1+"\" onblur =\"leave.changeText()\"/></td>";
         html += "</tr>"
         html+="<tr>";
         //复投买入
-        html += "<td><input type=\"checkbox\" name=\"bc2\" value=\""+leaveInfo.day+"\"/></td>";
+        html += "<td><input type=\"checkbox\" name=\"bc2\" onclick=\"leave.changeText()\"  value=\""+leaveInfo.day+"\"/></td>";
         html += "<td>" + leaveInfo.day + "</td>";
         html += "<td>复投买入</td>";
         html += "<td>" + leaveInfo.buy_2 + "</td>";
-        html += "<td><input name=\"b2"+leaveInfo.day+"\" id=\"b2"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.buy_2+"\" onchange=\"leave.changeText()\"/></td>";
+        html += "<td><input name=\"b2"+leaveInfo.day+"\" id=\"b2"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.buy_2+"\" onblur =\"leave.changeText()\"/></td>";
         //空栏目区分
         html += "<td></td>";
         //动态提现部分
-        html += "<td><input type=\"checkbox\" name=\"sc2\" value=\""+leaveInfo.day+"\"/> </td>";
+        html += "<td><input type=\"checkbox\" name=\"sc2\" onclick=\"leave.changeText()\"  value=\""+leaveInfo.day+"\"/> </td>";
         html += "<td>" + leaveInfo.day + "</td>";
         html += "<td>动态提现</td>";
         html += "<td>" + leaveInfo.sell_2 + "</td>";
-        html += "<td><input name=\"s2"+leaveInfo.day+"\" id=\"s2"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.sell_2+"\" onchange=\"leave.changeText()\"/></td>";
+        html += "<td><input name=\"s2"+leaveInfo.day+"\" id=\"s2"+leaveInfo.day+"\" type=\"text\" class=\"dfinput\" value=\""+leaveInfo.sell_2+"\" onblur=\"leave.changeText()\"/></td>";
         html += "</tr>"
         return html;
     },
