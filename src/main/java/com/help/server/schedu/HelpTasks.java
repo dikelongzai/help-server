@@ -305,10 +305,16 @@ public class HelpTasks {
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
                     }
                 }
-                //冻结钱包+利息 =
-                log.info("recharge_uid:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
+             //冻结钱包+利息 =
+                log.info("冻结期：updateUserFrozen_task:"+recharge_uid +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(recharge_uid,orders.getMoney_num());
-                helpTasksMapper.updateUserstatic_Add(recharge_uid,orders.getMoney_num()+fCountMoney);
+                log.info("冻结期：updateUserstatic_Add_uid:"+recharge_uid +"getMoney_num: "+(orders.getMoney_num()+fCountMoney-(float) desc));
+                helpTasksMapper.updateUserstatic_Add(recharge_uid,(orders.getMoney_num()+fCountMoney-(float) desc));
+                float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
+                User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
+                if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
+                    log.info("冻结期ufrozen："+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                }
             }
         }
 ///////////////////////////匹配后超期未打款///////////////////////////////////////////////
@@ -322,11 +328,16 @@ public class HelpTasks {
             if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
                 helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
+                log.info("匹配超期未打款："+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
                 appServerMapper.updateOfferHelp(1,nCurrentTimer,orders.getWithdrawals_order());
-                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+                float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
+                User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
+                if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
+                    log.info("匹配超期未打款ufrozen："+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                }
 
             }
         }
@@ -337,15 +348,21 @@ public class HelpTasks {
             Orders orders = InfoListorder.get(i);
             long pay_date = orders.getPayment_date();
             long nbetwon = nCurrentTimer-pay_date;
-            if(nbetwon>(3600000*getRuleInfo.getApply_num_term())) { //超期未打款
+            if(nbetwon>(3600000*getRuleInfo.getAsk_num_term())) { //确认未打款
                 helpTasksMapper.updateUserActivate(orders.getRecharge_uid());
                 helpTasksMapper.updateUserActivate(orders.getWithdrawals_uid());
                 helpTasksMapper.updateOrderStatus_task(8,nCurrentTimer,orders.getOrder_num());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
+                log.info("打款超期确认："+orders.getRecharge_uid() +"getMoney_num: "+orders.getMoney_num());
                 helpTasksMapper.updateUserFrozen_task(orders.getRecharge_uid(),orders.getMoney_num());
                 helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
                 appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
-                helpTasksMapper.deleteInCome_log(orders.getRecharge_order());
+
+                float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
+                User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
+                if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
+                    log.info("打款超期确认ufrozen："+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
+                }
 
             }
         }
