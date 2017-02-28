@@ -83,7 +83,7 @@ public interface HelpTasksMapper {
     @Update("update user_member set ufrozen_wallet = ufrozen_wallet - #{num} where user_id = #{userid}")
     public int updateUserFrozen_task(@Param("userid") long userid,@Param("num") float num);
 
-    @Select("SELECT SUM(money_num) FROM offer_help where help_status<>2 AND help_status<>8 AND help_type =1 AND state <> 'D' AND user_id = #{userid")
+    @Select("SELECT SUM(money_num) FROM offer_help where help_status<>2 AND help_status<>8 AND help_type =1 AND state <> 'D' AND user_id = #{userid}")
     public float sumFrozen_Money(@Param("userid") long userid); ////∂≥Ω·Ω±º∆À„
 
     @Update("update orders set order_type = #{ordertype},last_update = #{lastupdate},state = 'D'  where order_num = #{ordernum} ")
