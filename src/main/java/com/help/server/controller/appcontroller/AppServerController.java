@@ -821,6 +821,25 @@ public class AppServerController {
         HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
         HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
         GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
+
+        if(getRuleInfo.getIs_order_timer()==1){
+            Date d = new Date();
+            long hours = d.getHours();
+            long starDate = getRuleInfo.getStart_date();
+            long endDate = getRuleInfo.getEnd_date();
+            if(hours<starDate&&endDate>hours){
+                helpsOrderResp.setMsg("该时间段不允许发单，请联系管理员！");
+                helpsOrderResp.setCode("C0023");
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+                String retMsg = Base64Util.encode(jsonObject.toString());
+                try {
+                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e);
+                }
+                return retMsg;
+            }
+        }
         float fmoney = helpsOrderReq.getMoney();
         //账户信息判断
         User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());

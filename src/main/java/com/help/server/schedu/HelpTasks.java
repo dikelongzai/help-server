@@ -154,9 +154,6 @@ public class HelpTasks {
                 List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
                 for (int j =0;j<list.size();j++){
                     User_MemberInfo user_memberInfo = list.get(j);
-                    List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
-                    int nsize = userMemberlist.size()-1;
-                    if(nsize>5){
                         List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
                         for (int k =0;k<oneList.size();k++){//一级
                             User_MemberInfo user_memberInfo1 = oneList.get(k);
@@ -178,7 +175,7 @@ public class HelpTasks {
                             }
 
                         }
-                    }
+
                 }
                 ncurrent = ndexcurrent;
             }
@@ -186,8 +183,6 @@ public class HelpTasks {
             List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(1);
             for(int i=0;i<list.size();i++){
                 User_MemberInfo user_memberInfo = list.get(i);
-                List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
-                if(userMemberlist.size()>5){
                     List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());
                     for (int k =0;k<oneList.size();k++){//一级
                         User_MemberInfo user_memberInfo1 = oneList.get(k);
@@ -209,7 +204,6 @@ public class HelpTasks {
                         }
 
                     }
-                }
             }
         }
     }
@@ -296,6 +290,7 @@ public class HelpTasks {
                     if(list.size()>0){
                         User_MemberInfo userMemberInfo = list.get(0);
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
+                        log.info("添加到主管理员账户"+recharge_uid +"useradmin: "+userMemberInfo.getUser_id()+"money:"+desc);
                     }
                 }else{
                     int nCAdmin = helpTasksMapper.getUserMember_Admin(1);
@@ -303,6 +298,7 @@ public class HelpTasks {
                     if(list.size()>0){
                         User_MemberInfo userMemberInfo = list.get(0);
                         helpTasksMapper.updateUserstatic_Add(userMemberInfo.getUser_id(),(float)desc);
+                        log.info("添加到管理员账户"+recharge_uid +"useradmin: "+userMemberInfo.getUser_id()+"money:"+desc);
                     }
                 }
              //冻结钱包+利息 =
