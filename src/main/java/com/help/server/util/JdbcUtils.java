@@ -32,7 +32,7 @@ public class JdbcUtils {
     //驱动信息
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     //数据库地址
-    private static final String URL = "jdbc:mysql://103.66.217.73:3306/helps?&generateSimpleParameterMetadata=true&&characterEncoding=UTF-8&autoReconnect=true";
+    private static final String URL = "jdbc:mysql://103.66.217.186:3306/helps?&generateSimpleParameterMetadata=true&&characterEncoding=UTF-8&autoReconnect=true";
     private Connection connection;
     private PreparedStatement pstmt;
     private ResultSet resultSet;

@@ -35,17 +35,16 @@ public class HelpTasks {
     @Autowired
     private AppServerMapper appServerMapper;
 
-    private long getUserTileID(int nsize){
+    private long getUserTileID(int nTeamsize,int nzhiSize){
         long title_id =1;
         List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
         for(Dynamic_Award info : dynamicAwardList){
 
-            if(info.getTeam_num() <= nsize){
+            if(info.getTeam_num() <= nTeamsize&&info.getDirect_num()<=nzhiSize){
                 title_id = info.getUser_title_id();
                 continue;
             }
         }
-
         return title_id;
     }
     //计算每个用户的级别
@@ -60,12 +59,23 @@ public class HelpTasks {
             long ncurrent = 0;
             for (int i = 0; i <= ncount; i++) {
                 long ndexcurrent = helpTasksMapper.getUserMemberLimit(ncurrent);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
                 for (int j =0;j<list.size();j++){
                     User_MemberInfo user_memberInfo = list.get(j);
                     List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    int nDirect = helpTasksMapper.countDirectUser(user_memberInfo.getUser_phone());
                     int nsize = userMemberlist.size()-1;
-                    int title_id = (int)getUserTileID(nsize);
+                    int title_id = (int)getUserTileID(nsize,nDirect);
                     if(title_id > user_memberInfo.getTitle_id()){
                         helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
                         log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());
@@ -79,7 +89,8 @@ public class HelpTasks {
                 User_MemberInfo user_memberInfo = list.get(i);
                 List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
                 int nsize = userMemberlist.size()-1;
-                int title_id = (int)getUserTileID(nsize);
+                int nDirect = helpTasksMapper.countDirectUser(user_memberInfo.getUser_phone());
+                int title_id = (int)getUserTileID(nsize,nDirect);
                 if(title_id > user_memberInfo.getTitle_id()){
                     helpTasksMapper.updateUserTitleId(title_id,user_memberInfo.getUser_id());
                     log.info("title_id:"+title_id+ "user_id:" +user_memberInfo.getUser_id());

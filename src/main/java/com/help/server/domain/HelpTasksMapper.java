@@ -88,6 +88,9 @@ public interface HelpTasksMapper {
 
     @Update("update orders set order_type = #{ordertype},last_update = #{lastupdate},state = 'D'  where order_num = #{ordernum} ")
     public int updateOrderStatus_task(@Param("ordertype") int ordertype, @Param("lastupdate") long lastupdate,@Param("ordernum") String ordernum);
+
+    @Select("select count(1) from user_member where user_referee_phone = #{userPhone}")
+    public int countDirectUser(@Param("userPhone") String userPhone);
 }
 
 

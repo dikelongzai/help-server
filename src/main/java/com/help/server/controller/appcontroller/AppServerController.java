@@ -142,12 +142,12 @@ public class AppServerController {
         return retMsg;
     }
 
-    private long getUserTileID(int nsize){
+    private long getUserTileID(int nTeamsize,int nzhiSize){
         long title_id =1;
         List<Dynamic_Award> dynamicAwardList = helpTasksMapper.findDynmicRules();
         for(Dynamic_Award info : dynamicAwardList){
 
-            if(info.getTeam_num() <= nsize){
+            if(info.getTeam_num() <= nTeamsize&&info.getDirect_num()<=nzhiSize){
                 title_id = info.getUser_title_id();
                 continue;
             }
@@ -170,10 +170,10 @@ public class AppServerController {
         UserMberInfo data = new UserMberInfo();
         if (isok == 1) { //登录成功
             long userId = appServerMapper.getUserIDByaccount(username);
-            List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(username);
-            int nsize = userMemberlist.size()-1;
-            int title_id = (int)getUserTileID(nsize);
-            helpTasksMapper.updateUserTitleId(title_id,userId);
+           // List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(username);
+           // int nsize = userMemberlist.size()-1;
+           // int title_id = (int)getUserTileID(nsize);
+           // helpTasksMapper.updateUserTitleId(title_id,userId);
 
             User_MemberInfo user_member = appServerMapper.getUserInfo(userId);
 
@@ -225,12 +225,37 @@ public class AppServerController {
         RegisterInfoReq registerinfoReq = JSON.parseObject(msgBody, RegisterInfoReq.class);
         RegisterInfo registerInfo = new RegisterInfo();
         RegisterInfoResp registerinfoResp = new RegisterInfoResp();
+
+        int nLengt = registerinfoReq.getPwd().length();
+        if(nLengt<6){
+            registerinfoResp.setCode("C0025");
+            registerinfoResp.setMsg("密码的过于简单，请大于6位数！");
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(registerinfoResp);
+            String retMsg = Base64Util.encode(jsonObject.toString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            return retMsg;
+        }
         long uid = 0;
         long referee_uid = 0;
         int ncount = appServerMapper.getUserCount(registerinfoReq.getTel());
         long nreferee = appServerMapper.getUserCount(registerinfoReq.getInvite());
         if (nreferee != 0) {
             referee_uid = appServerMapper.getUserIDByaccount(registerinfoReq.getInvite());
+        }else{
+            registerinfoResp.setCode("C0024");
+            registerinfoResp.setMsg("推荐人不存在，请检查推荐人是否已经注册！");
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(registerinfoResp);
+            String retMsg = Base64Util.encode(jsonObject.toString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            return retMsg;
         }
         if (ncount != 0) {
             registerinfoResp.setCode("C0005");
