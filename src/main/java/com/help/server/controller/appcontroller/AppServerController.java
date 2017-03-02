@@ -75,7 +75,7 @@ public class AppServerController {
             data.setUid(String.valueOf(user_member.getUser_id()));
             data.setAccount(user_member.getUser_phone());
             data.setAccount_type(user_member.getIs_activate());
-            data.setImage_url(user_member.getUser_carded_url());
+            data.setImage_url(SendSmsUtil.getRelUrlByOrg(user_member.getUser_carded_url()));
             data.setName(user_member.getUser_name());
             data.setStatus(user_member.getIs_activate());
             long titleid = user_member.getTitle_id();
@@ -184,7 +184,7 @@ public class AppServerController {
                 data.setUid(String.valueOf(user_member.getUser_id()));
                 data.setAccount(user_member.getUser_phone());
                 data.setAccount_type(user_member.getIs_activate());
-                data.setImage_url(user_member.getUser_carded_url());
+                data.setImage_url(SendSmsUtil.getRelUrlByOrg(user_member.getUser_carded_url()));
                 data.setName(user_member.getUser_name());
                 data.setStatus(user_member.getIs_activate());
                 long titleid = user_member.getTitle_id();
@@ -766,7 +766,7 @@ public class AppServerController {
             userphone = order.getWithdrawals_phone();
             name = appServerMapper.getUserName(userphone);
             getMaterOrderInfo.setTo_tname(name);
-            getMaterOrderInfo.setVoucher_url(order.getRemittance_url());
+            getMaterOrderInfo.setVoucher_url(SendSmsUtil.getRelUrlByOrg(order.getRemittance_url()));
             getMaterOrderInfo.setTo_st(order.getTo_date());
             getMaterOrderInfo.setTo_account(userphone);
             getMaterOrderInfo.setOrder_type(order.getOrder_type());
@@ -963,20 +963,6 @@ public class AppServerController {
                 }
             }
 
-            int times = (int) (money % getRuleInfo.getApply_num_times());
-            if (money < getRuleInfo.getApply_num_lown() || money > getRuleInfo.getApply_num_high() || times != 0) {
-                helpsOrderResp.setMsg("申请帮助的发单规则不正确，请重新发单！");
-                helpsOrderResp.setCode("C0017");
-                JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
-                String retMsg = Base64Util.encode(jsonObject.toString());
-                try {
-                    retMsg = URLEncoder.encode(retMsg, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error(e);
-                }
-                return retMsg;
-            }
-
         }else { //提供帮助版本
 
             String res = DateUtil.getDateFormatter1().format(new Date());
@@ -1021,7 +1007,7 @@ public class AppServerController {
             int nCount = appServerMapper.getUserOfferHelpCount(helpsOrderReq.getUid());
             if (nCount == 0) {
                 if (helpsOrderReq.getMoney() > getRuleInfo.getApply_num_first()) {
-                    helpsOrderResp.setMsg("首次发单申请帮助金额大于" + getRuleInfo.getApply_num_first());
+                    helpsOrderResp.setMsg("首次发单提供帮助金额大于" + getRuleInfo.getApply_num_first());
                     helpsOrderResp.setCode("C0016");
                     JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
                     String retMsg = Base64Util.encode(jsonObject.toString());
@@ -1033,8 +1019,8 @@ public class AppServerController {
                     return retMsg;
                 }
             }
-            int times = (int)(money%getRuleInfo.getAsk_num_times());
-            if(money<getRuleInfo.getAsk_num_lown()||money>getRuleInfo.getAsk_num_high()||times!=0){
+            int times = (int)(money%getRuleInfo.getApply_num_times());
+            if(money<getRuleInfo.getApply_num_lown()||money>getRuleInfo.getApply_num_high()||times!=0){
                 helpsOrderResp.setMsg("提供帮助的发单规则不正确，请重新发单！");
                 helpsOrderResp.setCode("C0017");
                 JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
@@ -1152,7 +1138,7 @@ public class AppServerController {
             sendMoneyInfo.setFrom_tnamw(name);
             sendMoneyInfo.setMoney(order.getMoney_num());
             sendMoneyInfo.setType(order.getOrder_type());
-            sendMoneyInfo.setPayment_url(order.getRemittance_url());
+            sendMoneyInfo.setPayment_url(SendSmsUtil.getRelUrlByOrg(order.getRemittance_url()));
             sendMoneyResp.setData(sendMoneyInfo);
 
         }else{
@@ -1262,8 +1248,8 @@ public class AppServerController {
         for (int i =0;i<rotate_newsList.size();i++){
             rotate_news = rotate_newsList.get(i);
             TurnChartInfo turnChartInfo = new TurnChartInfo();
-            turnChartInfo.setHelf(rotate_news.getHelf_url());
-            turnChartInfo.setImage_url(rotate_news.getRotate_url());
+            turnChartInfo.setHelf(SendSmsUtil.getRelUrlByOrg(rotate_news.getHelf_url()));
+            turnChartInfo.setImage_url(SendSmsUtil.getRelUrlByOrg(rotate_news.getRotate_url()));
             data.add(turnChartInfo);
         }
         chartResp.setData(data);
@@ -1708,9 +1694,7 @@ public class AppServerController {
             leader.setTel(user_memberInfo.getUser_referee_phone());
         }
         getPayInfoBySnResp.setLeader(leader);
-        getPayInfoBySnResp.setRemittance_url(orders.getRemittance_url());
-
-
+        getPayInfoBySnResp.setRemittance_url(SendSmsUtil.getRelUrlByOrg(orders.getRemittance_url()));
         getPayInfoBySnResp.setMsg(retMsg);
         getPayInfoBySnResp.setCode(retCode);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(getPayInfoBySnResp);

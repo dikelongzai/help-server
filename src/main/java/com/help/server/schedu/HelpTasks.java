@@ -64,7 +64,7 @@ public class HelpTasks {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
+                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ncurrent);
                 for (int j =0;j<list.size();j++){
                     User_MemberInfo user_memberInfo = list.get(j);
                     List<User_MemberInfo> userMemberlist = helpTasksMapper.getUserMemberInfo(user_memberInfo.getUser_phone());
@@ -162,7 +162,7 @@ public class HelpTasks {
             long ncurrent = 0;
             for (int i = 0; i <= ncount; i++) {
                 long ndexcurrent = helpTasksMapper.getUserMemberLimit(ncurrent);
-                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ndexcurrent);
+                List<User_MemberInfo> list = helpTasksMapper.getUserMemberInfoList(ncurrent);
                 for (int j =0;j<list.size();j++){
                     User_MemberInfo user_memberInfo = list.get(j);
                         List<User_MemberInfo> oneList= appServerMapper.getUserLevel(user_memberInfo.getUser_id());

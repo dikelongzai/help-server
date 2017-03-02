@@ -89,6 +89,26 @@ public class SendSmsUtil {
         return content;
     }
 
+    public static String getRelUrlByOrg(String orgUrl){
+        String newUrl ="";
+        if(orgUrl!=null){
+            try {
+            int nLength = orgUrl.length();
+            if(nLength > 7){
+                int ndex = orgUrl.indexOf("upload");
+                if(ndex!=-1){
+                    newUrl = orgUrl.substring(ndex+7,nLength);
+                    newUrl = CommonConstant.BASE_IMAGE_URL+newUrl;
+                }
+                log.error(newUrl);
+            }
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }
+        return newUrl;
+    }
+
     public static void main(String[] args) {
         sendSms("",getSmsContent("1278"));
     }
