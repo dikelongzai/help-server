@@ -869,8 +869,8 @@ public class AppServerController {
         //账户信息判断
         User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(helpsOrderReq.getUid());
         if(userMemberInfo!=null){
-            if(userMemberInfo.getIs_activate()==3){
-                helpsOrderResp.setMsg("账户被冻结，无法发单，请联系管理员！");
+            if(userMemberInfo.getIs_activate()!=2){
+                helpsOrderResp.setMsg("账户被冻结或者没有激活，无法发单，请联系管理员！");
                 helpsOrderResp.setCode("C0017");
                 JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
                 String retMsg = Base64Util.encode(jsonObject.toString());
