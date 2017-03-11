@@ -163,10 +163,26 @@ public class AppServerController {
         String inputInt = request.getParameter("p");
         String msgBody = Base64Util.decode(inputInt);
         UserLoginReq userLoginfoReq = JSON.parseObject(msgBody, UserLoginReq.class);
+
+        ////判断版本version，如果为1.0则提示版本过低/////
+        GetUserInfoResp getUserInfoResp = new GetUserInfoResp();
+        if("1.0".equals(userLoginfoReq.getVersion()) ){
+            getUserInfoResp.setCode("C0004");
+            getUserInfoResp.setMsg("您的客户端版本过低，请升级客户端版本！");
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(getUserInfoResp);
+            String retMsg = Base64Util.encode(jsonObject.toString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            return retMsg;
+        }
+        ////////
+
         String username = userLoginfoReq.getAccount();
         String pwd = userLoginfoReq.getPwd();
         int isok = appServerMapper.checkUser(username, pwd);
-        GetUserInfoResp getUserInfoResp = new GetUserInfoResp();
         UserMberInfo data = new UserMberInfo();
         if (isok == 1) { //登录成功
             long userId = appServerMapper.getUserIDByaccount(username);
@@ -846,6 +862,21 @@ public class AppServerController {
         HelpsOrderReq helpsOrderReq = JSON.parseObject(msgBody, HelpsOrderReq.class);
         HelpsOrderResp helpsOrderResp = new HelpsOrderResp();
         GetRuleInfo getRuleInfo = appServerMapper.getRuleInfo();
+
+        ////判断版本version，如果为1.0则提示版本过低/////
+        if("1.0".equals(helpsOrderReq.getVersion()) ){
+            helpsOrderResp.setCode("C0004");
+            helpsOrderResp.setMsg("您的客户端版本过低，请升级客户端版本！");
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(helpsOrderResp);
+            String retMsg = Base64Util.encode(jsonObject.toString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            return retMsg;
+        }
+        ////////
 
         if(getRuleInfo.getIs_order_timer()==1){
             Date d = new Date();
