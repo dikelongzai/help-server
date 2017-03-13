@@ -80,6 +80,7 @@ public class JdbcUtils {
         }
         result = pstmt.executeUpdate();
         flag = result > 0 ? true : false;
+       // closeConect();
         return flag;
     }
 
@@ -145,7 +146,7 @@ public class JdbcUtils {
             }
             list.add(map);
         }
-
+       // closeConect();
         return list;
     }
 
@@ -264,6 +265,17 @@ public class JdbcUtils {
         String sqlCount="select count(1) as count from ("+sql+") as tmpTable";
         System.out.print("getCountBySql sql="+sqlCount);
         return Integer.valueOf(this.findModeResult(sqlCount, null).get(0).get("count").toString());
+    }
+    public void  closeConect(){
+        try {
+            this.pstmt.close();
+            this.resultSet.close();
+            this.connection.close();
+
+        }catch (Exception e){
+
+        }
+
     }
 
     /**

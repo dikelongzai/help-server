@@ -28,7 +28,8 @@ import static com.help.server.util.SqlConstant.COMMON_SELECT_ALL;
 public class AdminService {
     public static final Map<String, JSONObject> mapCuMathList = new ConcurrentHashMap();
     public static final Map<String, List<Orders>> hasMatchList = new ConcurrentHashMap();
-
+    //已修改为已匹配的状态的集合
+    public static final Map<String, Set<String>> hasChangeSet = new ConcurrentHashMap();
     private Logger log = Logger.getLogger(AdminService.class);
     @Autowired
     private AppServerMapper appServerMappe;
@@ -43,19 +44,19 @@ public class AdminService {
     public String getSearchLeaveMessageSql(JSONObject param, int reply_type) throws Exception {
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append(SqlConstant.SQL_BASE_LEAVING_MSG);
-        sqlBuffer.append(" and reply_type=").append(reply_type).append(" ");
+        sqlBuffer.append(" and l.reply_type=").append(reply_type).append(" ");
         //SQL_BASE_LEAVING_MSG
         int status = Integer.valueOf(param.getString("status"));
         if (!StringUtil.isEmpty(param.getString("st"))) {
-            sqlBuffer.append(" and create_date>")
+            sqlBuffer.append(" and l.create_date>")
                     .append(DateUtil.getLongdate(param.getString("st") + CommonConstant.START_DAY));
         }
         if (!StringUtil.isEmpty(param.getString("et"))) {
-            sqlBuffer.append(" and create_date<=")
+            sqlBuffer.append(" and l.create_date<=")
                     .append(DateUtil.getLongdate(param.getString("et") + CommonConstant.END_DAY));
         }
         if (status >= 0) {
-            sqlBuffer.append(" and is_reply=")
+            sqlBuffer.append(" and l.is_reply=")
                     .append(status);
         }
         log.info("getSearchLeaveMessageSql sql=" + sqlBuffer.toString());
@@ -418,6 +419,11 @@ public class AdminService {
         hasMatchList.put(uuid, ordersList);
     }
 
+    public static synchronized void initChangeSet(String uuid) {
+        Set<String> changeSet = new HashSet<String>();
+        hasChangeSet.put(uuid, changeSet);
+    }
+
     /**
      * 添加订单时再加一次判断防止发单是同一人
      *
@@ -432,6 +438,26 @@ public class AdminService {
 
         }
 
+    }
+
+    /**
+     * 添加修改订单
+     *
+     * @param uuid
+     */
+    public static synchronized void addChangeOrderSet(String uuid, String help_order) {
+        if (!StringUtil.isEmpty(help_order)) {
+            Set<String> changeOrderSet = hasChangeSet.get(uuid);
+            changeOrderSet.add(help_order);
+            hasChangeSet.put(uuid, changeOrderSet);
+        }
+    }
+    public static synchronized void removeChangeOrderSet(String uuid, String help_order) {
+        if (!StringUtil.isEmpty(help_order)) {
+            Set<String> changeOrderSet = hasChangeSet.get(uuid);
+            changeOrderSet.remove(help_order);
+            hasChangeSet.put(uuid, changeOrderSet);
+        }
     }
 
     public static synchronized void saveMatchOrder(String uuid) {
@@ -732,11 +758,13 @@ public class AdminService {
         log.info("first=" + jsonParams.toJSONString());
         updateMachMap(uuid, jsonParams);
         initMatchList(uuid);
+        initChangeSet(uuid);
         jsonReturn = doMatchStep1(uuid);
         jsonReturn.put("msg", "OK");
         log.info("last=" + JSON.toJSONString(mapCuMathList));
         mapCuMathList.remove(uuid);
         hasMatchList.remove(uuid);
+        hasChangeSet.remove(uuid);
         log.info("doMatchOffer cost=" + (System.currentTimeMillis() - start) + "ms;result=" + jsonReturn.toJSONString());
         return jsonReturn;
 
@@ -773,15 +801,15 @@ public class AdminService {
         //第二次拆分订单
         List<Map<String, Integer>> listresult = matchEqualOfferLimit(mapb, mapc, uuid);
         ordersNum = hasMatchList.get(uuid).size() - ordersNum;
-        jsonObject.put("order_sum", hasMatchList.get(uuid).size());
+        //jsonObject.put("order_sum", hasMatchList.get(uuid).size());
         log.info(" doMatchEqual1 matchEqualOfferLimit 2=" + ordersNum);
         log.info("buy map=" + JSON.toJSONString(mapb));
         log.info("sell map=" + JSON.toJSONString(mapc));
-        float sumnum = saveOrder(uuid);
-        jsonObject.put("summoney", sumnum);
-        log.info(" order sum money==" + sumnum);
+        JSONObject json=saveOrder(uuid);
+        log.info("saveOrder end result=" + JSON.toJSONString(json));
+        jsonObject.put("summoney", json.getFloatValue("sumnum"));
+        jsonObject.put("order_sum", json.getIntValue("orderNum"));
         //进行拆分匹配 先权限验证 包含按金额全匹配
-        //matchEqualOfferLimit(mapb, mapc, uuid);
         log.info("buy map=" + JSON.toJSONString(mapb));
         log.info("sell map=" + JSON.toJSONString(mapc));
         return jsonObject;
@@ -793,18 +821,38 @@ public class AdminService {
      * @param uuid
      * @throws Exception
      */
-    public float saveOrder(String uuid) throws Exception {
+    public JSONObject saveOrder(String uuid) throws Exception {
+        JSONObject json=new JSONObject();
         List<Orders> list = hasMatchList.get(uuid);
         float sumnum = 0;
+        int  orderNum=0;
         for (Orders order : list) {
             if (checkOrderLast(order)) {
+                orderNum++;
                 sumnum = sumnum + order.getMoney_num();
                 JdbcUtils.getInstatance().updateByPreparedStatement(getSaveOrderSql(order), null);
+                removeChangeOrderSet(uuid,order.getRecharge_order());
+                removeChangeOrderSet(uuid,order.getWithdrawals_order());
                 sendSmsByOrder(order);
             }
 
         }
-        return sumnum;
+        json.put("sumnum",sumnum);
+        json.put("orderNum",orderNum);
+        Set<String> changeOrderErr=hasChangeSet.get(uuid);
+        if(changeOrderErr.size()>0){
+            log.info("changeOrderErrSize="+changeOrderErr.size()+";rechange status begin");
+            //没有成功入库的回滚操作
+            for(String helpOrder:changeOrderErr){
+                updateOfferHelp1(helpOrder);
+                log.info("rollback offer_help help_order="+helpOrder);
+            }
+            log.info("changeOrderErrSize rollback success size="+changeOrderErr.size()+";rechange status end");
+        }else{
+            log.info("doOrderSuccesstime="+System.currentTimeMillis());
+        }
+        json.put("rollbacksize",changeOrderErr.size());
+        return json;
     }
 
     /**
@@ -875,7 +923,6 @@ public class AdminService {
 
     public JSONArray checkMatchAll(JSONArray jsonArray, String uuid) throws Exception {
         JSONArray jsonReurn = new JSONArray();
-        //[{"forder":"b1_2017-02-03_P568b61ehgfij3fc24e3","num":800,"torder":"c2_2017-02-03_P961fde0hf6g0eiea3e5"},{"forder":"b2_2017-02-03_P912f5a347g2f6i01a3i","num":600,"torder":"c2_2017-02-03_P602cf771dg4cj8dbe73"},{"forder":"b1_2017-02-03_P611gi76ji9i1bh78eg7","num":600,"torder":"c2_2017-02-03_P90gf9i60e19affbceg9"},{"forder":"b1_2017-02-03_P989ac1ed4idi9cch597","num":200,"torder":"c2_2017-02-03_P53cagcj0c8dehe9636b"},{"forder":"b2_2017-02-03_P63b59fd49b7ef77f1f9","num":500,"torder":"c2_2017-02-03_P62j82a55igh7a71cdbd"},{"forder":"b2_2017-02-04_P656113i95ai2gi9ie30","num":900,"torder":"c2_2017-02-04_P6485d7g37adb71i29e2"},{"forder":"b1_2017-02-04_P590d19i951id0hh71ca","num":800,"torder":"c2_2017-02-04_P58g02c7c116ec11je3d"},{"forder":"b1_2017-02-03_P383egiha6g1ece88eea","num":1000,"torder":"c1_2017-02-03_P406g8i280de7j08ddia"},{"forder":"b2_2017-02-04_P100bbf37i60j1fbj2ca","num":300,"torder":"c2_2017-02-04_P991g55d11f7hdja3bi0"},{"forder":"b2_2017-02-04_P67j6dc38f9cib9hfj6d","num":900,"torder":"c2_2017-02-04_P6612cffjd716i2a8iaj"}]
         for (Object object : jsonArray) {
             JSONObject json = (JSONObject) object;
             //都检查通过
@@ -992,7 +1039,9 @@ public class AdminService {
         order.setWithdrawals_uid(tJson.getLongValue("user_id"));
         //订单状态更新为已匹配
         updateOfferHelp(3, fJson.getString("help_order"));
+        addChangeOrderSet(uuid,fJson.getString("help_order"));
         updateOfferHelp(3, tJson.getString("help_order"));
+        addChangeOrderSet(uuid,tJson.getString("help_order"));
         return order;
 
     }
@@ -1003,12 +1052,19 @@ public class AdminService {
         JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
 
     }
-    public void deleteOfferHelp( String help_order) throws Exception {
+    public void updateOfferHelp1( String help_order) throws Exception {
+        String sql = "update offer_help set help_status = 1 where help_order ='" + help_order + "'";
+        log.info("updateOfferHelp sql=" + sql.toString());
+        JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
+
+    }
+    public void deleteOfferHelp(String help_order) throws Exception {
         String sql = "delete from offer_help  where help_order ='" + help_order + "'";
         log.info("deleteOfferHelp sql=" + sql.toString());
         JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
 
     }
+
     /**
      * 订单生成
      *
@@ -1023,15 +1079,12 @@ public class AdminService {
         long start = System.currentTimeMillis();
         String ordernum = CommonUtil.genRandomOrderEX("D", order_id + "");
         Orders order = new Orders();
-
         order.setCreate_date(start);
         order.setLast_date(start);
         order.setOrder_type(3);
         order.setState('N');
-
         order.setOrder_id(order_id);
         order.setMatch_date(start);
-
         order.setOrder_num(ordernum);
         order.setMoney_num(json.getFloatValue("money_num"));
         order.setRecharge_order(json.getString("fhelp_order"));
@@ -1042,10 +1095,13 @@ public class AdminService {
         order.setWithdrawals_uid(json.getLongValue("tuser_id"));
         //订单状态更新为已匹配
         updateOfferHelp(3, json.getString("fhelp_order"));
+        addChangeOrderSet(uuid,json.getString("fhelp_order"));
         updateOfferHelp(3, json.getString("thelp_order"));
+        addChangeOrderSet(uuid,json.getString("thelp_order"));
         return order;
 
     }
+
 
     public boolean checkOrder(JSONObject param, String uuid) throws Exception {
         boolean isTrue = false;
@@ -1061,22 +1117,16 @@ public class AdminService {
 
     //权限检查
     public boolean checklimits(JSONObject param, String uuid) {
-        boolean isTrue=false;
+        boolean isTrue = false;
         String fOrderId = param.getString("forder");
         String tOrderId = param.getString("torder");
         JSONObject fJson = getOfferByMID(fOrderId, uuid);
-        log.info("fjson="+fJson.toJSONString());
         JSONObject tJson = getOfferByMID(tOrderId, uuid);
-        log.info("tJson="+tJson.toJSONString());
         try {
-            log.info("fuid="+fJson.getIntValue("user_id"));
-            log.info("tuid="+tJson.getIntValue("user_id"));
-            log.info("ruid="+fJson.getIntValue("ruid"));
-            log.info("flowerIds="+fJson.getJSONArray("lowerIds"));
             if (fJson.getIntValue("user_id") != tJson.getIntValue("user_id")) {
                 if (fJson.getIntValue("ruid") != tJson.getIntValue("user_id")) {
-                    List<Long> lists = JSON.parseArray(fJson.getJSONArray("lowerIds").toJSONString(),Long.class);
-                    if(!lists.contains(tJson.getLong("user_id"))){
+                    List<Long> lists = JSON.parseArray(fJson.getJSONArray("lowerIds").toJSONString(), Long.class);
+                    if (!lists.contains(tJson.getLong("user_id"))) {
                         if (!isContansOffer(uuid, fJson.getString("help_order")) && !isContansOffer(uuid, tJson.getString("help_order"))) {
                             return true;
                         } else {
@@ -1089,7 +1139,6 @@ public class AdminService {
             }
 
 
-
         } catch (Exception e) {
             log.info("checklimits exception param=" + param.toString() + ";fJson=" + fJson.toJSONString() + ";tjson=" + tJson.toJSONString());
         }
@@ -1099,8 +1148,6 @@ public class AdminService {
     }
 
     /**
-     * c1_2017-02-03_P5250ii8e5jha3884fei 格式获取最初的offer
-     *
      * @param mid
      * @param uuid
      * @return
@@ -1342,14 +1389,15 @@ public class AdminService {
      * @return
      * @throws Exception
      */
-    public JSONObject splitOffer(String help_order, float money_num) throws Exception {
+    public JSONObject splitOffer(String help_order, float money_num,String uuid) throws Exception {
         JSONObject jsonSplitResult = new JSONObject();
         jsonSplitResult.put("lastOrder", help_order);
         Offer_Help offer_last = appServerMappe.getOfferHelpByHelpOrder(help_order);
         float lastMoney = offer_last.getMoney_num();
         long start = System.currentTimeMillis();
-        String sql = "UPDATE offer_help SET help_status=3,money_num="+money_num+",is_split=1,last_update=" + start + " where help_order='" + help_order + "'";
+        String sql = "UPDATE offer_help SET help_status=3,money_num=" + money_num + ",is_split=1  where help_order='" + help_order + "'";
         JdbcUtils.getInstatance().updateByPreparedStatement(sql, null);
+        addChangeOrderSet( uuid, help_order);
         log.info("splitOffer change order money sql=" + sql);
         jsonSplitResult.put("equelOrderNum", help_order);
         long help_id = 0;
@@ -1358,7 +1406,7 @@ public class AdminService {
         help_id = appServerMappe.get_id_generator(idname);
         offer_last.setHelp_id(help_id);
         offer_last.setIs_split(1);
-        offer_last.setLast_update(start);
+        // offer_last.setLast_update(start);
         float money_num_split = lastMoney - money_num;
         offer_last.setMoney_num(money_num_split);
         String ordernum1 = "";
@@ -1373,7 +1421,7 @@ public class AdminService {
         jsonSplitResult.put("overplusOrderNum", ordernum1);
         jsonSplitResult.put("uid", offer_last.getUser_id());
         jsonSplitResult.put("uphone", offer_last.getUser_phone());
-        log.info("splitOffer  reuslt=" + jsonSplitResult.toJSONString()+";new offer="+JSON.toJSONString(offer_last));
+        log.info("splitOffer  reuslt=" + jsonSplitResult.toJSONString() + ";new offer=" + JSON.toJSONString(offer_last));
         return jsonSplitResult;
     }
 
@@ -1433,7 +1481,6 @@ public class AdminService {
             json.put("lowerIds", getLowerByUid(mapTmp.get("user_id").toString()));
             returnJson.add(json);
         }
-        //  log.info("getOfferHelpByWhereSql sql=" + sql + ";result=" + returnJson.toJSONString());
         return returnJson;
 
     }
@@ -1455,7 +1502,6 @@ public class AdminService {
 
             }
         }
-        // log.info("getLowerByUid sql=" + sql + ";result=" + returnJson.toJSONString());
         return returnJson;
     }
 
@@ -1521,7 +1567,7 @@ public class AdminService {
                         getOrderParam.put("money_num", min);
                         //b需要拆分
                         if (meb.getValue() > min) {
-                            JSONObject jsonObject = splitOffer(meb.getKey().split("_")[2], (float) min);
+                            JSONObject jsonObject = splitOffer(meb.getKey().split("_")[2], (float) min,uuid);
                             forder = meb.getKey().split("_")[0] + "_" + meb.getKey().split("_")[1] + "_" + jsonObject.getString("equelOrderNum");
                             String newForder = meb.getKey().split("_")[0] + "_" + meb.getKey().split("_")[1] + "_" + jsonObject.getString("overplusOrderNum");
                             mapbClone.put(newForder, jsonObject.getIntValue("money_num_split"));
@@ -1531,7 +1577,7 @@ public class AdminService {
                         }
                         //c需要拆分
                         if (mec.getValue() > min) {
-                            JSONObject jsonObject = splitOffer(mec.getKey().split("_")[2], (float) min);
+                            JSONObject jsonObject = splitOffer(mec.getKey().split("_")[2], (float) min,uuid);
                             torder = mec.getKey().split("_")[0] + "_" + mec.getKey().split("_")[1] + "_" + jsonObject.getString("equelOrderNum");
                             getOrderParam.put("thelp_order", jsonObject.getString("equelOrderNum"));
                             String newForder = mec.getKey().split("_")[0] + "_" + mec.getKey().split("_")[1] + "_" + jsonObject.getString("overplusOrderNum");
@@ -1610,10 +1656,10 @@ public class AdminService {
     }
 
     public static void main(String[] args) throws Exception {
-        String fromJson="{\"help_order\":\"T721HBABJ2\",\"lowerIds\":[45,48],\"money_num\":500,\"ruid\":0,\"user_id\":44,\"user_phone\":\"18049442389\"}";
-        String tromJson="{\"help_order\":\"S722J7GI3F\",\"lowerIds\":[46,47,49,50,51,56,57,58,59,60,61],\"money_num\":500,\"ruid\":44,\"user_id\":45,\"user_phone\":\"15389290468\"}";
-        JSONObject fJson =JSON.parseObject(fromJson);
-        JSONObject tJson =JSON.parseObject(tromJson);
+        String fromJson = "{\"help_order\":\"T721HBABJ2\",\"lowerIds\":[45,48],\"money_num\":500,\"ruid\":0,\"user_id\":44,\"user_phone\":\"18049442389\"}";
+        String tromJson = "{\"help_order\":\"S722J7GI3F\",\"lowerIds\":[46,47,49,50,51,56,57,58,59,60,61],\"money_num\":500,\"ruid\":44,\"user_id\":45,\"user_phone\":\"15389290468\"}";
+        JSONObject fJson = JSON.parseObject(fromJson);
+        JSONObject tJson = JSON.parseObject(tromJson);
         if (fJson.getIntValue("user_id") != tJson.getIntValue("user_id") && fJson.getIntValue("ruid") != tJson.getIntValue("user_id") &&
                 !fJson.getJSONArray("lowerIds").contains(tJson.getIntValue("user_id"))) {
 

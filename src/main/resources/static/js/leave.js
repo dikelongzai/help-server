@@ -128,6 +128,7 @@ var leave ={
     },
 	getStrHtml:function(leaveInfo){
 	  var html="<tr>";
+		html+="<td>"+leaveInfo.user_phone+"</td>";
 	  //留言内容
 	  html+="<td>"+leaveInfo.msg_content+"</td>";
 	  if(leaveInfo.is_reply==1){

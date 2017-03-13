@@ -222,5 +222,15 @@ public class User_MemberInfo {
 
     private  String  user_qq;
 
+    public String getUser_bank() {
+        return user_bank;
+    }
+
+    public void setUser_bank(String user_bank) {
+        this.user_bank = user_bank;
+    }
+
+    private String user_bank;
+
 }
 

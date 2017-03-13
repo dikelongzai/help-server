@@ -19,7 +19,7 @@ public interface AppServerMapper {
      *
      * @return user_name, is_activate, user_phone
      */
-    @Select("select create_date,user_name,user_qq,user_id,user_carded_url,is_activate,user_phone,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded,referee_user_id from user_member where user_id = #{userId} ")
+    @Select("select create_date,user_name,user_qq,user_id,user_carded_url,is_activate,user_phone,user_bank,user_head_url,user_bank_name,user_bank_account,user_payment,user_weixin,ustatic_wallet,udynamic_wallet,ufrozen_wallet,usable_code_num,used_code_num,title_id,user_referee_phone,user_carded,referee_user_id from user_member where user_id = #{userId} ")
     public User_MemberInfo getUserInfo(@Param("userId") Long userId);
 
     /**
