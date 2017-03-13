@@ -47,7 +47,7 @@ public interface HelpTasksMapper {
     @Select("select max(user_id) from (select user_id from user_member where user_id > #{ncurrent} and state <> 'D' order by user_id asc limit 100) a")
     public long getUserMemberLimit(long ncurrent);
 
-    @Select("select * from offer_help where user_id = #{userid} AND help_type = 1 AND help_status =2 AND is_leader_income = 0")
+    @Select("select * from offer_help where user_id = #{userid} AND help_type = 1 AND help_status = 7 AND is_leader_income = 0")
     public List<Offer_Help> getUserCompleOfferHelp(long userid);
 
     // 查询更新用户的激活码--添加

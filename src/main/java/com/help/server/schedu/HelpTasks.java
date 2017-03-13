@@ -233,9 +233,14 @@ public class HelpTasks {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListUnMatch.get(i);
             long updateLong = offerHelp.getLast_update();
+
+            long createdate = offerHelp.getCreate_date();
+            int days = (int) ((nCurrentTimer - createdate) / 1000 / 60 / 60 / 24);
+            long updateDate = createdate + days * 3600000 * 24;
+
             long nHour = (nCurrentTimer - updateLong);
             if (nHour >= (3600000 * 24)) {
-                helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
+                helpTasksMapper.updateLastOfferHelp(updateDate, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
                 incomeCalculLog.setLast_update(nCurrentTimer);
@@ -257,9 +262,14 @@ public class HelpTasks {
             long nCurrentTimer = System.currentTimeMillis();
             Offer_Help offerHelp = offer_helpListMatch.get(i);
             long updateLong = offerHelp.getLast_update();
+
+            long createdate = offerHelp.getCreate_date();
+            int days = (int) ((nCurrentTimer - createdate) / 1000 / 60 / 60 / 24);
+            long updateDate = createdate + days * 3600000 * 24;
+
             long nHour = (nCurrentTimer - updateLong);
             if (nHour >= (3600000 * 24)) {
-                helpTasksMapper.updateLastOfferHelp(nCurrentTimer, offerHelp.getHelp_order());
+                helpTasksMapper.updateLastOfferHelp(updateDate, offerHelp.getHelp_order());
                 Income_calcul_log incomeCalculLog = new Income_calcul_log();
                 incomeCalculLog.setCreate_date(nCurrentTimer);
                 incomeCalculLog.setLast_update(nCurrentTimer);
