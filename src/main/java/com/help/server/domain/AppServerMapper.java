@@ -286,6 +286,10 @@ public interface AppServerMapper {
     @Update("update offer_help set help_status = #{helpstatus} ,last_update = #{lastupdate}  where help_order = #{helporder}")
     public int updateOfferHelp(@Param("helpstatus") int helpstatus,@Param("lastupdate") long lastupdate,@Param("helporder") String helporder);
 
+    //只更新offer_help 状态，确认收款，确认付款更新
+    @Update("update offer_help set help_status = #{helpstatus} where help_order = #{helporder}")
+    public int updateOfferHelpStatus(@Param("helpstatus") int helpstatus,@Param("helporder") String helporder);
+
     @Select("select count(1) from offer_help where user_id = #{userid}")
     public int getUserOfferHelpCount(@Param("userid") long userid);
 

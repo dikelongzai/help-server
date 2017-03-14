@@ -1203,13 +1203,13 @@ public class AppServerController {
         if(complaintstatus==1){ //确认收款,进入冻结期
 
             appServerMapper.updateOrderStatusQueren(7,nCurrentTimer,ordernum);
-            appServerMapper.updateOfferHelp(7,nCurrentTimer,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(2,nCurrentTimer,orders.getWithdrawals_order());
+            appServerMapper.updateOfferHelpStatus(7,orders.getRecharge_order());
+            appServerMapper.updateOfferHelpStatus(2,orders.getWithdrawals_order());
 
         }else{ //确认未收款
             appServerMapper.updateOrderStatusQueren(8,nCurrentTimer,ordernum);
-            appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(8,nCurrentTimer,orders.getWithdrawals_order());
+            appServerMapper.updateOfferHelpStatus(8,orders.getRecharge_order());
+            appServerMapper.updateOfferHelpStatus(8,orders.getWithdrawals_order());
         }
         CommResp commResp = new CommResp();
         commResp.setCode(retCode);
@@ -1522,8 +1522,8 @@ public class AppServerController {
         try {
             appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
             appServerMapper.updateOrderStatus(6,nCurrentTimer,ordernum);
-            appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getRecharge_order());
-            appServerMapper.updateOfferHelp(6,nCurrentTimer,orders.getWithdrawals_order());
+            appServerMapper.updateOfferHelpStatus(6,orders.getRecharge_order());
+            appServerMapper.updateOfferHelpStatus(6,orders.getWithdrawals_order());
             SendSmsUtil.sendSms(orders.getWithdrawals_phone(),"您的申请帮助订单已经收到对方打款，请您注意查收，并在规定时间内确认收款！");
             commResp.setMsg(retMsg);
             commResp.setCode(retCode);
