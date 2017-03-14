@@ -1310,7 +1310,7 @@ public class AdminService {
             }
 
         }
-        if (jsonParams.containsKey("c1")) {
+        if (jsonParams.containsKey("c2")) {
             JSONArray jsonArrayb2 = jsonParams.getJSONArray("c2");
             if (jsonArrayb2 != null) {
                 if (!jsonArrayb2.isEmpty()) {
