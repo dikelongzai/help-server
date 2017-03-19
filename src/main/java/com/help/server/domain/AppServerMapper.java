@@ -314,6 +314,9 @@ public interface AppServerMapper {
     @Select("SELECT count(1) FROM  offer_help where user_id =#{uid} and help_type = #{helptype} and wallet_type =2 and help_status <>2 and help_status <>8 and help_status <>7 and is_income=1")
     public int getOfferHelpCountIncome(@Param("uid") long uid,@Param("helptype") int helptype);
 
+    @Select("SELECT count(1) FROM  offer_help where user_id =#{uid} and help_type = 1 and wallet_type = 0 and help_status <>2 and help_status <>8 and help_status <>7")
+    public int getDynamicOfferHelpCountIncome(@Param("uid") long uid);
+
     @Select("select SUM(money_num) from offer_help where create_date > #{tdate} AND help_type = 1")
     public float getCurrentTimerMoney_num(@Param("tdate") long tdate);
 

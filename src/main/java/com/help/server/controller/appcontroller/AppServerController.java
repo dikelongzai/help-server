@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * 客户分布
  * Created by houlongbin on 2016/11/11.
- *
+ *000
  */
 @Controller
 @RequestMapping("appserver")
@@ -920,7 +920,7 @@ public class AppServerController {
 
             if (helpsOrderReq.getWallet_type() == 2) { //动态钱包
 
-                int Income = appServerMapper.getOfferHelpCountIncome(helpsOrderReq.getUid(),helpsOrderReq.getHelp_type());
+                int Income = appServerMapper.getDynamicOfferHelpCountIncome(helpsOrderReq.getUid());
                 if(Income>=getRuleInfo.getMax_order_num()){
                     helpsOrderResp.setMsg("已经有未完成的单子，请完成单子后，在进行发单");
                     helpsOrderResp.setCode("C0018");
