@@ -5,6 +5,7 @@ import com.help.server.domain.AppServerMapper;
 import com.help.server.domain.HelpTasksMapper;
 import com.help.server.domain.responsebean.GetRuleInfo;
 import com.help.server.domain.tables.*;
+import com.help.server.util.SendSmsUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,7 +148,7 @@ public class HelpTasks {
         }
     }
     //领导动态奖计算
-    @Scheduled(cron="0 0 2 * * *")
+    //取消领导奖定时任务@Scheduled(cron="0 0 2 * * *")
     public void CalLeader_Money(){
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
@@ -329,6 +330,9 @@ public class HelpTasks {
                 helpTasksMapper.updateUserstatic_Add(recharge_uid,(orders.getMoney_num()+fCountMoney-(float) desc));
                 float ufrozen = helpTasksMapper.sumFrozen_Money(orders.getRecharge_uid());
                 User_MemberInfo userMemberInfo = appServerMapper.getUserInfo(orders.getRecharge_uid());
+
+                SendSmsUtil.sendSms(orders.getRecharge_phone(),"您有订单已经解冻。请登陆客户端查看。");
+
                 if(ufrozen!= userMemberInfo.getUfrozen_wallet()){
                     log.info("冻结期ufrozen："+ufrozen +"User_MemberInfo: "+userMemberInfo.getUfrozen_wallet());
                 }
