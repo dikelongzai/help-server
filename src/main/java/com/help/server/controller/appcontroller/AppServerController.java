@@ -1200,6 +1200,21 @@ public class AppServerController {
         String ordernum = confirmMoneyReq.getOrder_num();
         Orders orders = appServerMapper.getOrderInfoDetails(ordernum);
         long nCurrentTimer = System.currentTimeMillis();
+
+        CommResp commResp = new CommResp();
+        if(orders.getOrder_type() != 6){
+            commResp.setCode("C00051");
+            commResp.setMsg("对方还未打款，请耐心等待对方打款...");
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
+            String retMsg = Base64Util.encode(jsonObject.toString());
+            try {
+                retMsg = URLEncoder.encode(retMsg, "UTF-8");
+            }catch (UnsupportedEncodingException e) {
+                log.error(e);
+            }
+            return retMsg;
+        }
+
         if(complaintstatus==1){ //确认收款,进入冻结期
 
             appServerMapper.updateOrderStatusQueren(7,nCurrentTimer,ordernum);
@@ -1211,7 +1226,7 @@ public class AppServerController {
             appServerMapper.updateOfferHelpStatus(8,orders.getRecharge_order());
             appServerMapper.updateOfferHelpStatus(8,orders.getWithdrawals_order());
         }
-        CommResp commResp = new CommResp();
+
         commResp.setCode(retCode);
         commResp.setMsg(retMsg);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(commResp);
@@ -1520,13 +1535,20 @@ public class AppServerController {
         long nCurrentTimer = System.currentTimeMillis();
         CommResp commResp = new CommResp();
         try {
-            appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
-            appServerMapper.updateOrderStatus(6,nCurrentTimer,ordernum);
-            appServerMapper.updateOfferHelpStatus(6,orders.getRecharge_order());
-            appServerMapper.updateOfferHelpStatus(6,orders.getWithdrawals_order());
-            SendSmsUtil.sendSms(orders.getWithdrawals_phone(),"您的申请帮助订单已经收到对方打款，请您注意查收，并在规定时间内确认收款！");
-            commResp.setMsg(retMsg);
-            commResp.setCode(retCode);
+
+            if(orders.getOrder_type() != 3){
+                commResp.setCode("当前订单状态已经修改，无法重复操作！");
+                commResp.setCode("C0052");
+            }else{
+                appServerMapper.updateUserOrderInfo(ncurrent,upLoadPayOrderReq.getFile_url(),upLoadPayOrderReq.getSn());
+                appServerMapper.updateOrderStatus(6,nCurrentTimer,ordernum);
+                appServerMapper.updateOfferHelpStatus(6,orders.getRecharge_order());
+                appServerMapper.updateOfferHelpStatus(6,orders.getWithdrawals_order());
+                SendSmsUtil.sendSms(orders.getWithdrawals_phone(),"您的申请帮助订单已经收到对方打款，请您注意查收，并在规定时间内确认收款！");
+                commResp.setMsg(retMsg);
+                commResp.setCode(retCode);
+            }
+
         }catch (Exception ex){
             commResp.setCode("数据库操作失败！");
             commResp.setCode("C0014");
