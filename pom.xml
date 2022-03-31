@@ -23,7 +23,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.springframework.version>1.4.0.RELEASE</org.springframework.version>
+		<org.springframework.version>2.5.12</org.springframework.version>
 		<start-class>com.springbootsecure.Application</start-class>
 		<java.version>1.7</java.version>
 	</properties>
